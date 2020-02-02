@@ -77,39 +77,32 @@ class directive {
 		$fdb = substr_count($data, $find);
 		if($fdb > 0){
 			
-			$stf = strlen($find);
+			$s = strlen($find);
 				
 			while(--$fdb >= 0) { 
 				
-				$b = stripos($data,$find,$a);
-				if(($b !== false) && ( $data[ ($b + $stf) ] == $bdeb )  ) {  
-
-					$c = stripos($data,$bfin,($b + $stf));
-					if($c !== false) {
+				if(
+					( ($b = stripos($data,$find,$b)) !== false ) && 
+					( $data[ ($b + $s) ] == $bdeb )  && 
+					( ($c = stripos($data,$bfin,($b + $s))) !== false ) 
+				) {  
+				
+							$k = substr_count( substr($data,($b + $s),($c - ($b + $s))) , $bdeb);
 							
-
-							$k = substr_count(  substr($data,($b + $stf),($c - ($b + $stf))) , $bdeb);
-							for($g=0, $c--; $g < $k; $g++) {
-								$c = stripos($data,$bfin,$c+1);
-							}
+							$c--; 
+							while( $k-- > 0 ) $c = stripos($data,$bfin,$c+1);
 							
 		
-							$endz = '<?php' . 
-							
-									($deb ? (chr(32) . $deb):chr(32)) . 
-									
-									trim(substr($data,($b + $stf + 1),( $c - ($b + $stf + 1)) )) . 
-									
-									($fin ? ($fin . chr(32)):chr(32)) . 
-									
+							$rpl = '<?php' . 
+									($deb ? (chr(32) . $deb) : chr(32)) . 
+									trim( substr($data,($b + $s + 1),( $c - ($b + $s + 1)) ) ) . 
+									($fin ? ($fin . chr(32)) : chr(32)) . 
 									'?>';
 							
 							
-							$data = substr_replace($data, $endz, $b, (($c - $b) +1) );
-							$a = $b + strlen($endz);
-							
-					
-					}
+							$data = substr_replace($data, $rpl, $b, (($c - $b) +1) );
+							$b += strlen($rpl);
+
 				
 				} else { return false; }
 
