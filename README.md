@@ -1,6 +1,7 @@
 # Cat
 Code At
 
+init.php is first page  
 
 	phrase qui s'affiche
 	@set( $a = 'test')
