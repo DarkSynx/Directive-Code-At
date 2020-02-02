@@ -12,19 +12,19 @@ class directive {
 	
 	private function tag_tab() {
 		$tag = [
-			['@load'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
-			['@set'			,function($data,$fnd){return $this->bof($data,$fnd);}],
-			['@exe'			,function($data,$fnd){return $this->bof($data,$fnd);}],
-			['@fct'			,function($data,$fnd){return $this->bof($data,$fnd,'function');}],
-			['@if'			,function($data,$fnd){return $this->bof($data,$fnd,'if(', '):');}],
-			['@elseif'		,function($data,$fnd){return $this->bof($data,$fnd,'elseif(', '):');}],
-			['@else'		,function($data,$fnd){return $this->bsp($data,$fnd,'else:');}],
-			['@endif'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
-			['@for'			,function($data,$fnd){return $this->bof($data,$fnd,'for(','):');}],
-			['@endfor'		,function($data,$fnd){return $this->bsp($data,$fnd,'endfor;');}],
-			['@foreach'		,function($data,$fnd){return $this->bof($data,$fnd,'foreach(','):');}],
+			['@load'	,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
+			['@set'		,function($data,$fnd){return $this->bof($data,$fnd);}],
+			['@exe'		,function($data,$fnd){return $this->bof($data,$fnd);}],
+			['@fct'		,function($data,$fnd){return $this->bof($data,$fnd,'function');}],
+			['@if'		,function($data,$fnd){return $this->bof($data,$fnd,'if(', '):');}],
+			['@elseif'	,function($data,$fnd){return $this->bof($data,$fnd,'elseif(', '):');}],
+			['@else'	,function($data,$fnd){return $this->bsp($data,$fnd,'else:');}],
+			['@endif'	,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
+			['@for'		,function($data,$fnd){return $this->bof($data,$fnd,'for(','):');}],
+			['@endfor'	,function($data,$fnd){return $this->bsp($data,$fnd,'endfor;');}],
+			['@foreach'	,function($data,$fnd){return $this->bof($data,$fnd,'foreach(','):');}],
 			['@endforeach'	,function($data,$fnd){return $this->bsp($data,$fnd,'endforeach;');}],
-			['@while'		,function($data,$fnd){return $this->bof($data,$fnd,'while(','):');}],
+			['@while'	,function($data,$fnd){return $this->bof($data,$fnd,'while(','):');}],
 			['@endwhile'	,function($data,$fnd){return $this->bsp($data,$fnd,'endwhile;');}],
 		];
 		return $tag;
