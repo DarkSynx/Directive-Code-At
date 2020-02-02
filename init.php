@@ -1,124 +1,137 @@
 <?php
 
 
-
 $text = <<<END
 
 phrase qui s'affiche
 @set( \$a = 'test')
+@say('content')
+@off('content')
+@init(['content'] = true)
+@see('content')
+	mon code html 1 
+@endsee
+@is(['content'] == false )
+	mon code html 2
+@endis
+@goto(a)
 @exe( echo mafonction() )
 @fct( mafonction() { 
 	return 'test';
 })
+@label(a)
 @if(\$a == 'test')
-ok c'est cool
+ok c'est cool 111111
 @elseif( \$a == 'toto')
 @else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
-@endif
-@if(\$a == 'test')
-ok c'est cool
-@elseif( \$a == 'toto')
-@else
-non c'est pas cool
+non c'est pas cool 111111
 @endif
 END;
+
+/*
+
+@if(\$a == 'test')
+ok c'est cool 222222
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool 22222222
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif
+@if(\$a == 'test')
+ok c'est cool
+@elseif( \$a == 'toto')
+@else
+non c'est pas cool
+@endif*/
 
 include "directive.class.php";
 

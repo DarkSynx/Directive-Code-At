@@ -16,7 +16,7 @@ class directive {
 			['@load'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
 			['@set'			,function($data,$fnd){return $this->bof($data,$fnd);}],
 			['@exe'			,function($data,$fnd){return $this->bof($data,$fnd);}],
-			['@fct'			,function($data,$fnd){return $this->bof($data,$fnd,'function');}],
+			['@fct'			,function($data,$fnd){return $this->bof($data,$fnd,'function ');}],
 			
 			['@if'			,function($data,$fnd){return $this->bof($data,$fnd,'if(', '):');}],
 			['@elseif'		,function($data,$fnd){return $this->bof($data,$fnd,'elseif(', '):');}],
@@ -25,26 +25,27 @@ class directive {
 			['@for'			,function($data,$fnd){return $this->bof($data,$fnd,'for(','):');}],
 			['@endfor'		,function($data,$fnd){return $this->bsp($data,$fnd,'endfor;');}],
 			['@foreach'		,function($data,$fnd){return $this->bof($data,$fnd,'foreach(','):');}],
-			['@endforeach'		,function($data,$fnd){return $this->bsp($data,$fnd,'endforeach;');}],
+			['@endforeach'	,function($data,$fnd){return $this->bsp($data,$fnd,'endforeach;');}],
 			['@while'		,function($data,$fnd){return $this->bof($data,$fnd,'while(','):');}],
-			['@endwhile'		,function($data,$fnd){return $this->bsp($data,$fnd,'endwhile;');}],
+			['@endwhile'	,function($data,$fnd){return $this->bsp($data,$fnd,'endwhile;');}],
 			['@switch'		,function($data,$fnd){return $this->bof($data,$fnd,'switch (','):');}],
 			['@case'		,function($data,$fnd){return $this->bof($data,$fnd,'case (','):');}],
 			['@break'		,function($data,$fnd){return $this->bsp($data,$fnd,'break;');}],
-			['@continue'		,function($data,$fnd){return $this->bsp($data,$fnd,'continue;');}],
+			['@continue'	,function($data,$fnd){return $this->bsp($data,$fnd,'continue;');}],
 			['@default'		,function($data,$fnd){return $this->bsp($data,$fnd,'default:');}],
-			['@endswitch'		,function($data,$fnd){return $this->bsp($data,$fnd,'endswitch;');}],
+			['@endswitch'	,function($data,$fnd){return $this->bsp($data,$fnd,'endswitch;');}],
 			['@goto'		,function($data,$fnd){return $this->bof($data,$fnd,'goto ', ';');}],
 			['@label'		,function($data,$fnd){return $this->bof($data,$fnd,'', ':');}],
-			['@see'			,function($data,$fnd){return $this->bof($data,$fnd,'if($tab[', ']):');}],
-			['@endsee'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
 			
-			['@is'			,function($data,$fnd){return $this->bof($data,$fnd,'if($tab', '):');}],
+			
+			['@say'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=null;');}],	// initialise le nom de la portion de code
+			['@see'			,function($data,$fnd){return $this->bof($data,$fnd,'if($tab[', ']):');}],	// affiche le code si l'initialisation est à TRUE
+			['@endsee'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],		
+			['@is'			,function($data,$fnd){return $this->bof($data,$fnd,'if($tab', '):');}],		// affiche si on désire vérifier que l'initialisation à une autre valeur 
 			['@endis'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
-			['@say'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=null;');}],
-			['@on'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=true;');}],
-			['@off'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=false;');}],
-			['@tab'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab', ';');}],
+			['@on'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=true;');}],	// passe l'initialisation à TRUE
+			['@off'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=false;');}], // passe l'initialisation à FALSE
+			['@init'		,function($data,$fnd){return $this->bof($data,$fnd,'$tab', ';');}],			// passe l'initialisation à la valeur de l'on désire
 			
 			
 			//toujours à la fin 
@@ -52,6 +53,7 @@ class directive {
 			['@@'			,function($data,$fnd){return $this->bof($data,$fnd,'$', ';','[',']');}], // initialise une variable
 			['@#'			,function($data,$fnd){return $this->bof($data,$fnd,'echo $', ';','(',')');}], // affiche son resulta
 			*/
+			
 		];
 		return $tag;
 	}
@@ -61,10 +63,15 @@ class directive {
 		$data = $this->_data;
 		$tag = $this->tag_tab();
 		//var_dump($tag);
+		$time_start = microtime(true);
 		foreach($tag as $find) { 
-				$data = $find[1]($data,$find[0]);
+				$d = $find[1]($data,$find[0]);
+				if($d) { $data = $d; }
 		}
-		
+		$time_end = microtime(true);
+		$time = $time_end - $time_start;
+
+		echo "Ne rien faire pendant $time secondes\n";
 		$this->_final_page = $data;
 		//echo $data;
 		
@@ -73,8 +80,7 @@ class directive {
 		return str_ireplace($fnd,'<?php ' . $replace . ' ?>', $data);
 	}
 
-	private function bof($data,$find,$deb='', $fin='',$bdeb='(',$bfin=')'){
-
+	private function bof($data,$find,$deb='', $fin='',$bdeb='(',$bfin=')',$b=0){
 		$fdb = substr_count($data, $find);
 		if($fdb > 0){
 			
