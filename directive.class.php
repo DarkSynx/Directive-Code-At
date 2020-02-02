@@ -74,42 +74,50 @@ class directive {
 	}
 
 	private function bof($data,$find,$deb='', $fin='',$bdeb='(',$bfin=')'){
-			$lnd = strlen($data);
-			$fdb = substr_count( $data, $find);
-			for($a=$b; $a < $lnd ; $a++) {
+		$fdb = substr_count($data, $find);
+		if($fdb > 0){
+			
+			$stf = strlen($find);
+				
+			while(--$fdb >= 0) { 
+				
 				$b = stripos($data,$find,$a);
-				if(($b !== false) and ( $data[ ($b + strlen($find)) ] == $bdeb )  ) {  
-					$a = ($b + strlen($find)); 
-					
-						// on cherche le prochin ) 
-						$c = stripos($data,$bfin,$a);
-						if($c !== false) {
-							
-							$extrait = substr($data,$a,($c - $a));
-							$a = $c-1;
-							// on vérifie qu'il n'y a pas de ( entre les deux
-							// permet de savoir combien de fois on va bouclé pour trouver la fin 
-							$ouverture = substr_count( $extrait, $bdeb);
-							
-								for($g=0; $g < $ouverture; $g++) {
-									$a = stripos($data,$bfin,$a+1);
-								}
+				if(($b !== false) && ( $data[ ($b + $stf) ] == $bdeb )  ) {  
 
-							// dans tout les cas $a contiendra la bonne position du dernier ')'
-							$block = substr($data,$a,1);
-							$endz = ($fin ? ($fin . chr(32)):null) . ' ?>';
-							$data = substr_replace($data, $endz, $a,1);
-							$a += strlen($endz);
+					$c = stripos($data,$bfin,($b + $stf));
+					if($c !== false) {
+							
+
+							$k = substr_count(  substr($data,($b + $stf),($c - ($b + $stf))) , $bdeb);
+							for($g=0, $c--; $g < $k; $g++) {
+								$c = stripos($data,$bfin,$c+1);
+							}
+							
+		
+							$endz = '<?php' . 
+							
+									($deb ? (chr(32) . $deb):chr(32)) . 
+									
+									trim(substr($data,($b + $stf + 1),( $c - ($b + $stf + 1)) )) . 
+									
+									($fin ? ($fin . chr(32)):chr(32)) . 
+									
+									'?>';
 							
 							
-						}
-						
-				}
-				$lnd = strlen($data);
-				if( --$fdb <= 0) { break; }	
+							$data = substr_replace($data, $endz, $b, (($c - $b) +1) );
+							$a = $b + strlen($endz);
+							
+					
+					}
+				
+				} else { return false; }
+
 			}
-			$data = str_ireplace($find . $bdeb,'<?php' . chr(32) . ($deb ? ($deb . chr(32)):null) ,$data);
+			
 			return $data;
+		}
+		return false;
 	}
 	
 }
