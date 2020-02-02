@@ -26,6 +26,14 @@ class directive {
 			['@endforeach'	,function($data,$fnd){return $this->bsp($data,$fnd,'endforeach;');}],
 			['@while'	,function($data,$fnd){return $this->bof($data,$fnd,'while(','):');}],
 			['@endwhile'	,function($data,$fnd){return $this->bsp($data,$fnd,'endwhile;');}],
+			['@switch'	,function($data,$fnd){return $this->bof($data,$fnd,'switch (','):');}],
+			['@case'	,function($data,$fnd){return $this->bof($data,$fnd,'case (','):');}],
+			['@break'	,function($data,$fnd){return $this->bsp($data,$fnd,'break;');}],
+			['@continue'	,function($data,$fnd){return $this->bsp($data,$fnd,'continue;');}],
+			['@default'	,function($data,$fnd){return $this->bsp($data,$fnd,'default:');}],
+			['@endswitch'	,function($data,$fnd){return $this->bsp($data,$fnd,'endswitch;');}],
+			['@goto'	,function($data,$fnd){return $this->bof($data,$fnd,'goto ', ';');}],
+			['@label'	,function($data,$fnd){return $this->bof($data,$fnd,'', ':');}],
 		];
 		return $tag;
 	}
