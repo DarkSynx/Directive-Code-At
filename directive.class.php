@@ -58,10 +58,10 @@ class directive {
 						// on cherche le prochin ) 
 						$c = stripos($data,$bfin,$a);
 						if($c !== false) {
-							// vue que l'on est arriver sur le premier ) on le garde
+							
 							$extrait = substr($data,$a,($c - $a));
 							$a = $c-1;
-							//on vérifie qu'il n'y a pas de ( entre les deux
+							// on vérifie qu'il n'y a pas de ( entre les deux
 							// permet de savoir combien de fois on va bouclé pour trouver la fin 
 							$ouverture = substr_count( $extrait, $bdeb);
 							
