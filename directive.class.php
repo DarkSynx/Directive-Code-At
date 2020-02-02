@@ -74,6 +74,7 @@ class directive {
 	}
 
 	private function bof($data,$find,$deb='', $fin='',$bdeb='(',$bfin=')'){
+
 		$fdb = substr_count($data, $find);
 		if($fdb > 0){
 			
@@ -86,19 +87,15 @@ class directive {
 					( $data[ ($b + $s) ] == $bdeb )  && 
 					( ($c = stripos($data,$bfin,($b + $s))) !== false ) 
 				) {  
-				
-							$k = substr_count( substr($data,($b + $s),($c - ($b + $s))) , $bdeb);
+							$bs = ($b + $s);
+							$k = substr_count( substr($data,$bs,($c - $bs)) , $bdeb);
 							
 							$c--; 
-							while( $k-- > 0 ) $c = stripos($data,$bfin,$c+1);
+							while( $k-- > 0 ) $c = stripos($data,$bfin,++$c);
 							
-		
-							$rpl = '<?php' . 
-									($deb ? (chr(32) . $deb) : chr(32)) . 
-									trim( substr($data,($b + $s + 1),( $c - ($b + $s + 1)) ) ) . 
-									($fin ? ($fin . chr(32)) : chr(32)) . 
-									'?>';
-							
+								
+								$m = trim( substr($data,($bs + 1),( $c - ($bs + 1)) ) );
+								$rpl = "<?php $deb$m$fin ?>";
 							
 							$data = substr_replace($data, $rpl, $b, (($c - $b) +1) );
 							$b += strlen($rpl);
@@ -111,7 +108,6 @@ class directive {
 			return $data;
 		}
 		return false;
-		
 	}
 	
 }
