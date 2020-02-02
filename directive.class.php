@@ -12,28 +12,46 @@ class directive {
 	
 	private function tag_tab() {
 		$tag = [
-			['@load'	,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
-			['@set'		,function($data,$fnd){return $this->bof($data,$fnd);}],
-			['@exe'		,function($data,$fnd){return $this->bof($data,$fnd);}],
-			['@fct'		,function($data,$fnd){return $this->bof($data,$fnd,'function');}],
-			['@if'		,function($data,$fnd){return $this->bof($data,$fnd,'if(', '):');}],
-			['@elseif'	,function($data,$fnd){return $this->bof($data,$fnd,'elseif(', '):');}],
-			['@else'	,function($data,$fnd){return $this->bsp($data,$fnd,'else:');}],
-			['@endif'	,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
-			['@for'		,function($data,$fnd){return $this->bof($data,$fnd,'for(','):');}],
-			['@endfor'	,function($data,$fnd){return $this->bsp($data,$fnd,'endfor;');}],
-			['@foreach'	,function($data,$fnd){return $this->bof($data,$fnd,'foreach(','):');}],
-			['@endforeach'	,function($data,$fnd){return $this->bsp($data,$fnd,'endforeach;');}],
-			['@while'	,function($data,$fnd){return $this->bof($data,$fnd,'while(','):');}],
-			['@endwhile'	,function($data,$fnd){return $this->bsp($data,$fnd,'endwhile;');}],
-			['@switch'	,function($data,$fnd){return $this->bof($data,$fnd,'switch (','):');}],
-			['@case'	,function($data,$fnd){return $this->bof($data,$fnd,'case (','):');}],
-			['@break'	,function($data,$fnd){return $this->bsp($data,$fnd,'break;');}],
-			['@continue'	,function($data,$fnd){return $this->bsp($data,$fnd,'continue;');}],
-			['@default'	,function($data,$fnd){return $this->bsp($data,$fnd,'default:');}],
-			['@endswitch'	,function($data,$fnd){return $this->bsp($data,$fnd,'endswitch;');}],
-			['@goto'	,function($data,$fnd){return $this->bof($data,$fnd,'goto ', ';');}],
-			['@label'	,function($data,$fnd){return $this->bof($data,$fnd,'', ':');}],
+			['@load'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
+			['@load'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
+			['@set'			,function($data,$fnd){return $this->bof($data,$fnd);}],
+			['@exe'			,function($data,$fnd){return $this->bof($data,$fnd);}],
+			['@fct'			,function($data,$fnd){return $this->bof($data,$fnd,'function');}],
+			
+			['@if'			,function($data,$fnd){return $this->bof($data,$fnd,'if(', '):');}],
+			['@elseif'		,function($data,$fnd){return $this->bof($data,$fnd,'elseif(', '):');}],
+			['@else'		,function($data,$fnd){return $this->bsp($data,$fnd,'else:');}],
+			['@endif'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
+			['@for'			,function($data,$fnd){return $this->bof($data,$fnd,'for(','):');}],
+			['@endfor'		,function($data,$fnd){return $this->bsp($data,$fnd,'endfor;');}],
+			['@foreach'		,function($data,$fnd){return $this->bof($data,$fnd,'foreach(','):');}],
+			['@endforeach'		,function($data,$fnd){return $this->bsp($data,$fnd,'endforeach;');}],
+			['@while'		,function($data,$fnd){return $this->bof($data,$fnd,'while(','):');}],
+			['@endwhile'		,function($data,$fnd){return $this->bsp($data,$fnd,'endwhile;');}],
+			['@switch'		,function($data,$fnd){return $this->bof($data,$fnd,'switch (','):');}],
+			['@case'		,function($data,$fnd){return $this->bof($data,$fnd,'case (','):');}],
+			['@break'		,function($data,$fnd){return $this->bsp($data,$fnd,'break;');}],
+			['@continue'		,function($data,$fnd){return $this->bsp($data,$fnd,'continue;');}],
+			['@default'		,function($data,$fnd){return $this->bsp($data,$fnd,'default:');}],
+			['@endswitch'		,function($data,$fnd){return $this->bsp($data,$fnd,'endswitch;');}],
+			['@goto'		,function($data,$fnd){return $this->bof($data,$fnd,'goto ', ';');}],
+			['@label'		,function($data,$fnd){return $this->bof($data,$fnd,'', ':');}],
+			['@see'			,function($data,$fnd){return $this->bof($data,$fnd,'if($tab[', ']):');}],
+			['@endsee'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
+			
+			['@is'			,function($data,$fnd){return $this->bof($data,$fnd,'if($tab', '):');}],
+			['@endis'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
+			['@say'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=null;');}],
+			['@on'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=true;');}],
+			['@off'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=false;');}],
+			['@tab'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab', ';');}],
+			
+			
+			//toujours à la fin 
+			/*
+			['@@'			,function($data,$fnd){return $this->bof($data,$fnd,'$', ';','[',']');}], // initialise une variable
+			['@#'			,function($data,$fnd){return $this->bof($data,$fnd,'echo $', ';','(',')');}], // affiche son resulta
+			*/
 		];
 		return $tag;
 	}
