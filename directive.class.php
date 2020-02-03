@@ -13,10 +13,15 @@ class directive {
 	private function tag_tab() {
 		$tag = [
 			['@load'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
-			['@load'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
+			//['@import'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
 			['@set'			,function($data,$fnd){return $this->bof($data,$fnd);}],
 			['@exe'			,function($data,$fnd){return $this->bof($data,$fnd);}],
 			['@fct'			,function($data,$fnd){return $this->bof($data,$fnd,'function ');}],
+			
+			// partie dowhile ici c'est une gestion différente des dowhiles		
+			['@dowhile'		,function($data,$fnd){return $this->bsp($data,$fnd,"do{ echo <<<END\r\n",'<?php ','');}],
+			['@whiledo'		,function($data,$fnd){return $this->bof($data,$fnd,"\r\nEND;\r\n}while(", ');','(',')','');}],
+			['@dow'			,function($data,$fnd){return $this->bop($data,$fnd,'do{', '%}while(#);','(',')',';','{','}','#','%');}],	
 			
 			['@if'			,function($data,$fnd){return $this->bof($data,$fnd,'if(', '):');}],
 			['@elseif'		,function($data,$fnd){return $this->bof($data,$fnd,'elseif(', '):');}],
@@ -66,34 +71,110 @@ class directive {
 		$time_start = microtime(true);
 		foreach($tag as $find) { 
 				$d = $find[1]($data,$find[0]);
+				
+				//if($find[0] == '@dowhile') { sleep(1000); }
 				if($d) { $data = $d; }
 		}
 		$time_end = microtime(true);
 		$time = $time_end - $time_start;
 
-		echo "Ne rien faire pendant $time secondes\n";
+		echo "execusion $time secondes\n";
 		$this->_final_page = $data;
 		//echo $data;
 		
 	}
-	private function bsp($data,$fnd,$replace){
-		return str_ireplace($fnd,'<?php ' . $replace . ' ?>', $data);
+	
+	private function bsp($data,$fnd,$replace,$debx='<?php ',$endx=' ?>'){
+		return str_ireplace($fnd,"$debx$replace$endx", $data);
 	}
+	
+	private function bop($data,$find,$deb='', $fin='',$bdeb1='(',$bfin1=')',$exp=';',$bdeb2='{',$bfin2='}',$masque1=false,$masque2=false,$debx='<?php ',$endx=' ?>',$b=0){
+		$fdb = substr_count($data, $find);
+		echo ">",$fdb, PHP_EOL;
+		if($fdb > 0){
+			$s = strlen($find);
+			while(--$fdb >= 0) {
+				$b = stripos($data,$find,$b);
+				$bs = ($b + $s);
+				if(
+					( $b !== false ) && 
+					( $data[$bs] == $bdeb1 )  && 
+					( ($c = stripos($data,$bfin1,$bs)) !== false ) 
+				) {  
+				echo ">ok", PHP_EOL;
+							
+							$k = substr_count( substr($data,$bs,($c - $bs)) , $bdeb1);
+							
+							$c--; 
+							while( $k-- > 0 ) $c = stripos($data,$bfin1,++$c);
+								
+								// detection du premier { et dernier }
+								if(
+								 ($data[($c+1)] == $bdeb2) &&
+								 (($e = stripos($data,$bfin2,$c+1)) !== false ) 
+								) {
+									echo ">> extrait:", substr($data,$c+1,($e - $c+1)), PHP_EOL;
+									
+									$o = substr_count( substr($data,$c+1,($e - $c+1)) , $bdeb2);
+									echo ">> ", $data[($c+1)], PHP_EOL;
+									echo ">> o : ", $o, PHP_EOL;
+									
+									$e--; 
+									while( $o-- > 0 ) $e = stripos($data,$bfin2,++$e);
+									$m2 = substr($data,$c+2,($e - $c-2)); //trim ?
 
-	private function bof($data,$find,$deb='', $fin='',$bdeb='(',$bfin=')',$b=0){
+									
+								} else { return false; }
+
+								echo "#>", $m2, PHP_EOL;
+								$mex = trim( substr($data,($bs + 1),( $c - ($bs + 1)) ) );
+								if(($j = stripos($mex,$exp,0)) !== false) {
+									$t = explode($exp,$mex);
+									echo "#:",$t[1],PHP_EOL;
+									if($t[1] == 'TRUE') {
+										$m1 = $t[0];
+									}
+								} else { $m1 = $mex; $m2 = "echo <<<END\r\n$m2\r\nEND;\r\n"; }
+								if($masque1) { 
+									$rpl = "$debx$deb$fin$endx";
+									$rpl = str_ireplace($masque1,$m1,$rpl);
+									if($masque2) { 
+										$rpl = str_ireplace($masque2,$m2,$rpl);
+									}
+								}
+								
+								
+							
+								//echo '>>>',$rpl, PHP_EOL;
+							//sleep(1000);
+							
+							$data = substr_replace($data, $rpl, $b, (($e - $b) +1) );
+							$b += strlen($rpl);
+
+				
+				} else { return false; }
+
+			}
+			return $data;
+		}
+		return false;
+	}
+	
+	private function bof($data,$find,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0){
 		$fdb = substr_count($data, $find);
 		if($fdb > 0){
 			
 			$s = strlen($find);
 				
 			while(--$fdb >= 0) { 
-				
+				$b = stripos($data,$find,$b);
+				$bs = ($b + $s);
 				if(
-					( ($b = stripos($data,$find,$b)) !== false ) && 
-					( $data[ ($b + $s) ] == $bdeb )  && 
-					( ($c = stripos($data,$bfin,($b + $s))) !== false ) 
+					( $b !== false ) && 
+					( $data[$bs] == $bdeb )  && 
+					( ($c = stripos($data,$bfin,$bs)) !== false ) 
 				) {  
-							$bs = ($b + $s);
+							
 							$k = substr_count( substr($data,$bs,($c - $bs)) , $bdeb);
 							
 							$c--; 
@@ -101,7 +182,7 @@ class directive {
 							
 								
 								$m = trim( substr($data,($bs + 1),( $c - ($bs + 1)) ) );
-								$rpl = "<?php $deb$m$fin ?>";
+								$rpl = "$debx$deb$m$fin$endx";
 							
 							$data = substr_replace($data, $rpl, $b, (($c - $b) +1) );
 							$b += strlen($rpl);

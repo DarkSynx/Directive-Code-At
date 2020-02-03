@@ -3,8 +3,17 @@
 
 $text = <<<END
 
+
 phrase qui s'affiche
 @set( \$a = 'test')
+
+@dow(\$a!='test'){
+	<html>mon code html yyyyy</html>
+}
+@dowhile
+	<html>code html zzz</html>
+@whiledo(\$a!='test')
+
 @say('content')
 @off('content')
 @init(['content'] = true)
