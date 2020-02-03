@@ -15,8 +15,10 @@ class directive {
 			['@load'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
 			//['@import'		,function($data,$fnd){return $this->bof($data,$fnd,'include(', ');');}],
 			['@set'			,function($data,$fnd){return $this->bof($data,$fnd);}],
+			['@var'			,function($data,$fnd){return $this->bop($data,$fnd,'$#','=%;','(',':',FALSE,':',')','#','%');}],
 			['@exe'			,function($data,$fnd){return $this->bof($data,$fnd);}],
-			['@fct'			,function($data,$fnd){return $this->bof($data,$fnd,'function ');}],
+			['@fct'			,function($data,$fnd){return $this->bop($data,$fnd,'function ');}],
+			['@use:'			,function($data,$fnd){return $this->bop($data,$fnd,'',');',':',')');}],
 			
 			// partie dowhile ici c'est une gestion différente des dowhiles		
 			['@dowhile'		,function($data,$fnd){return $this->bsp($data,$fnd,"do{ echo <<<END\r\n",'<?php ','');}],
@@ -50,7 +52,7 @@ class directive {
 			['@endis'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
 			['@on'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=true;');}],	// passe l'initialisation à TRUE
 			['@off'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=false;');}], // passe l'initialisation à FALSE
-			['@init'		,function($data,$fnd){return $this->bop($data,$fnd,'$tab[#',']=%;','(',':',FALSE,':',')','#','%');}],			// passe l'initialisation à la valeur de l'on désire
+			['@init'		,function($data,$fnd){return $this->bop($data,$fnd,'$tab[#]','=%;','(',':',FALSE,':',')','#','%');}],			// passe l'initialisation à la valeur de l'on désire
 			['@int'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab', ';');}],			// passe l'initialisation à la valeur de l'on désire
 			
 			//toujours à la fin 

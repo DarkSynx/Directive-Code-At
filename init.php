@@ -5,7 +5,8 @@ $text = <<<END
 
 
 phrase qui s'affiche
-@set( \$a = 'test')
+@set( \$a='test')
+@var(a::'test')
 
 @dow(\$a!='test'){
 	<html>mon code html yyyyy</html>
@@ -22,7 +23,7 @@ phrase qui s'affiche
 @see('content')
 	mon code html 1 
 @endsee
-@is(['content'] == false )
+@is(['content222'] == false )
 	mon code html 2
 @endis
 @goto(a)
@@ -30,6 +31,10 @@ phrase qui s'affiche
 @fct( mafonction() { 
 	return 'test';
 })
+
+@use::mafonction()
+
+
 @label(a)
 @if(\$a == 'test')
 ok c'est cool 111111
