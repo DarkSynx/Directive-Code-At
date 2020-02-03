@@ -50,8 +50,8 @@ class directive {
 			['@endis'		,function($data,$fnd){return $this->bsp($data,$fnd,'endif;');}],
 			['@on'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=true;');}],	// passe l'initialisation à TRUE
 			['@off'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab[', ']=false;');}], // passe l'initialisation à FALSE
-			['@init'		,function($data,$fnd){return $this->bof($data,$fnd,'$tab', ';');}],			// passe l'initialisation à la valeur de l'on désire
-			
+			['@init'		,function($data,$fnd){return $this->bop($data,$fnd,'$tab[#',']=%;','(',':',FALSE,':',')','#','%');}],			// passe l'initialisation à la valeur de l'on désire
+			['@int'			,function($data,$fnd){return $this->bof($data,$fnd,'$tab', ';');}],			// passe l'initialisation à la valeur de l'on désire
 			
 			//toujours à la fin 
 			/*
@@ -109,6 +109,7 @@ class directive {
 							while( $k-- > 0 ) $c = stripos($data,$bfin1,++$c);
 								
 								// detection du premier { et dernier }
+								$e = $c;
 								if(
 								 ($data[($c+1)] == $bdeb2) &&
 								 (($e = stripos($data,$bfin2,$c+1)) !== false ) 
@@ -124,26 +125,36 @@ class directive {
 									$m2 = substr($data,$c+2,($e - $c-2)); //trim ?
 
 									
-								} else { return false; }
-
+								}
+								
+								
+								
 								echo "#>", $m2, PHP_EOL;
 								$mex = trim( substr($data,($bs + 1),( $c - ($bs + 1)) ) );
-								if(($j = stripos($mex,$exp,0)) !== false) {
+								$j = stripos($mex,$exp,0);
+								if( ($j !== false and  $exp != '') ) {
 									$t = explode($exp,$mex);
 									echo "#:",$t[1],PHP_EOL;
 									if($t[1] == 'TRUE') {
 										$m1 = $t[0];
 									}
-								} else { $m1 = $mex; $m2 = "echo <<<END\r\n$m2\r\nEND;\r\n"; }
+								} 
+								elseif( $exp === FALSE) { 
+									$m1 = $mex; 
+								}
+								else { 
+									$m1 = $mex; 
+									if($masque2) { $m2 = "echo <<<END\r\n$m2\r\nEND;\r\n"; }
+								}
 								if($masque1) { 
 									$rpl = "$debx$deb$fin$endx";
 									$rpl = str_ireplace($masque1,$m1,$rpl);
 									if($masque2) { 
 										$rpl = str_ireplace($masque2,$m2,$rpl);
 									}
+								} else {
+									$rpl = "$debx$deb$mex$fin$endx";
 								}
-								
-								
 							
 								//echo '>>>',$rpl, PHP_EOL;
 							//sleep(1000);

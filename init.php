@@ -16,7 +16,9 @@ phrase qui s'affiche
 
 @say('content')
 @off('content')
-@init(['content'] = true)
+@int(['content']=false)
+@init('content'::true)
+
 @see('content')
 	mon code html 1 
 @endsee
