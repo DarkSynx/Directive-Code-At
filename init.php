@@ -1,21 +1,27 @@
 <?php
 
-
 $text = <<<END
-
-@inst(b=maclass())
+@timetest
+@initab
+@class(maclass){
+	
+	public function get_var() {
+		echo 'ok';
+	}
+}
+@inst(b){maclass()}
 @obj(b->get_var())
 
 phrase qui s'affiche
-@set(\$a='test')
+@set(a='test')
 @var(a::'test')
 
-@dow(\$a!='test'){
-	<html>mon code html yyyyy</html>
+@dow(a!='test'){
+	<html>mon code html yyyyy@\RN</html>
 }
 @dowhile
 	<html>code html zzz</html>
-@whiledo(\$a!='test')
+@whiledo(a!='test')
 
 @say('content')
 @off('content')
@@ -23,7 +29,7 @@ phrase qui s'affiche
 @init('content'::true)
 
 @see('content')
-	mon code html 1 
+	<html>code html 1@\RN <@{a}> @\RN</html>
 @endsee
 @is(['content222'] == false )
 	mon code html 2
@@ -31,19 +37,23 @@ phrase qui s'affiche
 @goto(a)
 @exe( echo mafonction() )
 @fct( mafonction() { 
-	return 'test';
+	return 'test retrun';
 })
-
-@use::mafonction()
-
-
 @label(a)
-@if(\$a == 'test')
+@use:mafonction()
+@echo(mafonction())
+@print(a)
+
+
+@if(a == 'test')
 ok c'est cool 111111
-@elseif( \$a == 'toto')
+@elseif(a == 'toto')
 @else
 non c'est pas cool 111111
 @endif
+@\RN
+execution : @endtimetest
+@\RN
 END;
 
 /*
