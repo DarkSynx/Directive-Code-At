@@ -16,6 +16,7 @@ class directive {
 	private function gen() {
 		$data = $this->_data;
 		$tags = [
+			'@import'		=> [[$this,'bop'],[$nbf,&$data,$fnd, '__INVOCFILE__', '','(',')',FALSE,'{','}','#','']],
 			'@load'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'include(', ');']],
 			'@set'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'$']],
 			'@var'			=> [[$this,'bop'],[$nbf,&$data,$fnd,'$#','=%;','(',':',FALSE,':',')','#','%']],
@@ -156,6 +157,11 @@ class directive {
 									if($masque2) { $m2 = "echo <<<END\r\n$m2\r\nEND;\r\n"; }
 								}
 								if($masque1) { 
+									if($deb == '__INVOCFILE__') { 
+										$debx = "<!-- start invoc file : $m1 -->\r\n" ;
+										$deb = file_get_contents($m1);
+										$endx = PHP_EOL;
+										}
 									$rpl = "$debx$deb$fin$endx";
 									$rpl = str_ireplace($masque1,$m1,$rpl);
 									if($masque2) { 

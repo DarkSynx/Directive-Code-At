@@ -1,6 +1,7 @@
 <?php
 
 $text = <<<END
+@import(test.cat)
 @timetest
 @initab
 @class(maclass){
