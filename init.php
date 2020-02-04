@@ -3,9 +3,11 @@
 
 $text = <<<END
 
+@inst(b=maclass())
+@obj(b->get_var())
 
 phrase qui s'affiche
-@set( \$a='test')
+@set(\$a='test')
 @var(a::'test')
 
 @dow(\$a!='test'){
