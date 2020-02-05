@@ -1,12 +1,13 @@
 # C@t CODE at.
 <img src='logo_.png' /><br/>
 
-## clique [importation](./README.md#les-importations)
-## clique [execution et déclarations](./README.md#execution-et)
-## clique [do while](./README.md#do-while)
-## clique [structures de code](./README.md#structures-de-code)
-## clique [controle de code](./README.md#controle-de-code)
-## clique [fonctions diverse](./README.md#fonctions-diverses)
+# MENU
+## [importation](./README.md#les-importations)
+## [execution et déclarations](./README.md#execution-et)
+## [do while](./README.md#do-while)
+## [structures de code](./README.md#structures-de-code)
+## [controle de code](./README.md#controle-de-code)
+## [fonctions diverse](./README.md#fonctions-diverses)
 
 # importation et controle de code
 ## les importations 
@@ -15,11 +16,6 @@
 ```LUA
 Exemple de
 ```
-
-clique [My link](./README.md#execution-et)
-
-
-#ici	
 
 * __@load__
 *Explication de la fonction*
