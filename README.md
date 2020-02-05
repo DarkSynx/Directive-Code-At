@@ -2,12 +2,12 @@
 <img src='logo_.png' /><br/>
 
 # MENU
-## [importation](./README.md#les-importations)
-## [execution et déclarations](./README.md#execution-et)
-## [do while](./README.md#do-while)
-## [structures de code](./README.md#structures-de-code)
-## [controle de code](./README.md#controle-de-code)
-## [fonctions diverse](./README.md#fonctions-diverses)
+## [Les importations](./README.md#les-importations)
+## [les executions et déclarations](./README.md#execution-et)
+## [Les do while](./README.md#do-while)
+## [Les structures de code](./README.md#structures-de-code)
+## [Les controles de code](./README.md#controle-de-code)
+## [Les fonctions diverse](./README.md#fonctions-diverses)
 
 # importation et controle de code
 ## les importations 
