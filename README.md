@@ -1,5 +1,5 @@
 # C@t CODE at.
-<img src='logo_.png' /><br/>
+<img src='c@t.png' /><br/>
 
 # MENU
 ## [Les importations](./README.md#les-importations)
