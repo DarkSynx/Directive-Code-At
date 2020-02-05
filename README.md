@@ -11,24 +11,24 @@
 
 # importation et controle de code
 ## les importations 
-* __@invoc__   
+* __@invoc__  
 *Permet d'importer physiquement tout le code du fichier qui sera réécrit dans le fichier final aprés la fabrication. (notez qu'il ne faudra pas utilisé de cote ou de double cote dans la fonction)*
 ```LUA
 @invoc(MyFile.cat)
 ```
-* __@load__
+* __@load__  
 *Permet de charger un fichier PHP en utilisant include de PHP*
 ```LUA
 @load('foobar.php')
 ```
 			
-* __@import__
+* __@import__  
 *Permet d'importer du code HTML d'un Fichier ___".cat"___ celui-ci balisé par @segment(nomdesegment) @endsegment. (notez que <nomdesegment> n'a pas de cote ou de double-cote alors que le nom du fichier oui*
 ```LUA
 @import('page.cat'){nomdesegment}
 ```
 		
-* __@segment__
+* __@segment__  
 *Cette directive permet de créé des pages __".cat"__ pour importer des portions de code HTML. (Note: cette directive, quand elle est executé met le code HTML en __commentaire HTML___. Il est donc conseiller de ne pas mélanger les pages contenant __les Segments__ et les pages avec les autres directive pour ne pas surcharger vos pages. Note 2: il n'y as pas de cote ou double-cote à un nom de segment celui-ci doit étre unique ) *
 ```LUA
 @segment(nomdesegment)
@@ -43,299 +43,263 @@
 
 ---
 ## execution et
-* __@set__
-*Explication de la fonction*
+* __@set__ __@var__  
+*ces deux directives permettes d'initialisé des variables à vous de d'utilisé celle qui vous conviendra*
 ```LUA
-Exemple de code
+@set(a='test')
+@var(a::'test')
 ```
-			
-* __@var__
-*Explication de la fonction*
+
+* __@exe__  
+*Cette directive permet d'executé du code PHP *
 ```LUA
-Exemple de code
+@exe( echo mafonction(); )
 ```
-			
-* __@exe__
-*Explication de la fonction*
+
+* __@fct__  
+*Permet de définir une fonction*
 ```LUA
-Exemple de code
+@fct( mafonction() { 
+	return 'foobar';
+})
 ```
-			
-* __@fct__
-*Explication de la fonction*
+
+* __@use__  
+*Permet d'executé une fonction définit*
 ```LUA
-Exemple de code
+@use:mafonction()
 ```
-			
-* __@use__
-*Explication de la fonction*
+
+* __@print__  
+*Vous voulez afficher le résulta d'une variable*
 ```LUA
-Exemple de code
+@set(a=3)
+@print(a)
 ```
-			
-* __@print__
-*Explication de la fonction*
+
+* __@__  
+*Directive pour afficher des variables comme print mais sera plus simple d'utilisation. (Note: Il est possible que cette directive évolue si elle entre en conflic dans le futur donc utilisez __@print__) *
 ```LUA
-Exemple de code
+@set(a=30)
+<html>code html @{a} </html>
+retourne <html>code html 30 </html>
 ```
-		
-* __@echo__
-*Explication de la fonction*
+
+* __@echo__  
+*Affiche le retour d'une fonction*
 ```LUA
-Exemple de code
+@fct( mafonction() { 
+	return 'foobar';
+})
+@echo(mafonction())
 ```
-			
-* __@inst__
-*Explication de la fonction*
+
+* __@class__  
+*Créé une class*
 ```LUA
-Exemple de code
+@class(maclass){
+	
+	public function get_var() {
+		echo 'ok';
+	}
+}
 ```
-			
-* __@obj__
-*Explication de la fonction*
+* __@inst__  
+*Instancier ma class du nom de __maclass__ dans une variable qui dans l'exemple si dessous sera __b__*
 ```LUA
-Exemple de code
+@inst(b){maclass()}
 ```
-			
-* __@class__
-*Explication de la fonction*
+
+* __@obj__  
+*Utilisation des fonctions de ma class prélablement instancier dans une variable si dessous __b__*
 ```LUA
-Exemple de code
+@obj(b->get_var())
 ```
+
 [Retour au Menu](./README.md#menu)
 
 ---
 ## do while
-* __@dowhile__
-*Explication de la fonction*
+* __@dowhile__  __@whiledo__ 
+*Cette Directive permet d'afficher le code HTML selon le context du DoWhile __Exclusivement avec du code HTML_ *
 ```LUA
-Exemple de code
+@dowhile
+	<html>code html zzz</html>
+@whiledo(a!='test')
 ```
-		
-* __@whiledo__
-*Explication de la fonction*
+
+* __@dow__  
+*Cette directive est un Dowhile qui fonctionne comme __@dowhile__ __@whiledo__ mais qui sera présentant différement. ainsi qu'elle est compatible avec du code PHP si on ajoute un __;TRUE__ comme dans l'exemple si dessous*
 ```LUA
-Exemple de code
-```
-		
-* __@dow__
-*Explication de la fonction*
-```LUA
-Exemple de code
+@dow(a!='test'){
+	<html>mon code html yyyyy@\RN</html>
+}
+ou
+@dow(a!='test';TRUE){
+	echo 'foobar';
+}
 ```
 [Retour au Menu](./README.md#menu)
 
 ---
 ## structures de code
-* __@if__
-*Explication de la fonction*
+* __@if__ __@elseif__ __@else__ __@endif__  
+*Ces directives sont là pour offire une stucture de code qui utilise __IF/ELSEIF/ELSE__ comme en __PHP__*
 ```LUA
-Exemple de code
+@if(a == 'test')
+ <foo>BAR</foo>
+@endif
+
+ou
+
+@if(a == 'test')
+<foo>BAR</foo>
+@else
+<bar>FOO</bar>
+@endif
+
+ou
+
+@if(a == 'test')
+<foo>BAR</foo>
+@elseif(a == 'toto')
+<foobar>rox</foobar>
+@else
+<bar>FOO</bar>
+@endif
 ```
-			
-* __@elseif__
-*Explication de la fonction*
+
+* __@for__ __@endfor__  
+*La boucle for est similaire à la boucle for en PHP (Note: notez qu'il faudra parcontre ne pas oublier les __$__ bien que l'on peut s'en passé dans certain cas avec C@t-code il n'y a pas encore de fonction suffisement avancé pour nous passer des __$__ mais cela reste un rare cas de figure avec __@foreach__ __@while__ et __@switch__ *
 ```LUA
-Exemple de code
+@for($a=0; $a < $b; $a++)
+<foo>BAR</foo>
+@endfor
 ```
-		
-* __@else__
-*Explication de la fonction*
+
+* __@foreach__ __@endforeach__  
+*Directive similaire au Foreach de PHP*
 ```LUA
-Exemple de code
+@set(tableau = [1,2,3,4])
+@foreach($tableau as $val)
+<foo>@{val}</foo>
+@endforeach
 ```
-			
-* __@endif__
-*Explication de la fonction*
+
+* __@while__  __@endwhile__
+*Directive similaire au While de PHP*
 ```LUA
-Exemple de code
+@while($a < 3)
+<foo>BAR</foo>
+@endwhile
 ```
-		
-* __@for__
-*Explication de la fonction*
+
+* __@switch__ __@case__ __@break__ __@continue__ __@default__ __@endswitch__  
+*Directive similaire au Switch de PHP*
 ```LUA
-Exemple de code
+@switch($a)
+@case(1)
+<foo>BAR</foo>
+@break
+@default
+<foo>BAR2</foo>
+@endswitch
 ```
-			
-* __@endfor__
-*Explication de la fonction*
+
+
+* __@goto__ __@label__  
+*Directive pour Aller à label*
 ```LUA
-Exemple de code
+@goto(a)
+<foo>BAR</foo>
+@label(a)
+<foo>BAR2</foo>
+
+retournera <foo>BAR2</foo>
 ```
-		
-* __@foreach__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-		
-* __@endforeach__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-	
-* __@while__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-		
-* __@endwhile__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-		
-* __@switch__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-		
-* __@case__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-			
-* __@break__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-		
-* __@continue__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-		
-* __@default__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-		
-* __@endswitch__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-	
-* __@goto__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-			
-* __@label__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
+
 [Retour au Menu](./README.md#menu)
 
 ---
 ## controle de code
-* __@initab__
-*Explication de la fonction*
+*Note: toute cette partie sont des connecteurs pour controller l'affichache de code HTML*
+* __@initab__  
+*Cette directive va initialisé un tableau qui contiandra des nom de variable qui permettrons d'afficher ou pas les portions de codes. (Note: n'oubliez pas d'initialisé le tableau en début de page mais s'il est déjà initialisé vous risquez de supprimer les valeurs)*
 ```LUA
-Exemple de code
+@initab
 ```
-		
-* __@say__
-*Explication de la fonction*
+
+* __@say__  
+*Cette directive ajoute au tableau le label de la portion de code. (Note: attention __'MaPortionDeCode'__ dans le tableau est initialisé à NULL et non à False pensé bien à faire un __@off('MaPortionDeCode')__*
 ```LUA
-Exemple de code
+@say('MaPortionDeCode')
 ```
-			
-* __@see__
-*Explication de la fonction*
+
+* __@see__ __@endsee__  
+*Cette directive permet d'afficher la Portion de Code si dans le tableau la clé __'MaPortionDeCode'__ est à true*
 ```LUA
-Exemple de code
+@see('MaPortionDeCode')
+	<html>mon code html</html>
+@endsee
 ```
-			
-* __@endsee__
-*Explication de la fonction*
+
+* __@is__ __@endis__  
+*Cette Directive similaire à __@see__ __@endsee__ permet quand à elle d'aller plus loin et de vérifier si la Clé du tableau est à une autre valeur. (Note: attention à bien ajouter les Crochés et les simple cotes sinon ça ne fonctionnera pas)*
 ```LUA
-Exemple de code
+@is(['MaPortionDeCode'] == 5 )
+	mon code html 2
+@endis
 ```
-		
-* __@is__
-*Explication de la fonction*
+
+* __@on__  
+*Cette Directive va passé dans le Tableau la clé __'MaPortionDeCode'__ à TRUE *
 ```LUA
-Exemple de code
+@on('MaPortionDeCode')
 ```
-			
-* __@endis__
-*Explication de la fonction*
+
+* __@off__  
+*Cette Directive va passé dans le Tableau la clé __'MaPortionDeCode'__ à FALSE *
 ```LUA
-Exemple de code
+@off('MaPortionDeCode')
 ```
-		
-* __@on__
-*Explication de la fonction*
+
+* __@init__ __@int__  
+*Directives qui vont définir dans le Tableau la clé __'MaPortionDeCode'__ à la valeur que l'on désire. Vous avez deux synthaxe pour définir à la valeur que vous désirez.(Note: attention avec __@init__ il n'est pas obligatoir d'ajouter des Crochets)*
 ```LUA
-Exemple de code
+@int(['MaPortionDeCode']=489)
+ou 
+@init('MaPortionDeCode'::489)
 ```
-			
-* __@off__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-			
-* __@init__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-			
-* __@int__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
+
 [Retour au Menu](./README.md#menu)
 
 ---
 ## fonctions diverses
-* __@timetest__
-*Explication de la fonction*
+* __@timetest__ __@endtimetest__  
+*Cette Directive permet de placer un testeur de temps d'execution. Vous devez placer __@timetest__ au début et __@endtimetest__ à la fin de la portion que vous voulez analyser*
 ```LUA
-Exemple de code
+@timetest
+....mon code 
+@endtimetest
 ```
-		
-* __@endtimetest__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-	
 
-* __@\RN__
-*Explication de la fonction*
+* __@\RN__  
+*Directive qui permet de placer un retour à la ligne comme sous windows __\r\n__ sous PHP il sera utilisé __PHP_EOL__ (Note: le retour à la ligne ne sera pas visible en HTML pour cela utilisé __<br/>__)*
 ```LUA
-Exemple de code
+<bar> Foo de mon texte @\RN seconde ligne </bar>
 ```
-			
-* __@\R__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-			
-* __@\N__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
-			
 
-* __@__
-*Explication de la fonction*
+* __@\R__  
+*Directive qui permet de placer un "\r" __CR (carriage return)__*
 ```LUA
-Exemple de code
+<bar> Foo de mon texte @\R mon autre texte </bar>
 ```
-				
+
+* __@\N__  
+*Directive qui permet de placer un "\n" __LF (Line Feed)__*
+```LUA
+<bar> Foo de mon texte @\N retour à la ligne </bar>
+```
+
+
+
