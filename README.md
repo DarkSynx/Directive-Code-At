@@ -1,10 +1,12 @@
 # C@t CODE at.
 <img src='logo_.png' /><br/>
 
-# Description des ETAPES
-## Pré-codage 
-## Fabrication
-## Execution
+## clique [importation](./README.md)
+## clique [execution et déclarations](./README.md#execution-et)
+## clique [do while](./README.md)
+## clique [structures de code](./README.md)
+## clique [controle de code](./README.md)
+## clique [fonctions diverse](./README.md)
 
 # importation et controle de code
 ## les importations 
