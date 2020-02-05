@@ -1,5 +1,6 @@
-# Cat
-Code At
+# C@t Code
+<img src='logo.png' /><br/>
+
 
 init.php is first page  
 
