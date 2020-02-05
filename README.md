@@ -1,12 +1,12 @@
 # C@t CODE at.
 <img src='logo_.png' /><br/>
 
-## clique [importation](./README.md)
+## clique [importation](./README.md#les-importations)
 ## clique [execution et déclarations](./README.md#execution-et)
-## clique [do while](./README.md)
-## clique [structures de code](./README.md)
-## clique [controle de code](./README.md)
-## clique [fonctions diverse](./README.md)
+## clique [do while](./README.md#do-while)
+## clique [structures de code](./README.md#structures-de-code)
+## clique [controle de code](./README.md#controle-de-code)
+## clique [fonctions diverse](./README.md#fonctions-diverses)
 
 # importation et controle de code
 ## les importations 
