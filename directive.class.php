@@ -16,13 +16,12 @@ class directive {
 	private function gen() {
 		$data = $this->_data;
 		$tags = [
-		
+
+			'@invoc'		=> [[$this,'bop'],[$nbf,&$data,$fnd, '__INVOCFILE__', '','(',')',FALSE,'','','#','']],
+			'@load'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'include(', ');']],
 			'@import'		=> [[$this,'bop'],[$nbf,&$data,$fnd, '__INVOCSEGMENT__', '','(',')',FALSE,'{','}','#','%']],
 			'@segment'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'<!--SEGMENT:', '','(',')','','']],
 			'@endsegment'	=> [[$this,'bsp'],[$nbf,&$data,$fnd,'-->','','']],
-			
-			'@invoc'		=> [[$this,'bop'],[$nbf,&$data,$fnd, '__INVOCFILE__', '','(',')',FALSE,'','','#','']],
-			'@load'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'include(', ');']],
 			
 			'@set'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'$']],
 			'@var'			=> [[$this,'bop'],[$nbf,&$data,$fnd,'$#','=%;','(',':',FALSE,':',')','#','%']],
@@ -170,14 +169,14 @@ class directive {
 										$endx = "\r\n<!-- END invoc file : $m1 -->\r\n";
 										}
 									if($deb == '__INVOCSEGMENT__') {
-										$debx = "\r\n<!-- start import:segment $m2 to file : $m1 -->\r\n" ;
+										
+										$debx = "\r\n<!-- start import:segment $m2 to file : $m1 -->\r\n";
 										$debf = file_get_contents(trim($m1,'\''));
-										$tds = strlen("@segment($m2)");
+										$tds  = strlen("@segment($m2)");
 										$ddms = stripos($debf,"@segment($m2)",0);
 										$fdms = stripos($debf,'@endsegment',$ddms+1);
-										$deb = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
-										unset($debf);
-										$fin = '';
+										$deb  = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
+										$fin  = ''; unset($debf);
 										$endx = "\r\n<!-- END import:segment $m2 to file : $m1 -->\r\n";
 										
 										//echo 'deb:', $deb, PHP_EOL;

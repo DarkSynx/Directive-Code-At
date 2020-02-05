@@ -1,9 +1,13 @@
+@timetest
 @segment(test)
 	<code> HTML qui sera segmenté </code>
 @endsegment
+@segment(test)
+	<code> HTML qui sera segmenté 2</code>
+@endsegment
 @import('page.cat'){test}
 @invoc(test.cat)
-@timetest
+
 @initab
 @class(maclass){
 	

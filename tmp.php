@@ -1,5 +1,9 @@
+<?php $microtime_start_test = microtime(true); ?>
 <!--SEGMENT:test
 	<code> HTML qui sera segmenté </code>
+-->
+<!--SEGMENT:test
+	<code> HTML qui sera segmenté 2</code>
 -->
 
 <!-- start import:segment test to file : 'page.cat' -->
@@ -13,7 +17,7 @@
 <cat>code cate html </cat>
 <!-- END invoc file : test.cat -->
 
-<?php $microtime_start_test = microtime(true); ?>
+
 <?php $tab=array(); ?>
 <?php class maclass {
 	
