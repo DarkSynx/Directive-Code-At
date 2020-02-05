@@ -1,5 +1,5 @@
 # C@t Code
-<img src='logo.png' /><br/>
+<img src='logo_.png' /><br/>
 
 
 init.php is first page  
