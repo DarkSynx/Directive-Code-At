@@ -3,7 +3,7 @@
 
 # MENU
 ## [Les importations](./README.md#les-importations)
-## [les executions et déclarations](./README.md#execution-et)
+## [les executions et déclarations](./README.md#execution-et-d%C3%A9clarations)
 ## [Les do while](./README.md#do-while)
 ## [Les structures de code](./README.md#structures-de-code)
 ## [Les controles de code](./README.md#controle-de-code)
