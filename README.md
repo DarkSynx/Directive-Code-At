@@ -284,7 +284,7 @@ ou
 ```
 
 * __@\RN__  
-*Directive qui permet de placer un retour à la ligne comme sous windows __\r\n__ sous PHP il sera utilisé __PHP_EOL__ (Note: le retour à la ligne ne sera pas visible en HTML pour cela utilisé __<br/>__)*
+*Directive qui permet de placer un retour à la ligne comme sous windows __\r\n__ sous PHP il sera utilisé __PHP_EOL__ (Note: le retour à la ligne ne sera pas visible en HTML pour cela utilisé __\<br\/\>__)*
 ```LUA
 <bar> Foo de mon texte @\RN seconde ligne </bar>
 ```
