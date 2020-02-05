@@ -11,34 +11,34 @@
 
 # importation et controle de code
 ## les importations 
-* __@invoc(MyFile.cat)__   
-*Permet d'importer physiquement tout le code du fichier qui sera écrit dans le fichier final aprés la fabrication*
+* __@invoc__   
+*Permet d'importer physiquement tout le code du fichier qui sera réécrit dans le fichier final aprés la fabrication. (notez qu'il ne faudra pas utilisé de cote ou de double cote dans la fonction)*
 ```LUA
-Exemple de
+@invoc(MyFile.cat)
 ```
 * __@load__
-*Explication de la fonction*
+*Permet de charger un fichier PHP en utilisant include de PHP*
 ```LUA
-Exemple de code
+@load('foobar.php')
 ```
 			
 * __@import__
-*Explication de la fonction*
+*Permet d'importer du code HTML d'un Fichier ___".cat"___ celui-ci balisé par @segment(nomdesegment) @endsegment. (notez que <nomdesegment> n'a pas de cote ou de double-cote alors que le nom du fichier oui*
 ```LUA
-Exemple de code
+@import('page.cat'){nomdesegment}
 ```
 		
 * __@segment__
-*Explication de la fonction*
+*Cette directive permet de créé des pages __".cat"__ pour importer des portions de code HTML. (Note: cette directive, quand elle est executé met le code HTML en __commentaire HTML___. Il est donc conseiller de ne pas mélanger les pages contenant __les Segments__ et les pages avec les autres directive pour ne pas surcharger vos pages. Note 2: il n'y as pas de cote ou double-cote à un nom de segment celui-ci doit étre unique ) *
 ```LUA
-Exemple de code
+@segment(nomdesegment)
+<html>
+<head></head>
+<body>TEST</body>
+</html>
+@endsegment
 ```
-		
-* __@endsegment__
-*Explication de la fonction*
-```LUA
-Exemple de code
-```
+
 [Retour au Menu](./README.md#menu)
 
 ---
