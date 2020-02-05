@@ -42,7 +42,7 @@
 [Retour au Menu](./README.md#menu)
 
 ---
-## execution et
+## execution et déclarations
 * __@set__ __@var__  
 *ces deux directives permettes d'initialisé des variables à vous de d'utilisé celle qui vous conviendra*
 ```LUA
