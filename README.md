@@ -1,6 +1,6 @@
 # C@t CODE at.
 <img src='logo_.png' /><br/>
-//d#menu
+
 # MENU
 ## [importation](./README.md#les-importations)
 ## [execution et déclarations](./README.md#execution-et)
@@ -39,7 +39,7 @@ Exemple de code
 ```LUA
 Exemple de code
 ```
-[Retour au Menu](./README.md#les-importations)
+[Retour au Menu](./README.md#menu)
 
 ---
 ## execution et
@@ -102,7 +102,7 @@ Exemple de code
 ```LUA
 Exemple de code
 ```
-[Retour au Menu](./README.md#les-importations)
+[Retour au Menu](./README.md#menu)
 
 ---
 ## do while
@@ -123,7 +123,7 @@ Exemple de code
 ```LUA
 Exemple de code
 ```
-[Retour au Menu](./README.md#les-importations)
+[Retour au Menu](./README.md#menu)
 
 ---
 ## structures de code
@@ -234,7 +234,7 @@ Exemple de code
 ```LUA
 Exemple de code
 ```
-[Retour au Menu](./README.md#les-importations)
+[Retour au Menu](./README.md#menu)
 
 ---
 ## controle de code
@@ -297,7 +297,7 @@ Exemple de code
 ```LUA
 Exemple de code
 ```
-[Retour au Menu](./README.md#les-importations)
+[Retour au Menu](./README.md#menu)
 
 ---
 ## fonctions diverses
