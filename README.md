@@ -46,14 +46,19 @@
 * __@set__ __@var__  
 *ces deux directives permettes d'initialisé des variables à vous de d'utilisé celle qui vous conviendra*
 ```LUA
-@set(a='test')
-@var(a::'test')
+@set($a='test')
+@var($a::'test')
 ```
 
 * __@exe__  
 *Cette directive permet d'executé du code PHP *
 ```LUA
 @exe( echo mafonction(); )
+@exe( 
+	$a='teste'; 
+	echo mafonction(); 
+	echo $a; 
+)
 ```
 
 * __@fct__  
@@ -70,28 +75,23 @@
 @use:mafonction()
 ```
 
-* __@print__  
-*Vous voulez afficher le résulta d'une variable*
-```LUA
-@set(a=3)
-@print(a)
-```
-
 * __@__  
 *Directive pour afficher des variables comme print mais sera plus simple d'utilisation. (Note: Il est possible que cette directive évolue si elle entre en conflic dans le futur donc utilisez __@print__) *
 ```LUA
-@set(a=30)
+@set($a=30)
 <html>code html @{a} </html>
 retourne <html>code html 30 </html>
 ```
 
 * __@echo__  
-*Affiche le retour d'une fonction*
+*Affiche le retour d'une fonction ou d'une variable*
 ```LUA
+@set($a='test')
 @fct( mafonction() { 
 	return 'foobar';
 })
 @echo(mafonction())
+@echo($a)
 ```
 
 * __@class__  
@@ -107,13 +107,13 @@ retourne <html>code html 30 </html>
 * __@inst__  
 *Instancier ma class du nom de __maclass__ dans une variable qui dans l'exemple si dessous sera __b__*
 ```LUA
-@inst(b){maclass()}
+@inst($b){maclass()}
 ```
 
 * __@obj__  
 *Utilisation des fonctions de ma class prélablement instancier dans une variable si dessous __b__*
 ```LUA
-@obj(b->get_var())
+@obj($b->get_var())
 ```
 
 [Retour au Menu](./README.md#menu)
@@ -125,17 +125,17 @@ retourne <html>code html 30 </html>
 ```LUA
 @dowhile
 	<html>code html zzz</html>
-@whiledo(a!='test')
+@whiledo($a!='test')
 ```
 
 * __@dow__  
 *Cette directive est un Dowhile qui fonctionne comme __@dowhile__ __@whiledo__ mais qui sera présentant différement. ainsi qu'elle est compatible avec du code PHP si on ajoute un __;TRUE__ comme dans l'exemple si dessous*
 ```LUA
-@dow(a!='test'){
+@dow($a!='test'){
 	<html>mon code html yyyyy@\RN</html>
 }
 ou
-@dow(a!='test';TRUE){
+@dow($a!='test';TRUE){
 	echo 'foobar';
 }
 ```
@@ -146,13 +146,13 @@ ou
 * __@if__ __@elseif__ __@else__ __@endif__  
 *Ces directives sont là pour offire une stucture de code qui utilise __IF/ELSEIF/ELSE__ comme en __PHP__*
 ```LUA
-@if(a == 'test')
+@if($a == 'test')
  <foo>BAR</foo>
 @endif
 
 ou
 
-@if(a == 'test')
+@if($a == 'test')
 <foo>BAR</foo>
 @else
 <bar>FOO</bar>
@@ -160,9 +160,9 @@ ou
 
 ou
 
-@if(a == 'test')
+@if($a == 'test')
 <foo>BAR</foo>
-@elseif(a == 'toto')
+@elseif($a == 'toto')
 <foobar>rox</foobar>
 @else
 <bar>FOO</bar>
@@ -170,7 +170,7 @@ ou
 ```
 
 * __@for__ __@endfor__  
-*La boucle for est similaire à la boucle for en PHP (Note: notez qu'il faudra parcontre ne pas oublier les __$__ bien que l'on peut s'en passé dans certain cas avec C@t-code il n'y a pas encore de fonction suffisement avancé pour nous passer des __$__ mais cela reste un rare cas de figure avec __@foreach__ __@while__ et __@switch__ *
+*La boucle for est similaire à la boucle for en PHP *
 ```LUA
 @for($a=0; $a < $b; $a++)
 <foo>BAR</foo>
@@ -180,7 +180,7 @@ ou
 * __@foreach__ __@endforeach__  
 *Directive similaire au Foreach de PHP*
 ```LUA
-@set(tableau = [1,2,3,4])
+@set($tableau = [1,2,3,4])
 @foreach($tableau as $val)
 <foo>@{val}</foo>
 @endforeach
