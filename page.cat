@@ -1,4 +1,9 @@
 
+@set($h=FALSE)
+@inc($h)
+@echo($h)
+
+TESTE DE VARIABALE @!{h}
 
 @define('OK', 'test DEFINE')
 @global($a;$b;$c)
@@ -9,7 +14,7 @@
 @import('segment.cat'){test2}
 @invoc(test.cat)
 
-@initab
+@tabload
 @class(maclass){
 	
 	public function get_var() {
@@ -32,17 +37,17 @@ phrase qui s'affiche
 	<html>code html zzz</html>
 @whiledo($a!='test')
 
-@say('content')
-@off('content')
-@int(['content']=false)
-@init('content'::true)
+@tabsay('content')
+@taboff('content')
+@tabini(['content']=false)
+@tabinit('content'::true)
 
-@see('content')
+@tabsee('content')
 	<html>code html 1@\RN <@{a}> @\RN</html>
-@endsee
-@is(['content222'] == false )
+@endtabsee
+@tabis(['content222'] == false )
 	mon code html 2
-@endis
+@endtabis
 @goto(a)
 @exe( 
 

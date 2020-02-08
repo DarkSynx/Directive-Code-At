@@ -4,16 +4,23 @@
 */
 class directive {
 	
-	Private $_final_page;
-	Private $_data;
+	private $_final_page;
+	private $_data;
 	
 	
 	// on récupére que par get_data mais on peu initialisé par le constructeur ou par set_data
 	public function __construct( $data=false ) { if($data){$this->set_data($data);} }	
 	public function set_data($data) { $this->_data = $data; $this->gen(); }	
 	public function get_data() { return $this->_final_page; }
+	public function get_directive() { 
+		$sortir = '';
+		foreach($this->gen(TRUE) as $key => $val) {
+			$sortir .= 	$key . PHP_EOL;
+		}
+		return $sortir;
+	}
 	
-	private function gen() {
+	private function gen($rerturn_tag=FALSE) {
 		$data = $this->_data;
 		$tags = [
 			// toujours au début
@@ -23,19 +30,46 @@ class directive {
 			[[$this,'bsp'],['@endsegment'	,$nbf,&$data,'-->','','']],
 			[[$this,'bof'],['@load'			,$nbf,&$data,'include(', ');']],
 
+
+			//Functions spécial
+			[[$this,'bop'],['@dataimport'	,$nbf,&$data,'# = file_get_contents(', '%);','(',')',FALSE,'{','}','#','%']],
 			[[$this,'bop'],['@replace'		,$nbf,&$data,'# = str_ireplace(', '%);','(',')',FALSE,'{','}','#','%']],
 			[[$this,'bof'],['@define'		,$nbf,&$data,'define(',');']],
-			[[$this,'bof'],['@global'		,$nbf,&$data,'global ',';']],
+			
+			
+			
+			
+			
+			[[$this,'bof'],['@_GLOBALS'		,$nbf,&$data,'echo $GLOBALS[','];']],
+			[[$this,'bof'],['@_SERVER'		,$nbf,&$data,'echo $_SERVER[','];']],
+			[[$this,'bof'],['@_POST'		,$nbf,&$data,'echo $_POST[','];']],
+			[[$this,'bof'],['@_GET'			,$nbf,&$data,'echo $_GET[','];']],
+			[[$this,'bof'],['@_ENV'			,$nbf,&$data,'echo $_ENV[','];']],
+			[[$this,'bof'],['@_COOKIE'		,$nbf,&$data,'echo $_COOKIE[','];']],
+			[[$this,'bof'],['@_SESSION'		,$nbf,&$data,'echo $_SESSION[','];']],
+			
+			[[$this,'bop'],['@#GLOBALS'		,$nbf,&$data,'# = $GLOBALS[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@#SERVER'		,$nbf,&$data,'# = $_SERVER[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@#POST'		,$nbf,&$data,'# = $_POST[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@#GET'			,$nbf,&$data,'# = $_GET[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@#ENV'			,$nbf,&$data,'# = $_ENV[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@#COOKIE'		,$nbf,&$data,'# = $_COOKIE[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@#SESSION'		,$nbf,&$data,'# = $_SESSION[', '%];','(',')',FALSE,'{','}','#','%']],
 
-			[[$this,'bof'],['@set'			,$nbf,&$data]],
-			[[$this,'bop'],['@var'			,$nbf,&$data,'#','=%;','(',':',FALSE,':',')','#','%']],
-			[[$this,'bof'],['@exe'			,$nbf,&$data]],
-			[[$this,'bop'],['@fct'			,$nbf,&$data,'function ']],
-			[[$this,'bop'],['@use'			,$nbf,&$data,'',');',':',')']],
-			[[$this,'bof'],['@echo'			,$nbf,&$data,'echo ',';']],
-			[[$this,'bop'],['@inst'			,$nbf,&$data,'# = new ', '%;','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bof'],['@obj'			,$nbf,&$data,'', ';']],
-			[[$this,'bop'],['@class'		,$nbf,&$data,'class # ', '{%}','(',')',FALSE,'{','}','#','%']],			
+			[[$this,'bof'],['@global'		,$nbf,&$data,'global ',';']],
+			
+			[[$this,'bof'],['@inc'			,$nbf,&$data,'','++;']],
+			[[$this,'bof'],['@dec'			,$nbf,&$data,'','--;']],
+
+			[[$this,'bof'],['@set'			,$nbf,&$data]], // initialisé des variables  
+			[[$this,'bop'],['@var'			,$nbf,&$data,'#','=%;','(',':',FALSE,':',')','#','%']], // initialisé des variables
+			[[$this,'bof'],['@exe'			,$nbf,&$data]], // ececuté plusieurs fonction php 
+			[[$this,'bop'],['@fct'			,$nbf,&$data,'function ']], // créé une function 
+			[[$this,'bop'],['@use'			,$nbf,&$data,'',');',':',')']], // utilisé une function 
+			[[$this,'bof'],['@echo'			,$nbf,&$data,'echo ',';']], // afficher une valeur
+			[[$this,'bop'],['@inst'			,$nbf,&$data,'# = new ', '%;','(',')',FALSE,'{','}','#','%']], // instancier l'objet
+			[[$this,'bof'],['@obj'			,$nbf,&$data,'', ';']], // utilisé un objet
+			[[$this,'bop'],['@class'		,$nbf,&$data,'class # ', '{%}','(',')',FALSE,'{','}','#','%']],	// créé des class		
 		
 			[[$this,'bsp'],['@dowhile'		,$nbf,&$data,"do{ echo <<<END\r\n",'<?php ','']],
 			[[$this,'bof'],['@whiledo'		,$nbf,&$data,"\r\nEND;\r\n}while(", ');','(',')','']],
@@ -60,16 +94,64 @@ class directive {
 			[[$this,'bof'],['@goto'			,$nbf,&$data,'goto ', ';']],
 			[[$this,'bof'],['@label'		,$nbf,&$data,'', ':']],
 
-			[[$this,'bsp'],['@initab'		,$nbf,&$data,'$tab=array();']],
-			[[$this,'bof'],['@say'			,$nbf,&$data,'$tab[', ']=null;']],	// initialise le nom de la portion de code
-			[[$this,'bof'],['@see'			,$nbf,&$data,'if($tab[', ']):']],	// affiche le code si l'initialisation est à TRUE
-			[[$this,'bsp'],['@endsee'		,$nbf,&$data,'endif;']],		
-			[[$this,'bof'],['@is'			,$nbf,&$data,'if($tab', '):']],		// affiche si on désire vérifier que l'initialisation à une autre valeur 
-			[[$this,'bsp'],['@endis'		,$nbf,&$data,'endif;']],
-			[[$this,'bof'],['@on'			,$nbf,&$data,'$tab[', ']=true;']],	// passe l'initialisation à TRUE
-			[[$this,'bof'],['@off'			,$nbf,&$data,'$tab[', ']=false;']], // passe l'initialisation à FALSE
-			[[$this,'bop'],['@init'			,$nbf,&$data,'$tab[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
-			[[$this,'bof'],['@int'			,$nbf,&$data,'$tab', ';']],			// passe l'initialisation à la valeur de l'on désire
+			////////////////////////////////////
+			//TAB
+			[[$this,'bsp'],['@tabload'		,$nbf,&$data,'$_tabofdirective=array();']],
+			[[$this,'bof'],['@tabsay'		,$nbf,&$data,'$_tabofdirective[', ']=null;']],	// initialise le nom de la portion de code
+			[[$this,'bof'],['@tabsee'		,$nbf,&$data,'if($_tabofdirective[', ']):']],	// affiche le code si l'initialisation est à TRUE
+			[[$this,'bsp'],['@endtabsee'	,$nbf,&$data,'endif;']],		
+			[[$this,'bof'],['@tabis'		,$nbf,&$data,'if($_tabofdirective', '):']],		// affiche si on désire vérifier que l'initialisation à une autre valeur 
+			[[$this,'bsp'],['@endtabis'		,$nbf,&$data,'endif;']],
+			[[$this,'bof'],['@tabon'		,$nbf,&$data,'$_tabofdirective[', ']=true;']],	// passe l'initialisation à TRUE
+			[[$this,'bof'],['@taboff'		,$nbf,&$data,'$_tabofdirective[', ']=false;']], // passe l'initialisation à FALSE
+			[[$this,'bop'],['@tabinit'		,$nbf,&$data,'$_tabofdirective[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
+			[[$this,'bof'],['@tabini'		,$nbf,&$data,'$_tabofdirective', ';']],			// passe l'initialisation à la valeur de l'on désire
+			//VAR
+			[[$this,'bsp'],['@varload'		,$nbf,&$data,'$_varofdirective=array();']],
+			[[$this,'bof'],['@varsay'		,$nbf,&$data,'$_varofdirective[', ']=null;']],	// initialise le nom de la portion de code
+			[[$this,'bof'],['@varsee'		,$nbf,&$data,'if($_varofdirective[', ']):']],	// affiche le code si l'initialisation est à TRUE
+			[[$this,'bsp'],['@endvarsee'	,$nbf,&$data,'endif;']],		
+			[[$this,'bof'],['@varis'		,$nbf,&$data,'if($_varofdirective', '):']],		// affiche si on désire vérifier que l'initialisation à une autre valeur 
+			[[$this,'bsp'],['@endvaris'		,$nbf,&$data,'endif;']],
+			[[$this,'bof'],['@varon'		,$nbf,&$data,'$_varofdirective[', ']=true;']],	// passe l'initialisation à TRUE
+			[[$this,'bof'],['@varoff'		,$nbf,&$data,'$_varofdirective[', ']=false;']], // passe l'initialisation à FALSE
+			[[$this,'bop'],['@varinit'		,$nbf,&$data,'$_varofdirective[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
+			[[$this,'bof'],['@varini'		,$nbf,&$data,'$_varofdirective', ';']],			// passe l'initialisation à la valeur de l'on désire
+			//USERS
+			[[$this,'bsp'],['@userload'		,$nbf,&$data,'$_userofdirective=array();']],
+			[[$this,'bof'],['@usersay'		,$nbf,&$data,'$_userofdirective[', ']=null;']],	// initialise le nom de la portion de code
+			[[$this,'bof'],['@usersee'		,$nbf,&$data,'if($_userofdirective[', ']):']],	// affiche le code si l'initialisation est à TRUE
+			[[$this,'bsp'],['@endusersee'	,$nbf,&$data,'endif;']],		
+			[[$this,'bof'],['@useris'		,$nbf,&$data,'if($_userofdirective', '):']],	// affiche si on désire vérifier que l'initialisation à une autre valeur 
+			[[$this,'bsp'],['@enduseris'	,$nbf,&$data,'endif;']],
+			[[$this,'bof'],['@useron'		,$nbf,&$data,'$_userofdirective[', ']=true;']],	 // passe l'initialisation à TRUE
+			[[$this,'bof'],['@useroff'		,$nbf,&$data,'$_userofdirective[', ']=false;']], // passe l'initialisation à FALSE
+			[[$this,'bop'],['@userinit'		,$nbf,&$data,'$_userofdirective[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
+			[[$this,'bof'],['@userini'		,$nbf,&$data,'$_userofdirective', ';']],			// passe l'initialisation à la valeur de l'on désire
+			//SESSION
+			[[$this,'bsp'],['@sessionload'		,$nbf,&$data,'$_sessionofdirective=array();']],
+			[[$this,'bof'],['@sessionsay'		,$nbf,&$data,'$_sessionofdirective[', ']=null;']],	// initialise le nom de la portion de code
+			[[$this,'bof'],['@sessionsee'		,$nbf,&$data,'if($_sessionofdirective[', ']):']],	// affiche le code si l'initialisation est à TRUE
+			[[$this,'bsp'],['@endsessionsee'	,$nbf,&$data,'endif;']],		
+			[[$this,'bof'],['@sessionis'		,$nbf,&$data,'if($_sessionofdirective', '):']],	// affiche si on désire vérifier que l'initialisation à une autre valeur 
+			[[$this,'bsp'],['@endsessionis'		,$nbf,&$data,'endif;']],
+			[[$this,'bof'],['@sessionon'		,$nbf,&$data,'$_sessionofdirective[', ']=true;']],	 // passe l'initialisation à TRUE
+			[[$this,'bof'],['@sessionoff'		,$nbf,&$data,'$_sessionofdirective[', ']=false;']], // passe l'initialisation à FALSE
+			[[$this,'bop'],['@sessioninit'		,$nbf,&$data,'$_sessionofdirective[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
+			[[$this,'bof'],['@sessionini'		,$nbf,&$data,'$_sessionofdirective', ';']],			// passe l'initialisation à la valeur de l'on désire
+			//THEME
+			[[$this,'bsp'],['@themeload'		,$nbf,&$data,'$_themeofdirective=array();']],
+			[[$this,'bof'],['@themesay'			,$nbf,&$data,'$_themeofdirective[', ']=null;']],	// initialise le nom de la portion de code
+			[[$this,'bof'],['@themesee'			,$nbf,&$data,'if($_themeofdirective[', ']):']],	// affiche le code si l'initialisation est à TRUE
+			[[$this,'bsp'],['@endthemesee'		,$nbf,&$data,'endif;']],		
+			[[$this,'bof'],['@themeis'			,$nbf,&$data,'if($_themeofdirective', '):']],	// affiche si on désire vérifier que l'initialisation à une autre valeur 
+			[[$this,'bsp'],['@endthemeis'		,$nbf,&$data,'endif;']],
+			[[$this,'bof'],['@themeon'			,$nbf,&$data,'$_themeofdirective[', ']=true;']],	 // passe l'initialisation à TRUE
+			[[$this,'bof'],['@themeoff'			,$nbf,&$data,'$_themeofdirective[', ']=false;']], // passe l'initialisation à FALSE
+			[[$this,'bop'],['@themeinit'		,$nbf,&$data,'$_themeofdirective[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
+			[[$this,'bof'],['@themeini'			,$nbf,&$data,'$_themeofdirective', ';']],			// passe l'initialisation à la valeur de l'on désire
+
+			////////////////////////////////////
 
 			[[$this,'bsp'],['@timetest'		,$nbf,&$data,'$microtime_start_test = microtime(true);']],
 			[[$this,'bsp'],['@endtimetest'	,$nbf,&$data,'$microtime_end_test = microtime(true); echo round(($microtime_end_test - $microtime_start_test),4);']],
@@ -82,8 +164,10 @@ class directive {
 			[[$this,'bsp'],['@\SP'			,$nbf,&$data,'echo chr(32);']],
 			[[$this,'bof'],['@chr'			,$nbf,&$data,'chr(',');']],
 			[[$this,'bof'],['@ord'			,$nbf,&$data,'ord(',');']],
-       
+			
+			[[$this,'bof'],['@_'			,$nbf,&$data,'echo ',';']],
 			[[$this,'bof'],['@'				,$nbf,&$data,'echo $',';','{','}']], // affiche son resulta
+			//[[$this,'bop'],['@!'			,$nbf,&$data,'echo ($# ? $#:null)', ';','{','}',FALSE,'','','#']], // affiche son resulta que s'il est true
 		];
 		
 		
@@ -91,7 +175,7 @@ class directive {
 		// préparation création d'un tableau de revers
 		$tabloc = array();	
 		foreach($tags as $k => $fnc) { $tabloc[$fnc[1][0]] = $k; }
-		
+		if($rerturn_tag) { return $tabloc; }
 		
 		// on charge les invoc et le import avant tout
 		$rx = ['@invoc' => 0,'@import' => 0, '@load' => 0];
@@ -167,7 +251,6 @@ class directive {
 
 								}
 
-								// $find,$deb='', $fin='',$bdeb1='(',$bfin1=')',$exp=';',$bdeb2='{',$bfin2='}',$masque1=false,$masque2=false,$debx=',$endx=''
 								$mex = trim( substr($data,($bs + 1),( $c - ($bs + 1)) ) );
 								
 								if( (stripos($mex,$exp,0) !== false and  $exp != '') ) {
@@ -259,3 +342,5 @@ class directive {
 	}
 	
 }
+
+?>

@@ -1,4 +1,9 @@
 
+<?php $h=FALSE ?>
+<?php $h++; ?>
+<?php echo $h; ?>
+
+TESTE DE VARIABALE <?php echo ($h ? $h:null); ?>
 
 <?php define('OK', 'test DEFINE'); ?>
 <?php global $a;$b;$c; ?>
@@ -37,7 +42,7 @@
 <!-- END invoc file : test.cat -->
 
 
-<?php $tab=array(); ?>
+<?php $_tabofdirective=array(); ?>
 <?php class maclass {
 	
 	public function get_var() {
@@ -66,15 +71,15 @@ END;
 END;
 }while($a!='test'); ?>
 
-<?php $tab['content']=null; ?>
-<?php $tab['content']=false; ?>
-<?php $tab['content']=false; ?>
-<?php $tab['content']=true; ?>
+<?php $_tabofdirective['content']=null; ?>
+<?php $_tabofdirective['content']=false; ?>
+<?php $_tabofdirective['content']=false; ?>
+<?php $_tabofdirective['content']=true; ?>
 
-<?php if($tab['content']): ?>
-	<html>code html 1<?php echo PHP_EOL; ?> <<?php echo $a; ?>> <?php echo PHP_EOL; ?></html>
+<?php if($_tabofdirective['content']): ?>
+	<html>code html 1<?php echo PHP_EOL; ?> <@{a}> <?php echo PHP_EOL; ?></html>
 <?php endif; ?>
-<?php if($tab['content222'] == false): ?>
+<?php if($_tabofdirective['content222'] == false): ?>
 	mon code html 2
 <?php endif; ?>
 <?php goto a; ?>

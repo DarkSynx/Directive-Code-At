@@ -9,7 +9,7 @@ include "directive.class.php";
 $a = new directive($text);
 //echo $a->get_data();
 
-
+//echo $a->get_directive();
 $string = compilator($a->get_data());
 
 echo '/////////////////',PHP_EOL;
