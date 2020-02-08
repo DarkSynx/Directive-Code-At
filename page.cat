@@ -1,11 +1,12 @@
+
+
+@define('OK', 'test DEFINE')
+@global($a;$b;$c)
+
 @timetest
-@segment(test)
-	<code> HTML qui sera segmenté </code>
-@endsegment
-@segment(test)
-	<code> HTML qui sera segmenté 2</code>
-@endsegment
-@import('page.cat'){test}
+
+@import('segment.cat'){test1}
+@import('segment.cat'){test2}
 @invoc(test.cat)
 
 @initab
@@ -15,19 +16,21 @@
 		echo 'ok';
 	}
 }
-@inst(b){maclass()}
-@obj(b->get_var())
+@inst($b){maclass()}
+@obj($b->get_var())
 
 phrase qui s'affiche
-@set(a='test')
-@var(a::'test')
-
-@dow(a!='test'){
+@set($a='test')
+@var($a::'test')
+@dow($a!='test';PHP){
+	echo $a;
+}
+@dow($a!='test'){
 	<html>mon code html yyyyy@\RN</html>
 }
 @dowhile
 	<html>code html zzz</html>
-@whiledo(a!='test')
+@whiledo($a!='test')
 
 @say('content')
 @off('content')
@@ -41,19 +44,25 @@ phrase qui s'affiche
 	mon code html 2
 @endis
 @goto(a)
-@exe( echo mafonction() )
+@exe( 
+
+	$b='testeRR'; 
+	echo mafonction(); 
+	echo $b;
+
+ )
 @fct( mafonction() { 
 	return 'test retrun';
 })
 @label(a)
 @use:mafonction()
 @echo(mafonction())
-@print(a)
+@echo($a)
 
 
-@if(a == 'test')
+@if($a == 'test')
 ok c'est cool 111111
-@elseif(a == 'toto')
+@elseif($a == 'toto')
 @else
 non c'est pas cool 111111
 @endif

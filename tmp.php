@@ -1,16 +1,35 @@
+
+
+<?php define('OK', 'test DEFINE'); ?>
+<?php global $a;$b;$c; ?>
+
 <?php $microtime_start_test = microtime(true); ?>
-<!--SEGMENT:test
+
+
+<!-- start import:segment test1 to file : 'segment.cat' -->
+
 	<code> HTML qui sera segmenté </code>
--->
-<!--SEGMENT:test
+
+<?php echo OK; ?>
+<?php $g = str_ireplace('E','K',OK); ?>
+<?php echo $g; ?>	
+	
+
+<!-- END import:segment test1 to file : 'segment.cat' -->
+
+
+<!-- start import:segment test2 to file : 'segment.cat' -->
+
 	<code> HTML qui sera segmenté 2</code>
--->
+	
+<!-- start import:segment test3 to file : 'segment.cat' -->
 
-<!-- start import:segment test to file : 'page.cat' -->
+	<code> HTML qui sera segmenté 3</code>
 
-	<code> HTML qui sera segmenté </code>
+<!-- END import:segment test3 to file : 'segment.cat' -->
 
-<!-- END import:segment test to file : 'page.cat' -->
+
+<!-- END import:segment test2 to file : 'segment.cat' -->
 
 
 <!-- start invoc file : test.cat -->
@@ -31,7 +50,9 @@
 phrase qui s'affiche
 <?php $a='test' ?>
 <?php $a='test'; ?>
-
+<?php do{
+	echo $a;
+}while($a!='test'); ?>
 <?php do{echo <<<END
 
 	<html>mon code html yyyyy<?php echo PHP_EOL; ?></html>
@@ -57,7 +78,9 @@ END;
 	mon code html 2
 <?php endif; ?>
 <?php goto a; ?>
-<?php echo mafonction() ?>
+<?php $b='testeRR'; 
+	echo mafonction(); 
+	echo $b; ?>
 <?php function mafonction() { 
 	return 'test retrun';
 } ?>
