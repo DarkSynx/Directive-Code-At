@@ -129,13 +129,13 @@ retourne <html>code html 30 </html>
 ```
 
 * __@dow__  
-*Cette directive est un Dowhile qui fonctionne comme __@dowhile__ __@whiledo__ mais qui sera présentant différement. ainsi qu'elle est compatible avec du code PHP si on ajoute un __;TRUE__ comme dans l'exemple si dessous*
+*Cette directive est un Dowhile qui fonctionne comme __@dowhile__ __@whiledo__ mais qui sera présentant différement. ainsi qu'elle est compatible avec du code PHP si on ajoute un __;PHP__ comme dans l'exemple si dessous*
 ```LUA
 @dow($a!='test'){
 	<html>mon code html yyyyy@\RN</html>
 }
 ou
-@dow($a!='test';TRUE){
+@dow($a!='test';PHP){
 	echo 'foobar';
 }
 ```
