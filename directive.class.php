@@ -17,107 +17,111 @@ class directive {
 		$data = $this->_data;
 		$tags = [
 			// toujours au début
-			'@invoc'		=> [[$this,'bop'],[$nbf,&$data,$fnd, '__INVOCFILE__', '','(',')',FALSE,'','','#','']],
-			'@import'		=> [[$this,'bop'],[$nbf,&$data,$fnd, '__INVOCSEGMENT__', '','(',')',FALSE,'{','}','#','%']],
-			'@segment'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'<!--SEGMENT:', '','(',')','','']],
-			'@endsegment'	=> [[$this,'bsp'],[$nbf,&$data,$fnd,'-->','','']],
-			'@load'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'include(', ');']],
-			
-			'@replace'		=> [[$this,'bop'],[$nbf,&$data,$fnd,'# = str_ireplace(', '%);','(',')',FALSE,'{','}','#','%']],
-			'@define'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'define(',');']],
-			'@global'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'global ',';']],
-			
-			'@set'			=> [[$this,'bof'],[$nbf,&$data,$fnd]],
-			'@var'			=> [[$this,'bop'],[$nbf,&$data,$fnd,'#','=%;','(',':',FALSE,':',')','#','%']],
-			'@exe'			=> [[$this,'bof'],[$nbf,&$data,$fnd]],
-			'@fct'			=> [[$this,'bop'],[$nbf,&$data,$fnd,'function ']],
-			'@use'			=> [[$this,'bop'],[$nbf,&$data,$fnd,'',');',':',')']],
-			'@echo'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'echo ',';']],
-			'@inst'			=> [[$this,'bop'],[$nbf,&$data,$fnd,'# = new ', '%;','(',')',FALSE,'{','}','#','%']],
-			'@obj'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'', ';']],
-			'@class'		=> [[$this,'bop'],[$nbf,&$data,$fnd,'class # ', '{%}','(',')',FALSE,'{','}','#','%']],			
-			// partie dowhile ici c'est une gestion différente des dowhiles		
-			'@dowhile'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,"do{ echo <<<END\r\n",'<?php ','']],
-			'@whiledo'		=> [[$this,'bof'],[$nbf,&$data,$fnd,"\r\nEND;\r\n}while(", ');','(',')','']],
-			'@dow'			=> [[$this,'bop'],[$nbf,&$data,$fnd,'do{', '%}while(#);','(',')',';','{','}','#','%']],	
-			//
-			'@if'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'if(', '):']],
-			'@elseif'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'elseif(', '):']],
-			'@else'			=> [[$this,'bsp'],[$nbf,&$data,$fnd,'else:']],
-			'@endif'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'endif;']],
-			'@for'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'for(','):']],
-			'@endfor'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'endfor;']],
-			'@foreach'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'foreach(','):']],
-			'@endforeach'	=> [[$this,'bsp'],[$nbf,&$data,$fnd,'endforeach;']],
-			'@while'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'while(','):']],
-			'@endwhile'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'endwhile;']],
-			'@switch'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'switch (','):']],
-			'@case'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'case (','):']],
-			'@break'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'break;']],
-			'@continue'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'continue;']],
-			'@default'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'default:']],
-			'@endswitch'	=> [[$this,'bsp'],[$nbf,&$data,$fnd,'endswitch;']],
-			'@goto'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'goto ', ';']],
-			'@label'		=> [[$this,'bof'],[$nbf,&$data,$fnd,'', ':']],
-			//
-			'@initab'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'$tab=array();']],
-			'@say'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'$tab[', ']=null;']],	// initialise le nom de la portion de code
-			'@see'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'if($tab[', ']):']],	// affiche le code si l'initialisation est à TRUE
-			'@endsee'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'endif;']],		
-			'@is'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'if($tab', '):']],		// affiche si on désire vérifier que l'initialisation à une autre valeur 
-			'@endis'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'endif;']],
-			'@on'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'$tab[', ']=true;']],	// passe l'initialisation à TRUE
-			'@off'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'$tab[', ']=false;']], // passe l'initialisation à FALSE
-			'@init'			=> [[$this,'bop'],[$nbf,&$data,$fnd,'$tab[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
-			'@int'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'$tab', ';']],			// passe l'initialisation à la valeur de l'on désire
-			//
-			'@timetest'		=> [[$this,'bsp'],[$nbf,&$data,$fnd,'$microtime_start_test = microtime(true);']],
-			'@endtimetest'	=> [[$this,'bsp'],[$nbf,&$data,$fnd,'$microtime_end_test = microtime(true); echo round(($microtime_end_test - $microtime_start_test),4);']],
-			//
-			'@\RN'			=> [[$this,'bsp'],[$nbf,&$data,$fnd,'echo PHP_EOL;']],
-			'@\R'			=> [[$this,'bsp'],[$nbf,&$data,$fnd,'echo "\r";']],
-			'@\N'			=> [[$this,'bsp'],[$nbf,&$data,$fnd,'echo "\n";']],
-			'@\T'			=> [[$this,'bsp'],[$nbf,&$data,$fnd,'echo "\t";']],
-			'@\Z'			=> [[$this,'bsp'],[$nbf,&$data,$fnd,'echo "\0";']],
-			'@\SP'			=> [[$this,'bsp'],[$nbf,&$data,$fnd,'echo chr(32);']],
-			'@chr'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'chr(',');']],
-			'@ord'			=> [[$this,'bof'],[$nbf,&$data,$fnd,'ord(',');']],
-			//
-			'@'				=> [[$this,'bof'],[$nbf,&$data,$fnd,'echo $',';','{','}']], // affiche son resulta
-			
+			[[$this,'bop'],['@invoc'		,$nbf,&$data,'__INVOCFILE__', '','(',')',FALSE,'','','#','']],
+			[[$this,'bop'],['@import'		,$nbf,&$data,'__INVOCSEGMENT__', '','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bof'],['@segment'		,$nbf,&$data,'<!--SEGMENT:', '','(',')','','']],
+			[[$this,'bsp'],['@endsegment'	,$nbf,&$data,'-->','','']],
+			[[$this,'bof'],['@load'			,$nbf,&$data,'include(', ');']],
+
+			[[$this,'bop'],['@replace'		,$nbf,&$data,'# = str_ireplace(', '%);','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bof'],['@define'		,$nbf,&$data,'define(',');']],
+			[[$this,'bof'],['@global'		,$nbf,&$data,'global ',';']],
+
+			[[$this,'bof'],['@set'			,$nbf,&$data]],
+			[[$this,'bop'],['@var'			,$nbf,&$data,'#','=%;','(',':',FALSE,':',')','#','%']],
+			[[$this,'bof'],['@exe'			,$nbf,&$data]],
+			[[$this,'bop'],['@fct'			,$nbf,&$data,'function ']],
+			[[$this,'bop'],['@use'			,$nbf,&$data,'',');',':',')']],
+			[[$this,'bof'],['@echo'			,$nbf,&$data,'echo ',';']],
+			[[$this,'bop'],['@inst'			,$nbf,&$data,'# = new ', '%;','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bof'],['@obj'			,$nbf,&$data,'', ';']],
+			[[$this,'bop'],['@class'		,$nbf,&$data,'class # ', '{%}','(',')',FALSE,'{','}','#','%']],			
+		
+			[[$this,'bsp'],['@dowhile'		,$nbf,&$data,"do{ echo <<<END\r\n",'<?php ','']],
+			[[$this,'bof'],['@whiledo'		,$nbf,&$data,"\r\nEND;\r\n}while(", ');','(',')','']],
+			[[$this,'bop'],['@dow'			,$nbf,&$data,'do{', '%}while(#);','(',')',';','{','}','#','%']],	
+
+			[[$this,'bof'],['@if'			,$nbf,&$data,'if(', '):']],
+			[[$this,'bof'],['@elseif'		,$nbf,&$data,'elseif(', '):']],
+			[[$this,'bsp'],['@else'			,$nbf,&$data,'else:']],
+			[[$this,'bsp'],['@endif'		,$nbf,&$data,'endif;']],
+			[[$this,'bof'],['@for'			,$nbf,&$data,'for(','):']],
+			[[$this,'bsp'],['@endfor'		,$nbf,&$data,'endfor;']],
+			[[$this,'bof'],['@foreach'		,$nbf,&$data,'foreach(','):']],
+			[[$this,'bsp'],['@endforeach'	,$nbf,&$data,'endforeach;']],
+			[[$this,'bof'],['@while'		,$nbf,&$data,'while(','):']],
+			[[$this,'bsp'],['@endwhile'		,$nbf,&$data,'endwhile;']],
+			[[$this,'bof'],['@switch'		,$nbf,&$data,'switch (','):']],
+			[[$this,'bof'],['@case'			,$nbf,&$data,'case (','):']],
+			[[$this,'bsp'],['@break'		,$nbf,&$data,'break;']],
+			[[$this,'bsp'],['@continue'		,$nbf,&$data,'continue;']],
+			[[$this,'bsp'],['@default'		,$nbf,&$data,'default:']],
+			[[$this,'bsp'],['@endswitch'	,$nbf,&$data,'endswitch;']],
+			[[$this,'bof'],['@goto'			,$nbf,&$data,'goto ', ';']],
+			[[$this,'bof'],['@label'		,$nbf,&$data,'', ':']],
+
+			[[$this,'bsp'],['@initab'		,$nbf,&$data,'$tab=array();']],
+			[[$this,'bof'],['@say'			,$nbf,&$data,'$tab[', ']=null;']],	// initialise le nom de la portion de code
+			[[$this,'bof'],['@see'			,$nbf,&$data,'if($tab[', ']):']],	// affiche le code si l'initialisation est à TRUE
+			[[$this,'bsp'],['@endsee'		,$nbf,&$data,'endif;']],		
+			[[$this,'bof'],['@is'			,$nbf,&$data,'if($tab', '):']],		// affiche si on désire vérifier que l'initialisation à une autre valeur 
+			[[$this,'bsp'],['@endis'		,$nbf,&$data,'endif;']],
+			[[$this,'bof'],['@on'			,$nbf,&$data,'$tab[', ']=true;']],	// passe l'initialisation à TRUE
+			[[$this,'bof'],['@off'			,$nbf,&$data,'$tab[', ']=false;']], // passe l'initialisation à FALSE
+			[[$this,'bop'],['@init'			,$nbf,&$data,'$tab[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
+			[[$this,'bof'],['@int'			,$nbf,&$data,'$tab', ';']],			// passe l'initialisation à la valeur de l'on désire
+
+			[[$this,'bsp'],['@timetest'		,$nbf,&$data,'$microtime_start_test = microtime(true);']],
+			[[$this,'bsp'],['@endtimetest'	,$nbf,&$data,'$microtime_end_test = microtime(true); echo round(($microtime_end_test - $microtime_start_test),4);']],
+   
+			[[$this,'bsp'],['@\RN'			,$nbf,&$data,'echo PHP_EOL;']],
+			[[$this,'bsp'],['@\R'			,$nbf,&$data,'echo "\r";']],
+			[[$this,'bsp'],['@\N'			,$nbf,&$data,'echo "\n";']],
+			[[$this,'bsp'],['@\T'			,$nbf,&$data,'echo "\t";']],
+			[[$this,'bsp'],['@\Z'			,$nbf,&$data,'echo "\0";']],
+			[[$this,'bsp'],['@\SP'			,$nbf,&$data,'echo chr(32);']],
+			[[$this,'bof'],['@chr'			,$nbf,&$data,'chr(',');']],
+			[[$this,'bof'],['@ord'			,$nbf,&$data,'ord(',');']],
+       
+			[[$this,'bof'],['@'				,$nbf,&$data,'echo $',';','{','}']], // affiche son resulta
 		];
 		
 		
-		$time_start = microtime(true);
-
+		
+		// préparation création d'un tableau de revers
+		$tabloc = array();	
+		foreach($tags as $k => $fnc) { $tabloc[$fnc[1][0]] = $k; }
+		
+		
 		// on charge les invoc et le import avant tout
 		$rx = ['@invoc' => 0,'@import' => 0, '@load' => 0];
-
 		foreach($rx as $fnd => &$nbf) { $nbf = substr_count($data, $fnd); }
-		while( array_sum($rx) > 0 ){		
+		while( array_sum($rx) > 0 ){ 	
 			foreach($rx as $fnd => $nbf) {
 				if($nbf > 0) {
-					$tags[$fnd][1][0] = $nbf;
-					$tags[$fnd][1][2] = $fnd;
-					call_user_func_array($tags[$fnd][0],$tags[$fnd][1]);
+					$fndx = $tabloc[$fnd];
+					$tags[$fndx][1][1] = $nbf;
+					call_user_func_array($tags[$fndx][0],$tags[$fndx][1]);
 				}
 			}
 			foreach($rx as $fnd => &$nbf) { $nbf = substr_count($data, $fnd); }	
 		}
-		
-		// on supprime les functions non présente
-		foreach($tags as $fnd => $fnc) {
-			if(($tags[$fnd][1][0] = substr_count($data, $fnd)) > 0) {
-				$tags[$fnd][1][2] = $fnd;
-			} else { unset($tags[$fnd]); }
+	
+		// on supprime les functions non présente dans data
+		// et on prépare les variables du talbleau
+		foreach($tags as $k => &$fnc) {
+			if(($fnc[1][1] = substr_count($data, $fnc[1][0])) == 0) {
+				unset($tags[$k]);
+			} 
 		}
+		
+		$time_start = microtime(true);
 		
 		// on demarre la fabrication
 		foreach($tags as &$fnc) {
 			call_user_func_array($fnc[0],$fnc[1]);
 		}
 
-		
 		$time_end = microtime(true);
 		$time = $time_end - $time_start;
 
@@ -127,11 +131,11 @@ class directive {
 		
 	}
 	
-	private function bsp($fdb,&$data,$fnd,$replace,$debx='<?php ',$endx=' ?>'){
-		$data = str_ireplace($fnd,"$debx$replace$endx", $data);
+	private function bsp($find,$fdb,&$data,$replace,$debx='<?php ',$endx=' ?>'){
+		$data = str_ireplace($find,"$debx$replace$endx", $data);
 	}
 	
-	private function bop($fdb,&$data,$find,$deb='', $fin='',$bdeb1='(',$bfin1=')',$exp=';',$bdeb2='{',$bfin2='}',$masque1=false,$masque2=false,$debx='<?php ',$endx=' ?>',$b=0){
+	private function bop($find,$fdb,&$data,$deb='', $fin='',$bdeb1='(',$bfin1=')',$exp=';',$bdeb2='{',$bfin2='}',$masque1=false,$masque2=false,$debx='<?php ',$endx=' ?>',$b=0){
 
 			$s = strlen($find);
 			while(--$fdb >= 0) {
@@ -221,7 +225,7 @@ class directive {
 	
 	}
 	
-	private function bof($fdb,&$data,$find,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0){
+	private function bof($find,$fdb,&$data,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0){
 
 			
 			$s = strlen($find);
