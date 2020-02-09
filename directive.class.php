@@ -30,38 +30,19 @@ class directive {
 			[[$this,'bsp'],['@endsegment'	,$nbf,&$data,'-->','','']],
 			[[$this,'bof'],['@load'			,$nbf,&$data,'include(', ');']],
 
-
 			//Functions spécial
-			[[$this,'bop'],['@dataimport'	,$nbf,&$data,'# = file_get_contents(', '%);','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@importo'		,$nbf,&$data,'# = file_get_contents(', '%);','(',')',FALSE,'{','}','#','%']],
 			[[$this,'bop'],['@replace'		,$nbf,&$data,'# = str_ireplace(', '%);','(',')',FALSE,'{','}','#','%']],
 			[[$this,'bof'],['@define'		,$nbf,&$data,'define(',');']],
 			
-			
-			
-			
-			
-			[[$this,'bof'],['@_GLOBALS'		,$nbf,&$data,'echo $GLOBALS[','];']],
-			[[$this,'bof'],['@_SERVER'		,$nbf,&$data,'echo $_SERVER[','];']],
-			[[$this,'bof'],['@_POST'		,$nbf,&$data,'echo $_POST[','];']],
-			[[$this,'bof'],['@_GET'			,$nbf,&$data,'echo $_GET[','];']],
-			[[$this,'bof'],['@_ENV'			,$nbf,&$data,'echo $_ENV[','];']],
-			[[$this,'bof'],['@_COOKIE'		,$nbf,&$data,'echo $_COOKIE[','];']],
-			[[$this,'bof'],['@_SESSION'		,$nbf,&$data,'echo $_SESSION[','];']],
-			
-			[[$this,'bop'],['@#GLOBALS'		,$nbf,&$data,'# = $GLOBALS[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@#SERVER'		,$nbf,&$data,'# = $_SERVER[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@#POST'		,$nbf,&$data,'# = $_POST[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@#GET'			,$nbf,&$data,'# = $_GET[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@#ENV'			,$nbf,&$data,'# = $_ENV[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@#COOKIE'		,$nbf,&$data,'# = $_COOKIE[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@#SESSION'		,$nbf,&$data,'# = $_SESSION[', '%];','(',')',FALSE,'{','}','#','%']],
 
 			[[$this,'bof'],['@global'		,$nbf,&$data,'global ',';']],
 			
 			[[$this,'bof'],['@inc'			,$nbf,&$data,'','++;']],
 			[[$this,'bof'],['@dec'			,$nbf,&$data,'','--;']],
 
-			[[$this,'bof'],['@set'			,$nbf,&$data]], // initialisé des variables  
+			[[$this,'bof'],['@set'			,$nbf,&$data]], // initialisé des variables
+			[[$this,'bof'],['@unset'		,$nbf,&$data,'unset(',');']], // initialisé des variables
 			[[$this,'bop'],['@var'			,$nbf,&$data,'#','=%;','(',':',FALSE,':',')','#','%']], // initialisé des variables
 			[[$this,'bof'],['@exe'			,$nbf,&$data]], // ececuté plusieurs fonction php 
 			[[$this,'bop'],['@fct'			,$nbf,&$data,'function ']], // créé une function 
@@ -74,6 +55,7 @@ class directive {
 			[[$this,'bsp'],['@dowhile'		,$nbf,&$data,"do{ echo <<<END\r\n",'<?php ','']],
 			[[$this,'bof'],['@whiledo'		,$nbf,&$data,"\r\nEND;\r\n}while(", ');','(',')','']],
 			[[$this,'bop'],['@dow'			,$nbf,&$data,'do{', '%}while(#);','(',')',';','{','}','#','%']],	
+
 
 			[[$this,'bof'],['@if'			,$nbf,&$data,'if(', '):']],
 			[[$this,'bof'],['@elseif'		,$nbf,&$data,'elseif(', '):']],
@@ -93,6 +75,12 @@ class directive {
 			[[$this,'bsp'],['@endswitch'	,$nbf,&$data,'endswitch;']],
 			[[$this,'bof'],['@goto'			,$nbf,&$data,'goto ', ';']],
 			[[$this,'bof'],['@label'		,$nbf,&$data,'', ':']],
+
+			// code encapsuler 
+			[[$this,'bof'],['@istrue'		,$nbf,&$data,'echo ((',")? <<<END\r\n",'(',')','<?php ', '']],
+			[[$this,'bsp'],['@endistrue'	,$nbf,&$data,"\r\nEND\r\n:'');",'']],
+			[[$this,'bof'],['@isfalse'		,$nbf,&$data,'echo ((',")? '':<<<END\r\n",'(',')','<?php ', '']],
+			[[$this,'bsp'],['@endisfalse'	,$nbf,&$data,"\r\nEND\r\n);",'']],
 
 			////////////////////////////////////
 			//TAB
@@ -155,17 +143,34 @@ class directive {
 
 			[[$this,'bsp'],['@timetest'		,$nbf,&$data,'$microtime_start_test = microtime(true);']],
 			[[$this,'bsp'],['@endtimetest'	,$nbf,&$data,'$microtime_end_test = microtime(true); echo round(($microtime_end_test - $microtime_start_test),4);']],
-   
+
+			
+			[[$this,'bop'],['@_GLOBALS'		,$nbf,&$data,'# = $GLOBALS[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@_SERVER'		,$nbf,&$data,'# = $_SERVER[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@_POST'		,$nbf,&$data,'# = $_POST[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@_GET'			,$nbf,&$data,'# = $_GET[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@_ENV'			,$nbf,&$data,'# = $_ENV[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@_COOKIE'		,$nbf,&$data,'# = $_COOKIE[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@_SESSION'		,$nbf,&$data,'# = $_SESSION[', '%];','(',')',FALSE,'{','}','#','%']],
+
+			[[$this,'bof'],['@\GLOBALS'		,$nbf,&$data,'echo $GLOBALS[','];']],
+			[[$this,'bof'],['@\SERVER'		,$nbf,&$data,'echo $_SERVER[','];']],
+			[[$this,'bof'],['@\POST'		,$nbf,&$data,'echo $_POST[','];']],
+			[[$this,'bof'],['@\GET'			,$nbf,&$data,'echo $_GET[','];']],
+			[[$this,'bof'],['@\ENV'			,$nbf,&$data,'echo $_ENV[','];']],
+			[[$this,'bof'],['@\COOKIE'		,$nbf,&$data,'echo $_COOKIE[','];']],
+			[[$this,'bof'],['@\SESSION'		,$nbf,&$data,'echo $_SESSION[','];']],
+  
 			[[$this,'bsp'],['@\RN'			,$nbf,&$data,'echo PHP_EOL;']],
 			[[$this,'bsp'],['@\R'			,$nbf,&$data,'echo "\r";']],
 			[[$this,'bsp'],['@\N'			,$nbf,&$data,'echo "\n";']],
 			[[$this,'bsp'],['@\T'			,$nbf,&$data,'echo "\t";']],
 			[[$this,'bsp'],['@\Z'			,$nbf,&$data,'echo "\0";']],
 			[[$this,'bsp'],['@\SP'			,$nbf,&$data,'echo chr(32);']],
-			[[$this,'bof'],['@chr'			,$nbf,&$data,'chr(',');']],
-			[[$this,'bof'],['@ord'			,$nbf,&$data,'ord(',');']],
+			[[$this,'bsp'],['@\AT'			,$nbf,&$data,'echo chr(64);']],
+			[[$this,'bof'],['@\chr'			,$nbf,&$data,'echo chr(',');']],
+			[[$this,'bof'],['@\ord'			,$nbf,&$data,'echo ord(',');']],
 			
-			[[$this,'bof'],['@_'			,$nbf,&$data,'echo ',';']],
 			[[$this,'bof'],['@'				,$nbf,&$data,'echo $',';','{','}']], // affiche son resulta
 			//[[$this,'bop'],['@!'			,$nbf,&$data,'echo ($# ? $#:null)', ';','{','}',FALSE,'','','#']], // affiche son resulta que s'il est true
 		];

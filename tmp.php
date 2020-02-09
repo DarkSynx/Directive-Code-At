@@ -1,9 +1,18 @@
+<?php $j='test1' ?>
+<?php echo (($j == 'test')? '':<<<END
+
+
+<oktest affiche code html>
+
+
+END
+); ?>
 
 <?php $h=FALSE ?>
 <?php $h++; ?>
 <?php echo $h; ?>
 
-TESTE DE VARIABALE <?php echo ($h ? $h:null); ?>
+TESTE DE VARIABALE @!{h}
 
 <?php define('OK', 'test DEFINE'); ?>
 <?php global $a;$b;$c; ?>

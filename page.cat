@@ -1,3 +1,9 @@
+@set($j='test1')
+@isfalse($j == 'test')
+
+<oktest affiche code html>
+
+@endisfalse
 
 @set($h=FALSE)
 @inc($h)
