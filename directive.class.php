@@ -6,6 +6,7 @@ class directive {
 	
 	private $_final_page;
 	private $_data;
+
 	
 	
 	// on récupére que par get_data mais on peu initialisé par le constructeur ou par set_data
@@ -21,11 +22,12 @@ class directive {
 	}
 	
 	private function gen($rerturn_tag=FALSE) {
+		$iner_var = array();
 		$data = $this->_data;
 		$tags = [
 			// toujours au début
 			[[$this,'bop'],['@invoc'		,$nbf,&$data,'__INVOCFILE__', '','(',')',FALSE,'','','#','']],
-			[[$this,'bop'],['@import'		,$nbf,&$data,'__INVOCSEGMENT__', '','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@import'		,$nbf,&$data,'__INVOCSEGMENT__', '','(',')',',','{','}','#','%']],
 			[[$this,'bof'],['@segment'		,$nbf,&$data,'<!--SEGMENT:', '','(',')','','']],
 			[[$this,'bsp'],['@endsegment'	,$nbf,&$data,'-->','','']],
 			[[$this,'bof'],['@load'			,$nbf,&$data,'include(', ');']],
@@ -81,7 +83,9 @@ class directive {
 			[[$this,'bsp'],['@endistrue'	,$nbf,&$data,"\r\nEND\r\n:'');",'']],
 			[[$this,'bof'],['@isfalse'		,$nbf,&$data,'echo ((',")? '':<<<END\r\n",'(',')','<?php ', '']],
 			[[$this,'bsp'],['@endisfalse'	,$nbf,&$data,"\r\nEND\r\n);",'']],
+			
 
+			[[$this,'bsp'],['@sessionstart'	,$nbf,&$data,'session_start();']],
 			////////////////////////////////////
 			//TAB
 			[[$this,'bsp'],['@tabload'		,$nbf,&$data,'$_tabofdirective=array();']],
@@ -110,12 +114,14 @@ class directive {
 			[[$this,'bof'],['@usersay'		,$nbf,&$data,'$_userofdirective[', ']=null;']],	// initialise le nom de la portion de code
 			[[$this,'bof'],['@usersee'		,$nbf,&$data,'if($_userofdirective[', ']):']],	// affiche le code si l'initialisation est à TRUE
 			[[$this,'bsp'],['@endusersee'	,$nbf,&$data,'endif;']],		
-			[[$this,'bof'],['@useris'		,$nbf,&$data,'if($_userofdirective', '):']],	// affiche si on désire vérifier que l'initialisation à une autre valeur 
-			[[$this,'bsp'],['@enduseris'	,$nbf,&$data,'endif;']],
+			[[$this,'bsp'],['@useristrue'	,$nbf,&$data,'if($_userofdirective[$id]):']],	// affiche si on désire vérifier que l'initialisation à une autre valeur 
+			[[$this,'bsp'],['@enduseristrue',$nbf,&$data,'endif;']],
 			[[$this,'bof'],['@useron'		,$nbf,&$data,'$_userofdirective[', ']=true;']],	 // passe l'initialisation à TRUE
 			[[$this,'bof'],['@useroff'		,$nbf,&$data,'$_userofdirective[', ']=false;']], // passe l'initialisation à FALSE
 			[[$this,'bop'],['@userinit'		,$nbf,&$data,'$_userofdirective[#]','=%;','(',':',FALSE,':',')','#','%']],			// passe l'initialisation à la valeur de l'on désire
 			[[$this,'bof'],['@userini'		,$nbf,&$data,'$_userofdirective', ';']],			// passe l'initialisation à la valeur de l'on désire
+			[[$this,'bsp'],['@uservarinit'	,$nbf,&$data,'$uservar = $_userofdirective;']],
+			[[$this,'bsp'],['@uservaraffect',$nbf,&$data,'$_userofdirective = $uservar;']],
 			//SESSION
 			[[$this,'bsp'],['@sessionload'		,$nbf,&$data,'$_sessionofdirective=array();']],
 			[[$this,'bof'],['@sessionsay'		,$nbf,&$data,'$_sessionofdirective[', ']=null;']],	// initialise le nom de la portion de code
@@ -143,24 +149,91 @@ class directive {
 
 			[[$this,'bsp'],['@timetest'		,$nbf,&$data,'$microtime_start_test = microtime(true);']],
 			[[$this,'bsp'],['@endtimetest'	,$nbf,&$data,'$microtime_end_test = microtime(true); echo round(($microtime_end_test - $microtime_start_test),4);']],
+			
+			
+			
 
 			
-			[[$this,'bop'],['@_GLOBALS'		,$nbf,&$data,'# = $GLOBALS[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@_SERVER'		,$nbf,&$data,'# = $_SERVER[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@_POST'		,$nbf,&$data,'# = $_POST[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@_GET'			,$nbf,&$data,'# = $_GET[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@_ENV'			,$nbf,&$data,'# = $_ENV[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@_COOKIE'		,$nbf,&$data,'# = $_COOKIE[', '%];','(',')',FALSE,'{','}','#','%']],
-			[[$this,'bop'],['@_SESSION'		,$nbf,&$data,'# = $_SESSION[', '%];','(',')',FALSE,'{','}','#','%']],
+			
+			[[$this,'bop'],['@GLOBALS'		,$nbf,&$data,'# = $GLOBALS[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@SERVER'		,$nbf,&$data,'# = $_SERVER[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@POST'			,$nbf,&$data,'# = $_POST[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@GET'			,$nbf,&$data,'# = $_GET[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@ENV'			,$nbf,&$data,'# = $_ENV[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@COOKIE'		,$nbf,&$data,'# = $_COOKIE[', '%];','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@SESSION'		,$nbf,&$data,'# = $_SESSION[', '%];','(',')',FALSE,'{','}','#','%']],
 
-			[[$this,'bof'],['@\GLOBALS'		,$nbf,&$data,'echo $GLOBALS[','];']],
-			[[$this,'bof'],['@\SERVER'		,$nbf,&$data,'echo $_SERVER[','];']],
-			[[$this,'bof'],['@\POST'		,$nbf,&$data,'echo $_POST[','];']],
-			[[$this,'bof'],['@\GET'			,$nbf,&$data,'echo $_GET[','];']],
-			[[$this,'bof'],['@\ENV'			,$nbf,&$data,'echo $_ENV[','];']],
-			[[$this,'bof'],['@\COOKIE'		,$nbf,&$data,'echo $_COOKIE[','];']],
-			[[$this,'bof'],['@\SESSION'		,$nbf,&$data,'echo $_SESSION[','];']],
+			[[$this,'bof'],['@:GLOBALS'		,$nbf,&$data,'echo $GLOBALS[','];']],
+			[[$this,'bof'],['@:SERVER'		,$nbf,&$data,'echo $_SERVER[','];']],
+			[[$this,'bof'],['@:POST'		,$nbf,&$data,'echo $_POST[','];']],
+			[[$this,'bof'],['@:GET'			,$nbf,&$data,'echo $_GET[','];']],
+			[[$this,'bof'],['@:ENV'			,$nbf,&$data,'echo $_ENV[','];']],
+			[[$this,'bof'],['@:COOKIE'		,$nbf,&$data,'echo $_COOKIE[','];']],
+			[[$this,'bof'],['@:SESSION'		,$nbf,&$data,'echo $_SESSION[','];']],
   
+  
+  
+			[[$this,'bop'],['@ctablo'		,$nbf,&$data,"\$_tbx = [#]; echo  '<table id=\'' . \$_tbx[1] .'\' class=\'' . \$_tbx[2] . '\' ><thead><tr>'; foreach([%] as \$j ) { echo \"<th>\$j</th>\"; } echo '</tr></thead><tbody>'; foreach(\$_tbx[0] as \$v) { echo '<tr>';foreach(\$v as \$m ) { echo \"<td>\$m</td>\" ; }  echo '</tr>';} echo '</tbody></table>';", ';','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@clist'		,$nbf,&$data,'', ';','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bop'],['@clogin'		,$nbf,&$data,'', ';','(',')',FALSE,'{','}','#','%']],
+			
+			
+			//
+			[[$this,'bof'],['@inervar'			,$nbf,&$data,''," = <<<END\r\n",'(',')','<?php ', '']], 	//charger dans une variable du code
+			
+			[[$this,'bsp'],['@inertitle'		,$nbf,&$data,"\$__title = <<<END\r\n",'<?php ','']], 		//charger dans la variable __title      du code			
+			[[$this,'bsp'],['@inermeta'			,$nbf,&$data,"\$__metalist = <<<END\r\n",'<?php ','']], 	//charger dans la variable __metalist   du code			
+			[[$this,'bsp'],['@inerlink'			,$nbf,&$data,"\$__linklist = <<<END\r\n",'<?php ','']], 	//charger dans la variable __linklist   du code			
+			[[$this,'bsp'],['@inerscript'		,$nbf,&$data,"\$__scriptlist = <<<END\r\n",'<?php ','']], 	//charger dans la variable __scriptlist du code			
+			[[$this,'bsp'],['@inerstyle'		,$nbf,&$data,"\$__style = <<<END\r\n",'<?php ','']], 		//charger dans la variable __style  	du code					
+			[[$this,'bsp'],['@inerheader'		,$nbf,&$data,"\$__header = <<<END\r\n",'<?php ','']], 		//charger dans la variable __header 	du code			
+			[[$this,'bsp'],['@inernav'			,$nbf,&$data,"\$__nav = <<<END\r\n",'<?php ','']], 			//charger dans la variable __nav 		du code			
+			[[$this,'bsp'],['@inersection'		,$nbf,&$data,"\$__section = <<<END\r\n",'<?php ','']], 		//charger dans la variable __section 	du code			
+			[[$this,'bsp'],['@ineraside'		,$nbf,&$data,"\$__aside = <<<END\r\n",'<?php ','']], 		//charger dans la variable __aside  	du code			
+			[[$this,'bsp'],['@inerfooter'		,$nbf,&$data,"\$__footer = <<<END\r\n",'<?php ','']], 		//charger dans la variable __footer		du code			
+
+			
+			[[$this,'bsp'],['@endiner'	,$nbf,&$data,"\r\nEND;\r\n",'']],
+			
+			// 
+			[[$this,'bsp'],['@skulfull'		,$nbf,&$data,"echo <<<END\r\n<html><head>\$__title\$__metalist\$__linklist\$__scriptlist\$__style</head><body><header>\$__header</header><div id='middle'><nav>\$__nav</nav><section>\$__section</section><aside>\$__aside</aside></div><footer>\$__footer</footer></body></html>\r\nEND;\r\n"]],
+			[[$this,'bsp'],['@skullow'		,$nbf,&$data,"echo <<<END\r\n<html><head>\$__title\$__metalist\$__linklist\$__scriptlist\$__style</head><body>\$__body</body></html>\r\nEND;\r\n"]],
+			//
+			[[$this,'bsp'],['@headpage'		,$nbf,&$data,'<html><head>','','']],
+			[[$this,'bsp'],['@bodypage'		,$nbf,&$data,'</head><body>','','']],
+			[[$this,'bsp'],['@endpage'		,$nbf,&$data,'</body></html>','','']],
+			[[$this,'bsp'],['@html'			,$nbf,&$data,'<html>','','']],
+			[[$this,'bsp'],['@/html'		,$nbf,&$data,'</html>','','']],
+			[[$this,'bsp'],['@head'			,$nbf,&$data,'<head>','','']],
+			[[$this,'bsp'],['@/head'		,$nbf,&$data,'</head>','','']],
+			[[$this,'bof'],['@title'		,$nbf,&$data,'<title>','</title>', '(', ')', '','']],
+			[[$this,'bof'],['@meta'			,$nbf,&$data,'<meta ', '>', '(', ')', '','']],
+			[[$this,'bof'],['@linkcss'		,$nbf,&$data,'<link rel="stylesheet" href="', '">', '(', ')', '','']],
+			[[$this,'bof'],['@script'		,$nbf,&$data,'<script src="', '"></script>', '(', ')', '','']],
+			[[$this,'bof'],['@style'		,$nbf,&$data,'<style>', '</style>', '(', ')', '','']],
+			
+			[[$this,'bop'],['@div'			,$nbf,&$data,'<div id="#" class="%">', '','(',')',FALSE,'{','}','#','%']],
+			[[$this,'bsp'],['@/div'			,$nbf,&$data,'</div>','','']],
+			
+			[[$this,'bsp'],['@body'			,$nbf,&$data,'<body>','','']],
+			[[$this,'bsp'],['@/body'		,$nbf,&$data,'</body>','','']],
+			[[$this,'bsp'],['@header'		,$nbf,&$data,'<header>','','']],
+			[[$this,'bsp'],['@/header'		,$nbf,&$data,'</header>','','']],
+			[[$this,'bsp'],['@section'		,$nbf,&$data,'<section>','','']],
+			[[$this,'bsp'],['@/section'		,$nbf,&$data,'</section>','','']],
+			[[$this,'bsp'],['@arcticle'		,$nbf,&$data,'<arcticle>','','']],
+			[[$this,'bsp'],['@/arcticle'	,$nbf,&$data,'</arcticle>','','']],
+			[[$this,'bsp'],['@nav'			,$nbf,&$data,'<nav>','','']],
+			[[$this,'bsp'],['@/nav'			,$nbf,&$data,'</nav>','','']],
+			[[$this,'bsp'],['@aside'		,$nbf,&$data,'<aside>','','']],
+			[[$this,'bsp'],['@/aside'		,$nbf,&$data,'</aside>','','']],
+			[[$this,'bsp'],['@footer'		,$nbf,&$data,'<footer>','','']],
+			[[$this,'bsp'],['@/footer'		,$nbf,&$data,'</footer>','','']],
+			
+			[[$this,'bsp'],['@==>'			,$nbf,&$data,'<br/>','','']],
+			[[$this,'bsp'],['@---'			,$nbf,&$data,'<hr/>','','']],
+			
+			
 			[[$this,'bsp'],['@\RN'			,$nbf,&$data,'echo PHP_EOL;']],
 			[[$this,'bsp'],['@\R'			,$nbf,&$data,'echo "\r";']],
 			[[$this,'bsp'],['@\N'			,$nbf,&$data,'echo "\n";']],
@@ -210,7 +283,9 @@ class directive {
 		foreach($tags as &$fnc) {
 			call_user_func_array($fnc[0],$fnc[1]);
 		}
-
+		
+		$data = str_ireplace(["\r\n\r\n","\r\n ?>"], ["\r\n", "\r\n?>"], $data);
+		
 		$time_end = microtime(true);
 		$time = $time_end - $time_start;
 
@@ -238,8 +313,19 @@ class directive {
 
 							$k = substr_count( substr($data,$bs,($c - $bs)) , $bdeb1);
 							
-							$c--; 
-							while( $k-- > 0 ) $c = stripos($data,$bfin1,++$c);
+							//$c--; 
+							//while( $k-- > 0 ) $c = stripos($data,$bfin1,++$c);
+							
+							if($k > 1) {
+								$c--; 
+								$z=$bs;
+								while( $k-- > 0 ) { 
+								$c = stripos($data,$bfin1, ($c+1) );
+								$k = (substr_count( substr($data,$z,($c - $z)) , $bdeb1) - $k) ;
+								$z = $c;						
+								}
+							}
+							
 								
 								// detection du premier { et dernier }
 								$e = $c;
@@ -257,14 +343,30 @@ class directive {
 								}
 
 								$mex = trim( substr($data,($bs + 1),( $c - ($bs + 1)) ) );
+								$pcode = false;
 								
-								if( (stripos($mex,$exp,0) !== false and  $exp != '') ) {
-									$t = explode($exp,$mex);
-									$mex = ($t[1] == 'PHP' ? $t[0] : $mex);
-								} 
-								elseif( $exp !== FALSE) { 
-									if($masque2) { $m2 = "echo <<<END\r\n$m2\r\nEND;\r\n"; }
+								
+								
+								
+									
+								if( $exp !== false &&  $exp != '' && stripos($mex,$exp,0) !== false ) {
+										$t = explode($exp,$mex);
+										
+										if($t[1] == 'PHP') {
+											$mex = $t[0];
+											$pcode = true;
+										}
+										else {
+											if($masque2) { $m2 = "echo <<<END\r\n$m2\r\nEND;\r\n"; }
+										}
 								}
+
+								
+								
+								
+								
+
+								
 								
 								if($masque1) { 
 								
@@ -278,16 +380,23 @@ class directive {
 										$endx = "\r\n<!-- END invoc file : $mex -->\r\n";
 									}
 									elseif($deb == '__INVOCSEGMENT__') {
+
+										if($pcode) {
+											$debx = "<?php \r\n";
+											$endx = " ?>";
+										} 
+										else {
+											$debx = "\r\n<!-- start import:segment $m2 to file : $mex -->\r\n";
+											$endx = "\r\n<!-- END import:segment $m2 to file : $mex -->\r\n";
+										}
 										
-										$debx = "\r\n<!-- start import:segment $m2 to file : $mex -->\r\n";
 										$debf = file_get_contents(trim($mex,'\''));
 										$tds  = strlen("@segment($m2)");
 										$ddms = stripos($debf,"@segment($m2)",0);
 										$fdms = stripos($debf,'@endsegment',$ddms+1);
 										$debo  = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
 										$fino  = ''; unset($debf);
-										$endx = "\r\n<!-- END import:segment $m2 to file : $mex -->\r\n";
-										
+
 									}
 									
 									$rpl = "$debx$debo$fino$endx";
@@ -312,6 +421,7 @@ class directive {
 			}
 	
 	}
+
 	
 	private function bof($find,$fdb,&$data,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0){
 
@@ -328,10 +438,16 @@ class directive {
 				) {  
 							
 							$k = substr_count( substr($data,$bs,($c - $bs)) , $bdeb);
-							
-							$c--; 
-							while( $k-- > 0 ) $c = stripos($data,$bfin,++$c);
-							
+
+							if($k > 1) {
+								$c--; 
+								$z=$bs;
+								while( $k-- > 0 ) { 
+								$c = stripos($data,$bfin, ($c+1) );
+								$k = (substr_count( substr($data,$z,($c - $z)) , $bdeb) - $k) ;
+								$z = $c;						
+								}
+							}
 								
 								$m = trim( substr($data,($bs + 1),( $c - ($bs + 1)) ) );
 								$rpl = "$debx$deb$m$fin$endx";

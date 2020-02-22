@@ -1,0 +1,26 @@
+@sessionstart
+@headpage
+	@title(page de login)
+	@meta(charset="UTF-8")
+	@style(
+		body{background-color:grey;}
+		#login{
+		border: 1px solid blue;
+		margin: auto;
+		}
+	)
+@bodypage
+	@userload
+	
+	@uservarinit
+	@import('loginsegment.cat',PHP){scriptuser}
+	@uservaraffect
+
+	@useristrue
+	@import('loginsegment.cat'){loaduserpage}
+	@else
+	@import('loginsegment.cat'){loadlogin}
+	
+	@enduseristrue
+@endpage
+
