@@ -7,19 +7,20 @@
 	@style{
 		body{background-color:grey;}
 		#login{
-		border: 1px solid blue;
-		margin: auto;
+			border: 1px solid blue;
+			margin: auto;
 		}
 	}
 }
-@body{
+@body(  style="background-color:grey; color:white;" ){
+
 	@#{
 		$id = session_id();
 		$uservar[$id] = false; 
 	}
+	
 	@getsegment('loginsegment.cat',PHP){scriptuser}
 	
-
 	@if($uservar[$id])
 	@getsegment('loginsegment.cat'){loaduserpage}
 	@else
