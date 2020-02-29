@@ -1,26 +1,30 @@
 @sessionstart
-@headpage
+@html{
+@head{
+
 	@title(page de login)
 	@meta(charset="UTF-8")
-	@style(
+	@style{
 		body{background-color:grey;}
 		#login{
 		border: 1px solid blue;
 		margin: auto;
 		}
-	)
-@bodypage
-	@userload
+	}
+}
+@body{
+	@#{
+		$id = session_id();
+		$uservar[$id] = false; 
+	}
+	@getsegment('loginsegment.cat',PHP){scriptuser}
 	
-	@uservarinit
-	@import('loginsegment.cat',PHP){scriptuser}
-	@uservaraffect
 
-	@useristrue
-	@import('loginsegment.cat'){loaduserpage}
+	@if($uservar[$id])
+	@getsegment('loginsegment.cat'){loaduserpage}
 	@else
-	@import('loginsegment.cat'){loadlogin}
-	
-	@enduseristrue
-@endpage
+	@getsegment('loginsegment.cat'){loadlogin}
+	@endif
 
+}
+}
