@@ -8,36 +8,25 @@
 		}</style></head>
 <body style="background-color:grey; color:white;">
 	<?php $id = session_id();
-		$uservar[$id] = false; ?>
-	
-	<div id="login">
-		
-		<p> AUTHENTIFICATION </p>
-	
-	
-		<?php 
+		$uservar[$id] = false; /*<!-- sup -->*/ 
 			$l = filter_input(INPUT_POST, 'login',  FILTER_SANITIZE_STRING);
 			$p = filter_input(INPUT_POST, 'password',  FILTER_SANITIZE_STRING);
-			
+		
 			if($l == 'logme' and $p == 'passme') {
 				$uservar[$id] = TRUE;
 			} else {
 				$uservar[$id] = FALSE;
 			}
-?>
-		
-		<?php if($uservar[$id]): ?>
-		
+/*<!-- sup -->*/ if($uservar[$id]): ?>
 <!-- start import:segment loaduserpage to file : 'loginsegment.cat' -->
 	<div>
 	<h1>page utilisateur</h1>
 	</div>
 <!-- END import:segment loaduserpage to file : 'loginsegment.cat' -->
 		<?php else: ?>
-		
 <!-- start import:segment loadlogin to file : 'loginsegment.cat' -->
 	<div id='login'>
-	<form action="login.php" method="post">	
+	<form action="login.php" method="post">
 		<input type="text" name="login" value=""/>
 		<input type="password" name="password" value=""/>
 		<input type="submit" value="connexion">
@@ -45,9 +34,6 @@
 	</div>
 <!-- END import:segment loadlogin to file : 'loginsegment.cat' -->
 		<?php endif; ?>
-	</div>
-	
-	
 	<script>$( document ).ready(function() {
 			console.log( "ready!" );
 		});</script>

@@ -241,15 +241,46 @@ class directive {
 			call_user_func_array($fnc[0],$fnc[1]);
 		}
 		
-		$data = str_ireplace(["\r\n\r\n","\r\n ?>",' >'], ["\r\n", "\r\n?>",'>'], $data);
-		
 		$time_end = microtime(true);
 		$time = $time_end - $time_start;
+		
+		$data = str_ireplace(
+		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n"], 
+		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n"], $data);
+		
+		$x = strlen($data);
+		$tabp = [chr(32),"\t","\0","\r","\n","<"];
+		for($l=0; $l < $x; $l++) {
+			if(substr($data,$l, 2) == '?>') {
+				echo '[',substr($data,$l,2),']', PHP_EOL;
+				
+				for($z=$l+2; $z < $x; $z++) {
+					
+					if(in_array($data[$z],$tabp)) {
+						
+							if(substr($data,$z, 5) == '<?php') {
+							//echo '[',substr($data,$z,5),']', PHP_EOL;
+							//echo '>>:',substr($data,$l, ($z - $l)+5),':<<', PHP_EOL;
+							
+							$data = substr_replace($data, '/*<!-- sup -->*/', $l, (($z - $l)+5) );
+							
+							//echo '>>:',$data,':<<', PHP_EOL;
+							
+							$l = $z+5;
+							break;
+							//sleep(1000);
+							}
+						
+					 
+					} else{ break;}
+				}
+			}
+		}
+		
 
 		echo "execusion $time secondes\n";
 		$this->_final_page = $data;
-		
-		
+			
 	}
 	
 	private function bsp($find,$fdb,&$data,$replace,$debx='<?php ',$endx=' ?>'){
