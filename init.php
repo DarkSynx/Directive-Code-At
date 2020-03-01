@@ -2,6 +2,9 @@
 
 include "directive.class.php";
 
+
+
+
 $a = new directive(file_get_contents('login.cat'));
 //$b = new directive(file_get_contents('login.script.cat'));
 
