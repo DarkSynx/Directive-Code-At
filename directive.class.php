@@ -1,18 +1,29 @@
 <?php 
 /*
  USE 7.4
+ UPDATE CODE 17/07:2020
+ DARKSYNX
 */
 class directive {
 	
 	private $_final_page;
 	private $_data;
-
+	private $_filename = '';
 	
 	
 	// on récupére que par get_data mais on peu initialisé par le constructeur ou par set_data
-	public function __construct( $data=false ) { if($data){$this->set_data($data);} }	
+	public function __construct( $filename=false ) {   
+		if($filename){
+			$this->set_page($filename);
+			$this->set_data( $this->get_page() );
+			}
+	}
+	public function set_page($filename) { $this->_filename = $filename; }
+	public function get_page() { return file_get_contents( CAT . $this->_filename); }
 	public function set_data($data) { $this->_data = $data; $this->gen(); }	
 	public function get_data() { return $this->_final_page; }
+	
+	
 	public function get_directive() { 
 		$sortir = '';
 		foreach($this->gen(TRUE) as $key => $val) {
@@ -21,7 +32,13 @@ class directive {
 		return $sortir;
 	}
 	
-	private function gen($rerturn_tag=FALSE) {
+	public function cache_it() {
+		$fp = fopen( CACHE . $this->_filename . '.php', 'w');
+		fwrite($fp, $this->get_data());
+		fclose($fp);
+	}
+	
+	private function gen($rerturn_tag=FALSE,$optimised=TRUE,$timetest=false) {
 		
 		$iner_var = array();
 		$data = $this->_data;
@@ -31,9 +48,12 @@ class directive {
 		$bsp = [$this,'bsp'];
 		
 		$tags = [
+		
+		
 			// toujours au début get
 			[$bop,['@getfile'		,$nbf,&$data,'', '','(',')',FALSE,'','','#','']],
-			[$bop,['@getsegment'	,$nbf,&$data,'', '','(',')',',','{','}','#','%']],
+			[$bop,['@getsegment'	,$nbf,&$data,'', '','(',')','','{','}','#','%']],
+			[$bop,['@phpsegment'	,$nbf,&$data,'', '','(',')','','{','}','#','%']],
 			[$bof,['@setsegment'	,$nbf,&$data,'<!--SEGMENT:', '','(',')','','']],
 			[$bsp,['@endsegment' 	,$nbf,&$data,'-->','','']],
 
@@ -48,6 +68,9 @@ class directive {
 			[$bsp,['@dowhile'		,$nbf,&$data,"do{ echo <<<END\r\n",'<?php ','']],
 			[$bof,['@whiledo'		,$nbf,&$data,"\r\nEND;\r\n}while(", ');','(',')','']],
 			[$bop,['@dow'			,$nbf,&$data,'do{', '%}while(#);','(',')',',','{','}','#','%']],	
+
+			[$bof,['@PHP'			,$nbf,&$data,'','','{','}']], // affiche son resulta
+			[$bof,['@JS'			,$nbf,&$data,'','','{','}','<script>','</script>']], // affiche son resulta
 
 			[$bof,['@if'			,$nbf,&$data,'if(', '):']],
 			[$bof,['@elseif'		,$nbf,&$data,'elseif(', '):']],
@@ -91,14 +114,14 @@ class directive {
 			[$bof,['@head'			,$nbf,&$data,'<head>','</head>', '{', '}', '','']],			
 			[$bof,['@title'			,$nbf,&$data,'<title>','</title>', '(', ')', '','']],
 			[$bof,['@meta'			,$nbf,&$data,'<meta ', '>', '(', ')', '','']],
-			[$bof,['@link'			,$nbf,&$data,'<link rel="stylesheet" href="', '">', '(', ')', '','']],
+			[$bof,['@link'			,$nbf,&$data,'<link ', '>', '(', ')', '','']],
+			[$bof,['@filecss'		,$nbf,&$data,'<link rel="stylesheet" href="', '">', '(', ')', '','']],
 			[$bof,['@script'		,$nbf,&$data,'<script src="', '"></script>', '(', ')', '','']],
 			[$bof,['@style'			,$nbf,&$data,'<style>', '</style>', '{', '}', '','']],
 			//[$bof,['@body'			,$nbf,&$data,'<body>','</body>', '{', '}','','']],
 			[$bop,['@body'			,$nbf,&$data,'<body #>','%</body>', '(',')',true,'{', '}', '#','%','','']],
 	
-			[$bof,['@PHP'			,$nbf,&$data,'','','{','}']], // affiche son resulta
-			[$bof,['@JS'			,$nbf,&$data,'','','{','}','<script>','</script>']], // affiche son resulta
+
 			
 			[$bop,['@blockquote'	,$nbf,&$data,'<blockquote #>','%</blockquote>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@figcaption'	,$nbf,&$data,'<figcaption #>','%</figcaption>', '(',')',true,'{', '}', '#','%','','']],
@@ -175,7 +198,9 @@ class directive {
 			[$bop,['@svg'			,$nbf,&$data,'<svg #>','%</svg>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@var'			,$nbf,&$data,'<var #>','%</var>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@wbr'			,$nbf,&$data,'<wbr #>','%</wbr>', '(',')',true,'{', '}', '#','%','','']],
-			[$bop,['@br'			,$nbf,&$data,'<br #>','%</br>', '(',')',true,'{', '}', '#','%','','']],
+			
+			[$bsp,['@br'			,$nbf,&$data,'<br></br>','','']],
+			
 			[$bop,['@dd'			,$nbf,&$data,'<dd #>','%</dd>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@dl'			,$nbf,&$data,'<dl #>','%</dl>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@dt'			,$nbf,&$data,'<dt #>','%</dt>', '(',')',true,'{', '}', '#','%','','']],
@@ -186,7 +211,9 @@ class directive {
 			[$bop,['@h4'			,$nbf,&$data,'<h4 #>','%</h4>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@h5'			,$nbf,&$data,'<h5 #>','%</h5>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@h6'			,$nbf,&$data,'<h6 #>','%</h6>', '(',')',true,'{', '}', '#','%','','']],
-			[$bop,['@hr'			,$nbf,&$data,'<hr #>','%</hr>', '(',')',true,'{', '}', '#','%','','']],
+			
+			[$bop,['@hr'			,$nbf,&$data,'<hr #>','</hr>', '(',')',true,'', '', '#','','','']],
+			
 			[$bop,['@li'			,$nbf,&$data,'<li #>','%</li>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@ol'			,$nbf,&$data,'<ol #>','%</ol>', '(',')',true,'{', '}', '#','%','','']],
 			[$bop,['@rp'			,$nbf,&$data,'<rp #>','%</rp>', '(',')',true,'{', '}', '#','%','','']],
@@ -241,18 +268,23 @@ class directive {
 			call_user_func_array($fnc[0],$fnc[1]);
 		}
 		
-		$time_end = microtime(true);
-		$time = $time_end - $time_start;
+		if($timetest) {
+			$time_end = microtime(true);
+			$time = $time_end - $time_start;
+		}
+		
+		//$optimised = false;
+		if($optimised) {
 		
 		$data = str_ireplace(
-		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n"], 
-		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n"], $data);
+		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n"], 
+		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n"], $data);
 		
 		$x = strlen($data);
 		$tabp = [chr(32),"\t","\0","\r","\n","<"];
 		for($l=0; $l < $x; $l++) {
 			if(substr($data,$l, 2) == '?>') {
-				echo '[',substr($data,$l,2),']', PHP_EOL;
+				//echo '[',substr($data,$l,2),']', PHP_EOL;
 				
 				for($z=$l+2; $z < $x; $z++) {
 					
@@ -262,8 +294,9 @@ class directive {
 							//echo '[',substr($data,$z,5),']', PHP_EOL;
 							//echo '>>:',substr($data,$l, ($z - $l)+5),':<<', PHP_EOL;
 							
-							$data = substr_replace($data, '/*<!-- sup -->*/', $l, (($z - $l)+5) );
+							//$data = substr_replace($data, '/*<!-- sup -->*/', $l, (($z - $l)+5) );
 							
+							$data = substr_replace($data, chr(32), $l, (($z - $l)+5) );
 							//echo '>>:',$data,':<<', PHP_EOL;
 							
 							$l = $z+5;
@@ -276,9 +309,9 @@ class directive {
 				}
 			}
 		}
-		
+		}
 
-		echo "execusion $time secondes\n";
+		if($timetest) {echo "execusion $time secondes\n";}
 		$this->_final_page = $data;
 			
 	}
@@ -295,52 +328,85 @@ class directive {
 				$b = stripos($data,$find,$b);
 				$bs = ($b + $s);
 				if($b !== false ) {
+					
+					
+					
+					
+					
 								$nodeb1 = false;
 								// si les parenthéses existes 
-								if( 
-								 ($data[$bs] == $bdeb1 )  && 
-								 (($c = stripos($data,$bfin1,$bs)) !== false ) 
+								if( $data[$bs] == $bdeb1 && $data[$bs + 1] == $bfin1 && ($bdeb2 == '' || $bdeb2 == false) ) {
+									$c = $bs + 2;
+									$nodeb1 = true; 
+									 //echo '<br/>',$find,':1';
+								}
+								elseif ($data[$bs] == chr(32) && $data[$bs + 1] == $bdeb1 && $data[$bs + 2] == $bfin1 && ($bdeb2 == '' || $bdeb2 == false) ) {
+									$c = $bs + 3;
+									$nodeb1 = true; 
+									//echo '<br/>',$find,':2';
+								}
+								elseif( 
+								 ($data[$bs] == $bdeb1 || $data[$bs + 1] == $bdeb1 )  && 
+								 (($c = stripos($data,$bfin1,$bs)) !== false )
+								
 								) {
+									$c = ($data[$c] == $data[$bs+1]) ? ($bs+2) : $c-=1 ;
+
 									
-										$c--;
+									
 										for($j=0; $j < $dd ;$j++) {
-											$k = substr_count( substr($data,$bs,($c - $bs)) , $bdeb1);
-											$l = substr_count( substr($data,$bs,($c - $bs)) , $bfin1);
-											if($find == '@getsegment') { echo $k , '==' ,$l, ' :: ',$c, PHP_EOL; }
+											$g = substr($data,$bs,($c - $bs));
+											$k = substr_count( $g , $bdeb1);
+											$l = substr_count( $g , $bfin1);
+											//if($find == '@getsegment') { echo $k , '==' ,$l, ' :: ',$c, PHP_EOL; }
 											if($k == $l) { break; }
 											$c = stripos($data,$bfin1, $c+1) + 1; //execusion 0.0077269077301025 secondes
 											//$c++; // execusion 0.0082950592041016 secondes
 										}
 										
-										//if($find == '@body') { echo '>>',$data[$bs],  PHP_EOL; sleep(1000); }
+										
 										
 										$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
 										
 										
+										
+										/*
 										if($exp == ',') {
 											$t = explode($exp,$mex);
 											if($t[1] == 'PHP') {
 												$mex = $t[0];
 											}
-										}
+										}*/
 
-								} else { $nodeb1 = true; }
+								} else { 
+								
+								//echo '<br/>',$find,':3';
+								$c = $bs;
+								//if($find == '@hr') { echo '>>',substr($data,$b,$c), "<<";  }
+								
+								$nodeb1 = true; 
+								
+								}
 								
 								
 								// si les acolades existes 
 								if(
+								($bdeb2 != '' || $bdeb2 !== false)
+								&& (
 								(($data[$c] == $bdeb2) &&
 								(($e = stripos($data,$bfin2,$c+1)) !== false )) 
 								|| 
 								(($data[$bs] == $bdeb2) &&
 								(($e = stripos($data,$bfin2,$bs)) !== false ))
+								)
 								  ){
 									if($nodeb1) { $c = $bs; }
 									$e--;
 										for($j=0; $j < $dd ;$j++) {
-											$o = substr_count( substr($data,$c,($e - $c)) , $bdeb2);
-											$p = substr_count( substr($data,$c,($e - $c)) , $bfin2);
-											echo $o , '<==>' ,$p, ' :: ',$c, PHP_EOL;
+											$g = substr($data,$c,($e - $c));
+											$o = substr_count( $g , $bdeb2);
+											$p = substr_count( $g , $bfin2);
+											//echo $o , '<==>' ,$p, ' :: ',$c, PHP_EOL;
 											if($o == $p) { break; }
 											$e = stripos($data,$bfin2, $e+1) + 1; //execusion 0.0077269077301025 secondes
 											//$e++; // execusion 0.0082950592041016 secondes
@@ -348,10 +414,10 @@ class directive {
 									
 									
 									$m2 = substr($data,$c+1,($e - $c)-2);
-									
+									//echo '###########!';
 									if( ($masque2) && ($exp === false) && ($nodeb1 === false) ) { $m2 = "echo <<<END2 $nodeb1 \r\n$m2\r\nEND2;\r\n"; }
 									//if($find == '@getsegment') { echo '>>',$m2,'<<',  PHP_EOL; sleep(1000); }
-								}
+								} else { $e = $c; }
 
 
 
@@ -374,13 +440,11 @@ class directive {
 											
 										break;
 										case '@getsegment':
-										
-											if($t[1] != 'PHP') {
 												$debx = "\r\n<!-- start import:segment $m2 to file : $mex -->\r\n";
 												$endx = "\r\n<!-- END import:segment $m2 to file : $mex -->\r\n";
-											}
-											
-											$debf = file_get_contents(trim($mex,'\''));
+										case '@phpsegment':	
+										
+											$debf = file_get_contents( CAT . trim($mex,'\''));
 											$tds  = strlen("@setsegment($m2)");
 											$ddms = stripos($debf,"@setsegment($m2)",0);
 											$fdms = stripos($debf,'@endsegment',$ddms+1);
@@ -391,8 +455,13 @@ class directive {
 										break;
 									}
 									
+									
+									
 									$rpl = "$debx$debo$fino$endx";
 									$rpl = ($masque2 ? str_ireplace($masque2,$m2,str_ireplace($masque1,$mex,$rpl)) : str_ireplace($masque1,$mex,$rpl));
+									
+									//if($find == '@hr') { echo '<!--',$rpl,'-->',  PHP_EOL;  }
+									
 									
 								}	
 								else {
@@ -400,8 +469,14 @@ class directive {
 								}
 						
 							$data = substr_replace($data, $rpl, $b, (($e - $b)) );
+							
+							//if($find == '@hr') { echo '<!-- ', $e, ':', $b , ' #  ' , ($e - $b),' -->',  PHP_EOL;  }
+							//if($find == '@hr') { echo '<!-- ', substr_replace($data, $b, (($e - $b)) ),' -->',  PHP_EOL;  }
 							$b += strlen($rpl);
-
+							
+							
+							
+							
 								//if($find == '@body') { echo '>>',$data,'<<',  PHP_EOL;  }
 								//if($find == '@body') { echo '>>',$rpl,'<<',  PHP_EOL; sleep(1000); }
 				
@@ -413,7 +488,7 @@ class directive {
 
 	
 	private function bof($find,$fdb,&$data,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0){
-
+			
 			$d = strlen($data);
 			$s = strlen($find);
 			$i=1;	
@@ -429,9 +504,10 @@ class directive {
 
 							$c--; 
 								for($j=0; $j < $d ;$j++) {
-									$k = substr_count( substr($data,$bs,($c - $bs)) , $bdeb);
-									$l = substr_count( substr($data,$bs,($c - $bs)) , $bfin);
-									//echo $k , '==' ,$l, ' :: ',$c, PHP_EOL;
+									$g = substr($data,$bs,($c - $bs));
+									$k = substr_count( $g , $bdeb);
+									$l = substr_count( $g , $bfin);
+									//if($find == '@PHP') { echo $find, ' > ' , $k , '==' ,$l, ' :: ',$c, PHP_EOL; }
 									if($k == $l) { break; }
 									$c = stripos($data,$bfin, $c+1) + 1; //execusion 0.0077269077301025 secondes
 									//$c++; // execusion 0.0082950592041016 secondes
@@ -439,8 +515,15 @@ class directive {
 								
 
 								
+								
 								$m = trim( substr($data,($bs + 1),( ($c - $bs) -2)) );
 								$rpl = "$debx$deb$m$fin$endx";
+							
+								/*if($find == '@PHP') {
+									
+										//echo '<br/> >>>', $m, '<<< <br/>', PHP_EOL;
+									
+								}*/
 							
 							$data = substr_replace($data, $rpl, $b, (($c - $b)) );
 							$b += strlen($rpl);
