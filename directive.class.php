@@ -7,6 +7,7 @@ class directive {
 	private $_final_page;
 	private $_data;
 	private $_filename = '';
+	private $_nocache = false;
 	
 	
 	// on récupére que par get_data mais on peu initialisé par le constructeur ou par set_data
@@ -31,9 +32,11 @@ class directive {
 	}
 	
 	public function cache_it() {
-		$fp = fopen( CACHE . $this->_filename . '.php', 'w');
-		fwrite($fp, $this->get_data());
-		fclose($fp);
+		if($this->_nocache) {
+			$fp = fopen( CACHE . $this->_filename . '.php', 'w');
+			fwrite($fp, $this->get_data());
+			fclose($fp);
+		}
 	}
 	
 	private function gen($rerturn_tag=FALSE,$optimised=TRUE,$timetest=false) {
@@ -72,16 +75,18 @@ class directive {
 			[$bop,['@dow'			,$nbf,&$data,'do{', '■}while(□);','(',')',',','{','}','□','■']],	
 
 			[$bof,['@PHP'			,$nbf,&$data,'','','{','}']], // affiche son resulta
+			[$bof,['@JSR'			,$nbf,&$data,'','','{','}','<script>$( document ).ready(function() {','});</script>']], // affiche son resulta
 			[$bof,['@JS'			,$nbf,&$data,'','','{','}','<script>','</script>']], // affiche son resulta
+			
 
 			[$bof,['@if'			,$nbf,&$data,'if(', '):']],
 			[$bof,['@elseif'		,$nbf,&$data,'elseif(', '):']],
 			[$bsp,['@else'			,$nbf,&$data,'else:']],
 			[$bsp,['@endif'			,$nbf,&$data,'endif;']],
-			[$bof,['@for'			,$nbf,&$data,'for(','):']],
-			[$bsp,['@endfor'		,$nbf,&$data,'endfor;']],
 			[$bof,['@foreach'		,$nbf,&$data,'foreach(','):']],
 			[$bsp,['@endforeach'	,$nbf,&$data,'endforeach;']],
+			[$bof,['@for'			,$nbf,&$data,'for(','):']],
+			[$bsp,['@endfor'		,$nbf,&$data,'endfor;']],
 			[$bof,['@while'			,$nbf,&$data,'while(','):']],
 			[$bsp,['@endwhile'		,$nbf,&$data,'endwhile;']],
 			[$bof,['@switch'		,$nbf,&$data,'switch (','):']],
@@ -112,7 +117,7 @@ class directive {
 			[$bsp,['@bodypage'		,$nbf,&$data,'</head><body>','','']],
 			[$bsp,['@endpage'		,$nbf,&$data,'</body></html>','','']],
 			
-			[$bof,['@html'			,$nbf,&$data,'<html>','</html>', '{', '}', '','']],			
+			[$bop,['@html'			,$nbf,&$data,'<html □>','■</html>', '(',')',true,'{', '}', '□','■','','']],			
 			[$bof,['@head'			,$nbf,&$data,'<head>','</head>', '{', '}', '','']],			
 			[$bof,['@title'			,$nbf,&$data,'<title>','</title>', '(', ')', '','']],
 			[$bof,['@meta'			,$nbf,&$data,'<meta ', '>', '(', ')', '','']],
@@ -161,11 +166,12 @@ class directive {
 			[$bop,['@select'		,$nbf,&$data,'<select □>','■</select>', '(',')',true,'{', '}', '□','■','','']],
 			[$bop,['@source'		,$nbf,&$data,'<source □>','■</source>', '(',')',true,'{', '}', '□','■','','']],
 			[$bop,['@strong'		,$nbf,&$data,'<strong □>','■</strong>', '(',')',true,'{', '}', '□','■','','']],
+			[$bop,['@center'		,$nbf,&$data,'<center □>','■</center>', '(',')',true,'{', '}', '□','■','','']],
 			
 			[$bop,['@aside'			,$nbf,&$data,'<aside □>','■</aside>', '(',')',true,'{', '}', '□','■','','']],
 			[$bop,['@audio'			,$nbf,&$data,'<audio □>','■</audio>', '(',')',true,'{', '}', '□','■','','']],
 			[$bop,['@embed'			,$nbf,&$data,'<embed □>','■</embed>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@input'			,$nbf,&$data,'<input □>','■</input>', '(',')',true,'{', '}', '□','■','','']],
+			[$bop,['@input'			,$nbf,&$data,'<input □' ,'>', '(',')',true,'', '', '□','','','']],
 			[$bop,['@label'			,$nbf,&$data,'<label □>','■</label>', '(',')',true,'{', '}', '□','■','','']],
 			[$bop,['@meter'			,$nbf,&$data,'<meter □>','■</meter>', '(',')',true,'{', '}', '□','■','','']],
 			[$bop,['@param'			,$nbf,&$data,'<param □>','■</param>', '(',')',true,'{', '}', '□','■','','']],
@@ -239,7 +245,9 @@ class directive {
 			[$bop,['@p'				,$nbf,&$data,'<p □>','■</p>', '(',')',true,'{', '}', '□','■','','']],
 			[$bop,['@q'				,$nbf,&$data,'<q □>','■</q>', '(',')',true,'{', '}', '□','■','','']],
 			
-			[$bop,['@§'				,$nbf,&$data,'','', '<','>',true,'', '', '□','','','']], // comment cat invisible
+			[$bof,['@:'				,$nbf,&$data,'',';','{','}']], // affiche son resulta
+			[$bop,['@.'				,$nbf,&$data,'','', '','',true,'', '', '','','','']], // comment cat invisible
+			[$bop,['@?'				,$nbf,&$data,'','', '<','>',true,'', '', '□','','','']], // comment cat invisible
 			[$bof,['@!'				,$nbf,&$data,'','','<','>','<!-- ',' -->']], // comment html
 			[$bof,['@*'				,$nbf,&$data,'/* $','*/','<','>']], // comment php
 			[$bof,['@'				,$nbf,&$data,'echo $',';','{','}']], // affiche son resulta
@@ -253,7 +261,7 @@ class directive {
 		foreach($tags as $k => $fnc) { $tabloc[$fnc[1][0]] = $k; }
 		if($rerturn_tag) { return $tabloc; }
 		
-		// on charge les invoc et le import avant tout
+		// on charge les fichier des fonctions qui load du code
 		$rx = ['@structure' => 0,'@getfile' => 0,'@getsegment' => 0, '@phpsegment' => 0];
 		foreach($rx as $fnd => &$nbf) { $nbf = substr_count($data, $fnd); }
 		while( array_sum($rx) > 0 ){ 	
@@ -266,6 +274,21 @@ class directive {
 			}
 			foreach($rx as $fnd => &$nbf) { $nbf = substr_count($data, $fnd); }	
 		}
+	
+	
+		// on hash les données brute et si elle son similaire
+		// alors on recharge le fichier fabriqué sinon 
+		// on le refabrique
+		$hashdata = hash('fnv1a64',$data);
+		$filehash = @file_get_contents(CACHE . $this->_filename . '.hash');
+		if($hashdata != $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
+		
+			$fp = fopen( CACHE . $this->_filename . '.hash', 'w');
+			fwrite($fp, $hashdata);
+			fclose($fp);
+			$this->_nocache = true;
+			
+		} else { $this->_nocache = false; return $tabloc; }
 	
 		// on supprime les functions non présente dans data
 		// et on prépare les variables du talbleau
@@ -328,6 +351,7 @@ class directive {
 		if($timetest) {echo "execusion $time secondes\n";}
 		$this->_final_page = $data;
 			
+		
 	}
 	
 	private function bsp($find,$fdb,&$data,$replace,$debx='<?php ',$endx=' ?>'){
@@ -403,19 +427,52 @@ class directive {
 								}
 								
 								
+								/* original good 
 								// si les acolades existes 
 								if(
 								($bdeb2 != '' || $bdeb2 !== false)
 								&& (
-								(($data[$c] == $bdeb2) &&
-								(($e = stripos($data,$bfin2,$c+1)) !== false )) 
-								|| 
-								(($data[$bs] == $bdeb2) &&
-								(($e = stripos($data,$bfin2,$bs)) !== false ))
+										//(($data[$c] == $bdeb2) && (($e = stripos($data,$bfin2,$c+1)) !== false )) 
+										(($data[$c] == $bdeb2) && (($e = stripos($data,$bfin2,$c)) !== false )) 
+										|| 
+										(($data[$bs] == $bdeb2) && (($e = stripos($data,$bfin2,$bs)) !== false ))
+										//||
+										//(($data[$c+1] == $bdeb2) && (($e = stripos($data,$bfin2,$c+2)) !== false )) 
+										//|| 
+										//(($data[$bs+1] == $bdeb2) && (($e = stripos($data,$bfin2,$bs+1)) !== false )) 
+									
 								)
-								  ){
+								  ){ 
+								  
 									if($nodeb1) { $c = $bs; }
-									$e--;
+									//if( $data[$bs+1] == $bdeb2 ) { $c = $bs+1; }
+									
+									
+									$e--;*/
+									// si les acolades existes 
+									
+								// prototype
+								if(
+								($bdeb2) //bdeb2 != '' || $bdeb2 !== false
+								&& ( //$bdeb2 = {
+									(($data[$c] == $bdeb2) && (($e = stripos($data,$bfin2,$c)) !== false )) 
+									||
+									(($data[$c+1] == $bdeb2) && (($e = stripos($data,$bfin2,$c)) !== false )) 
+									//|| 
+									//(($data[$bs] == $bdeb2) && (($e = stripos($data,$bfin2,$bs)) !== false ))
+								)
+								  ){ 
+								  
+								  if(($data[$c+1] == $bdeb2) && (($e = stripos($data,$bfin2,$c)) !== false )){
+									   $c = $c+1;
+								   }
+									//if($nodeb1) { $c = $bs; }
+									//if( $data[$bs+1] == $bdeb2 ) { $c = $bs+1; }
+									
+									
+									//$e--;
+									
+									
 										for($j=0; $j < $dd ;$j++) {
 											$g = substr($data,$c,($e - $c));
 											$o = substr_count( $g , $bdeb2);
@@ -427,8 +484,12 @@ class directive {
 											//$e++; // execusion 0.0082950592041016 secondes
 										}
 									
-									
-									$m2 = substr($data,$c+1,($e - $c)-2);
+									//if( ($data[$c+1] == $bdeb2) ) {
+									//	$m2 = substr($data,$c+2,($e - $c)-3); 
+									//}
+									//else {
+										$m2 = substr($data,$c+1,($e - $c)-2); 
+									//}
 									//echo '###########!';
 									if( ($masque2) && ($exp === false) && ($nodeb1 === false) ) { $m2 = "echo <<<END2 $nodeb1 \r\n$m2\r\nEND2;\r\n"; }
 									//if($find == '@getsegment') { echo '>>',$m2,'<<',  PHP_EOL; sleep(1000); }
@@ -507,7 +568,7 @@ class directive {
 									
 									$rpl = "$debx$debo$fino$endx";
 									$rpl = ($masque2 ? str_ireplace($masque2,$m2,str_ireplace($masque1,$mex,$rpl)) : str_ireplace($masque1,$mex,$rpl));
-									
+									// error m2 look space with  " ){ " <= good , no good => " ) { "
 									//if($find == '@hr') { echo '<!--',$rpl,'-->',  PHP_EOL;  }
 									
 									
@@ -517,7 +578,7 @@ class directive {
 								}
 						
 							$data = substr_replace($data, $rpl, $b, (($e - $b)) );
-							
+							$mex=''; $m2='';
 							//if($find == '@hr') { echo '<!-- ', $e, ':', $b , ' #  ' , ($e - $b),' -->',  PHP_EOL;  }
 							//if($find == '@hr') { echo '<!-- ', substr_replace($data, $b, (($e - $b)) ),' -->',  PHP_EOL;  }
 							
