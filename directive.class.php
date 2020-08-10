@@ -124,9 +124,8 @@ class directive {
 			[$bof,['@link'			,$nbf,&$data,'<link ', '>', '(', ')', '','']],
 			[$bof,['@filecss'		,$nbf,&$data,'<link rel="stylesheet" type="text/css" href=', '>', '(', ')', '','']],
 			[$bof,['@script'		,$nbf,&$data,'<script src=', '></script>', '(', ')', '','']],
-			[$bof,['@script+'			,$nbf,&$data,'<script ', '></script>', '(', ')', '','']],
+			[$bof,['@script+'		,$nbf,&$data,'<script ', '></script>', '(', ')', '','']],
 			[$bof,['@style'			,$nbf,&$data,'<style>', '</style>', '{', '}', '','']],
-			//[$bof,['@body'			,$nbf,&$data,'<body>','</body>', '{', '}','','']],
 			[$bop,['@body'			,$nbf,&$data,'<body □>','■</body>', '(',')',true,'{', '}', '□','■','','']],
 	
 
