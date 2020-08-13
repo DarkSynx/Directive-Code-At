@@ -1,9 +1,17 @@
 # <img src='logo.png' /><br/> PHP 7.4
 
-###### LISTING DIRECTIVE
-correct use of syntax
+###### USE DIRECTIVE.class.php
+```PHP
+<?php
+	
+	$userpage = new directive('userpage.cat');	
+	$userpage->get_directive();
+	$userpage->cache_it();
+	include CACHE . 'userpage.cat.php';
 
-
+?>
+```
+###### correct use of syntax
 NN: represents the functions that have NO obligation to add the { }. 
 
 CB: represents the functions that have obligation to add the { }. 
@@ -40,7 +48,7 @@ Exemple code :
     }
   @endpage 
 ```
-
+###### LISTING DIRECTIVE
 ```PHP
 @include( 'link file.php' ) 
 
