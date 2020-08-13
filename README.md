@@ -1,6 +1,15 @@
 # <img src='logo.png' /><br/> PHP 7.4
 
 ###### LISTING DIRECTIVE
+correct use of syntax
+
+| Bad Syntax|
+|:---|
+| @div{  @i(class='icon-font-foobar') }
+
+| Good Syntax|
+|:---|
+| @div{  @i(class='icon-font-foobar'){ } } |
 
 ```PHP
 @include( 'link file.php' ) 
