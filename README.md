@@ -3,7 +3,7 @@
 ###### LISTING DIRECTIVE
 
 ```PHP
-@include( 'link file.php' )
+@include( 'link file.php' ) 
 
 @structure( 'link file.seg' ){ 
   |TITLE~'MYTITLE'
