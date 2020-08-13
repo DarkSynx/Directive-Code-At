@@ -1,5 +1,8 @@
 # <img src='logo.png' /><br/> PHP 7.4
 
+###### @test
+```PHP
+
 @include( value 1 )
 @structure( value 1 ){ value 2 }
 @getfile( value 1 )
@@ -7,17 +10,14 @@
 @phpsegment( value 1 ){ value 2 }
 @setsegment( value 1 )
 @endsegment
-
 @dowhile
 @whiledo( value 1 )
 @dow( value 1 ){ value 2 }
-
 @PHP{ value 1 }
 @JSR{ value 1 }
 @JS{ value 1 }
 @JSR+{ value 1 }
 @JS+{ value 1 }
-
 @if( value 1 )
 @elseif( value 1 )
 @else
@@ -34,7 +34,6 @@
 @continue
 @default
 @endswitch
-
 @goto( value 1 )
 @label( value 1 )
 @isTRUE( value 1 )
@@ -42,14 +41,11 @@
 @isfalse( value 1 )
 @endisfalse
 @sessionstart
-
 @timetest
 @endtimetest
-
 @headpage
 @bodypage
 @endpage
-
 @html( value 1 ){ value 2 }
 @head{ value 1 }
 @title( value 1 )
@@ -61,7 +57,6 @@
 @style+{ value 1 }
 @style{ value 1 }
 @body( value 1 ){ value 2 }
-
 @blockquote( value 1 ){ value 2 }
 @figcaption( value 1 ){ value 2 }
 @colgroup( value 1 ){ value 2 }
@@ -98,9 +93,7 @@
 @aside( value 1 ){ value 2 }
 @audio( value 1 ){ value 2 }
 @embed( value 1 ){ value 2 }
-
 @input( value 1 )
-
 @label( value 1 ){ value 2 }
 @meter( value 1 ){ value 2 }
 @param( value 1 ){ value 2 }
@@ -141,9 +134,7 @@
 @svg( value 1 ){ value 2 }
 @var( value 1 ){ value 2 }
 @wbr( value 1 ){ value 2 }
-
 @br
-
 @dd( value 1 ){ value 2 }
 @dl( value 1 ){ value 2 }
 @dt( value 1 ){ value 2 }
@@ -154,9 +145,7 @@
 @h4( value 1 ){ value 2 }
 @h5( value 1 ){ value 2 }
 @h6( value 1 ){ value 2 }
-
 @hr( value 1 )
-
 @li( value 1 ){ value 2 }
 @ol( value 1 ){ value 2 }
 @rp( value 1 ){ value 2 }
@@ -170,7 +159,6 @@
 @i( value 1 ){ value 2 }
 @p( value 1 ){ value 2 }
 @q( value 1 ){ value 2 }
-
 @:{ value 1 }
 @.( value 1 ){ value 2 }
 @?< value 1 >
@@ -178,3 +166,7 @@
 @*< value 1 >
 @>{ value 1 }
 @{ value 1 }
+
+
+
+```
