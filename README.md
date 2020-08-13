@@ -5,6 +5,7 @@ correct use of syntax
 
 
 NN: represents the functions that have NO obligation to add the { }. 
+
 CB: represents the functions that have obligation to add the { }. 
 
 | Bad Syntax|
