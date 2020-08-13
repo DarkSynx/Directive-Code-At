@@ -17,7 +17,7 @@ CB: represents the functions that have obligation to add the { }.
 | Good Syntax|
 |:---|
 | @div{  @i(class='icon-font-foobar'){} } |
-| @div{  @i(class='icon-font-foobar'){foobar} } |
+| @div{  @i(class='icon-font-foobar'){foobar} } // @i is CB: (curly brackets) |
 | @div{  @i{ foobar } } |
 
 Exemple code :
