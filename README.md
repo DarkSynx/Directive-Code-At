@@ -5,7 +5,9 @@ correct use of syntax
 
 | Bad Syntax|
 |:---|
-| @div{  @i(class='icon-font-foobar') }
+| @div{  @i(class='icon-font-foobar') } |
+
+-> if you use a directive with curly brackets natively, you must use curly brackets
 
 | Good Syntax|
 |:---|
@@ -16,15 +18,15 @@ correct use of syntax
 ```PHP
 @include( 'link file.php' ) 
 
-@structure( 'link file.seg' ){ 
+CB: @structure( 'link file.seg' ){ 
   |TITLE~'MYTITLE'
   |DATA~@getfile( 'file.seg' )
 } 
 <BODY>{{TITLE}}{{DATA}}</BODY>
 
 @getfile( 'link file.seg' )
-@getsegment( 'link file.seg' ){ name segment }
-@phpsegment( 'link file.seg' ){ name segment }
+CB: @getsegment( 'link file.seg' ){ name segment }
+CB: @phpsegment( 'link file.seg' ){ name segment }
 @setsegment( name segment )
 @endsegment
 
@@ -33,7 +35,7 @@ correct use of syntax
 @whiledo( operation )
 
 //only php
-@dow( operation ){ PHP synthax }
+CB: @dow( operation ){ PHP synthax }
 
 
 @PHP{ PHP synthax }
@@ -98,7 +100,7 @@ correct use of syntax
   <body> foobar </body>
 @endpage  // </body></html>
 
-@html( attributes ){ CAT or HTML Syntax }
+CB: @html( attributes ){ CAT or HTML Syntax }
 
 @head{ CAT or HTML Syntax }
 
@@ -108,116 +110,116 @@ correct use of syntax
 @link( attributes ) // exemple @link( rel="stylesheet" type="text/css" href="foo.css" )
 @filecss( 'href css file' ) // similar to <link rel="stylesheet" type="text/css" href="foo.css"> exemple : @filecss('foo/bar.css')
 
-@script+( attributes )
-@script( attributes )
+@script+( attributes ) 
+@script( 'src script file' ) // @script( 'fobar.js' )
 
 @style+{ CSS Syntax } // similar to JS+ and JSR+ combine it all @style+ into one <style></style>
 @style{ CSS Syntax }
 
 
-@body(  attributes ){ CAT or HTML Syntax }
-@blockquote( attributes ){ CAT or HTML Syntax }
-@figcaption(  attributes ){ CAT or HTML Syntax }
-@colgroup(  attributes ){ CAT or HTML Syntax }
-@datalist( attributes ){ CAT or HTML Syntax }
-@fieldset(  attributes ){ CAT or HTML Syntax }
-@noscript(  attributes ){ CAT or HTML Syntax }
-@optgroup( attributes ){ CAT or HTML Syntax }
-@progress(  attributes ){ CAT or HTML Syntax }
-@textarea(  attributes ){ CAT or HTML Syntax }
+CB: @body(  attributes ){ CAT or HTML Syntax }
+CB: @blockquote( attributes ){ CAT or HTML Syntax }
+CB: @figcaption(  attributes ){ CAT or HTML Syntax }
+CB: @colgroup(  attributes ){ CAT or HTML Syntax }
+CB: @datalist( attributes ){ CAT or HTML Syntax }
+CB: @fieldset(  attributes ){ CAT or HTML Syntax }
+CB: @noscript(  attributes ){ CAT or HTML Syntax }
+CB: @optgroup( attributes ){ CAT or HTML Syntax }
+CB: @progress(  attributes ){ CAT or HTML Syntax }
+CB: @textarea(  attributes ){ CAT or HTML Syntax }
 @!DOCTYPE( attributes )
-@address(  attributes ){ CAT or HTML Syntax }
-@article(  attributes ){ CAT or HTML Syntax }
-@caption(  attributes ){ CAT or HTML Syntax }
-@command( attributes ){ CAT or HTML Syntax }
-@details(  attributes ){ CAT or HTML Syntax }
-@section(  attributes ){ CAT or HTML Syntax }
-@summary(  attributes ){ CAT or HTML Syntax }
-@button(  attributes ){ CAT or HTML Syntax }
-@canvas(  attributes ){ CAT or HTML Syntax }
-@figure(  attributes ){ CAT or HTML Syntax }
-@footer(  attributes ){ CAT or HTML Syntax }
-@header(  attributes ){ CAT or HTML Syntax }
-@hgroup(  attributes ){ CAT or HTML Syntax }
-@iframe(  attributes ){ CAT or HTML Syntax }
-@keygen(  attributes ){ CAT or HTML Syntax }
-@legend(  attributes ){ CAT or HTML Syntax }
-@object(  attributes ){ CAT or HTML Syntax }
-@option(  attributes ){ CAT or HTML Syntax }
-@output(  attributes ){ CAT or HTML Syntax }
-@select(  attributes ){ CAT or HTML Syntax }
-@source(  attributes ){ CAT or HTML Syntax }
-@strong(  attributes ){ CAT or HTML Syntax }
-@center(  attributes ){ CAT or HTML Syntax }
-@aside(  attributes ){ CAT or HTML Syntax }
-@audio(  attributes ){ CAT or HTML Syntax }
-@embed(  attributes ){ CAT or HTML Syntax }
+CB: @address(  attributes ){ CAT or HTML Syntax }
+CB: @article(  attributes ){ CAT or HTML Syntax }
+CB: @caption(  attributes ){ CAT or HTML Syntax }
+CB: @command( attributes ){ CAT or HTML Syntax }
+CB: @details(  attributes ){ CAT or HTML Syntax }
+CB: @section(  attributes ){ CAT or HTML Syntax }
+CB: @summary(  attributes ){ CAT or HTML Syntax }
+CB: @button(  attributes ){ CAT or HTML Syntax }
+CB: @canvas(  attributes ){ CAT or HTML Syntax }
+CB: @figure(  attributes ){ CAT or HTML Syntax }
+CB: @footer(  attributes ){ CAT or HTML Syntax }
+CB: @header(  attributes ){ CAT or HTML Syntax }
+CB: @hgroup(  attributes ){ CAT or HTML Syntax }
+CB: @iframe(  attributes ){ CAT or HTML Syntax }
+CB: @keygen(  attributes ){ CAT or HTML Syntax }
+CB: @legend(  attributes ){ CAT or HTML Syntax }
+CB: @object(  attributes ){ CAT or HTML Syntax }
+CB: @option(  attributes ){ CAT or HTML Syntax }
+CB: @output(  attributes ){ CAT or HTML Syntax }
+CB: @select(  attributes ){ CAT or HTML Syntax }
+CB: @source(  attributes ){ CAT or HTML Syntax }
+CB: @strong(  attributes ){ CAT or HTML Syntax }
+CB: @center(  attributes ){ CAT or HTML Syntax }
+CB: @aside(  attributes ){ CAT or HTML Syntax }
+CB: @audio(  attributes ){ CAT or HTML Syntax }
+CB: @embed(  attributes ){ CAT or HTML Syntax }
 @input(attributes )
-@label(  attributes ){ CAT or HTML Syntax }
-@meter(  attributes ){ CAT or HTML Syntax }
-@param(  attributes ){ CAT or HTML Syntax }
-@small(  attributes ){ CAT or HTML Syntax }
-@table(  attributes ){ CAT or HTML Syntax }
-@tbody(  attributes ){ CAT or HTML Syntax }
-@tfoot(  attributes ){ CAT or HTML Syntax }
-@thead(  attributes ){ CAT or HTML Syntax }
-@title(  attributes ){ CAT or HTML Syntax }
-@track(  attributes ){ CAT or HTML Syntax }
-@video(  attributes ){ CAT or HTML Syntax }
-@abbr(  attributes ){ CAT or HTML Syntax }
-@area(  attributes ){ CAT or HTML Syntax }
-@base(  attributes ){ CAT or HTML Syntax }
-@cite(  attributes ){ CAT or HTML Syntax }
-@code(  attributes ){ CAT or HTML Syntax }
-@form(  attributes ){ CAT or HTML Syntax }
-@mark(  attributes ){ CAT or HTML Syntax }
-@math(  attributes ){ CAT or HTML Syntax }
-@menu(  attributes ){ CAT or HTML Syntax }
-@ruby(  attributes ){ CAT or HTML Syntax }
-@samp(  attributes ){ CAT or HTML Syntax }
-@span(  attributes ){ CAT or HTML Syntax }
-@time(  attributes ){ CAT or HTML Syntax }
-@bdo(  attributes ){ CAT or HTML Syntax }
-@col(  attributes ){ CAT or HTML Syntax }
-@del(  attributes ){ CAT or HTML Syntax }
-@dfn(  attributes ){ CAT or HTML Syntax }
-@div(  attributes ){ CAT or HTML Syntax }
-@img(  attributes ){ CAT or HTML Syntax }
-@ins(  attributes ){ CAT or HTML Syntax }
-@kbd(  attributes ){ CAT or HTML Syntax }
-@map(  attributes ){ CAT or HTML Syntax }
-@nav(  attributes ){ CAT or HTML Syntax }
-@pre(  attributes ){ CAT or HTML Syntax }
-@sub(  attributes ){ CAT or HTML Syntax }
-@sup(  attributes ){ CAT or HTML Syntax }
-@svg(  attributes ){ CAT or HTML Syntax }
-@var(  attributes ){ CAT or HTML Syntax }
-@wbr(  attributes ){ CAT or HTML Syntax }
+CB: @label(  attributes ){ CAT or HTML Syntax }
+CB: @meter(  attributes ){ CAT or HTML Syntax }
+CB: @param(  attributes ){ CAT or HTML Syntax }
+CB: @small(  attributes ){ CAT or HTML Syntax }
+CB: @table(  attributes ){ CAT or HTML Syntax }
+CB: @tbody(  attributes ){ CAT or HTML Syntax }
+CB: @tfoot(  attributes ){ CAT or HTML Syntax }
+CB: @thead(  attributes ){ CAT or HTML Syntax }
+CB: @title(  attributes ){ CAT or HTML Syntax }
+CB: @track(  attributes ){ CAT or HTML Syntax }
+CB: @video(  attributes ){ CAT or HTML Syntax }
+CB: @abbr(  attributes ){ CAT or HTML Syntax }
+CB: @area(  attributes ){ CAT or HTML Syntax }
+CB: @base(  attributes ){ CAT or HTML Syntax }
+CB: @cite(  attributes ){ CAT or HTML Syntax }
+CB: @code(  attributes ){ CAT or HTML Syntax }
+CB: @form(  attributes ){ CAT or HTML Syntax }
+CB: @mark(  attributes ){ CAT or HTML Syntax }
+CB: @math(  attributes ){ CAT or HTML Syntax }
+CB: @menu(  attributes ){ CAT or HTML Syntax }
+CB: @ruby(  attributes ){ CAT or HTML Syntax }
+CB: @samp(  attributes ){ CAT or HTML Syntax }
+CB: @span(  attributes ){ CAT or HTML Syntax }
+CB: @time(  attributes ){ CAT or HTML Syntax }
+CB: @bdo(  attributes ){ CAT or HTML Syntax }
+CB: @col(  attributes ){ CAT or HTML Syntax }
+CB: @del(  attributes ){ CAT or HTML Syntax }
+CB: @dfn(  attributes ){ CAT or HTML Syntax }
+CB: @div(  attributes ){ CAT or HTML Syntax }
+CB: @img(  attributes ){ CAT or HTML Syntax }
+CB: @ins(  attributes ){ CAT or HTML Syntax }
+CB: @kbd(  attributes ){ CAT or HTML Syntax }
+CB: @map(  attributes ){ CAT or HTML Syntax }
+CB: @nav(  attributes ){ CAT or HTML Syntax }
+CB: @pre(  attributes ){ CAT or HTML Syntax }
+CB: @sub(  attributes ){ CAT or HTML Syntax }
+CB: @sup(  attributes ){ CAT or HTML Syntax }
+CB: @svg(  attributes ){ CAT or HTML Syntax }
+CB: @var(  attributes ){ CAT or HTML Syntax }
+CB: @wbr(  attributes ){ CAT or HTML Syntax }
 @br
-@dd(  attributes ){ CAT or HTML Syntax }
-@dl(  attributes ){ CAT or HTML Syntax }
-@dt(  attributes ){ CAT or HTML Syntax }
-@em(  attributes ){ CAT or HTML Syntax }
-@h1(  attributes ){ CAT or HTML Syntax }
-@h2(  attributes ){ CAT or HTML Syntax }
-@h3(  attributes ){ CAT or HTML Syntax }
-@h4(  attributes ){ CAT or HTML Syntax }
-@h5(  attributes ){ CAT or HTML Syntax }
-@h6(  attributes ){ CAT or HTML Syntax }
+CB: @dd(  attributes ){ CAT or HTML Syntax }
+CB: @dl(  attributes ){ CAT or HTML Syntax }
+CB: @dt(  attributes ){ CAT or HTML Syntax }
+CB: @em(  attributes ){ CAT or HTML Syntax }
+CB: @h1(  attributes ){ CAT or HTML Syntax }
+CB: @h2(  attributes ){ CAT or HTML Syntax }
+CB: @h3(  attributes ){ CAT or HTML Syntax }
+CB: @h4(  attributes ){ CAT or HTML Syntax }
+CB: @h5(  attributes ){ CAT or HTML Syntax }
+CB: @h6(  attributes ){ CAT or HTML Syntax }
 @hr( attributes )
-@li(  attributes ){ CAT or HTML Syntax }
-@ol(  attributes ){ CAT or HTML Syntax }
-@rp(  attributes ){ CAT or HTML Syntax }
-@rt(  attributes ){ CAT or HTML Syntax }
-@td(  attributes ){ CAT or HTML Syntax }
-@th(  attributes ){ CAT or HTML Syntax }
-@tr(  attributes ){ CAT or HTML Syntax }
-@ul(  attributes ){ CAT or HTML Syntax }
-@a(  attributes ){ CAT or HTML Syntax }
-@b(  attributes ){ CAT or HTML Syntax }
-@i(  attributes ){ CAT or HTML Syntax }
-@p(  attributes ){ CAT or HTML Syntax }
-@q(  attributes ){ CAT or HTML Syntax }
+CB: @li(  attributes ){ CAT or HTML Syntax }
+CB: @ol(  attributes ){ CAT or HTML Syntax }
+CB: @rp(  attributes ){ CAT or HTML Syntax }
+CB: @rt(  attributes ){ CAT or HTML Syntax }
+CB: @td(  attributes ){ CAT or HTML Syntax }
+CB: @th(  attributes ){ CAT or HTML Syntax }
+CB: @tr(  attributes ){ CAT or HTML Syntax }
+CB: @ul(  attributes ){ CAT or HTML Syntax }
+CB: @a(  attributes ){ CAT or HTML Syntax }
+CB: @b(  attributes ){ CAT or HTML Syntax }
+CB: @i(  attributes ){ CAT or HTML Syntax }
+CB: @p(  attributes ){ CAT or HTML Syntax }
+CB: @q(  attributes ){ CAT or HTML Syntax }
 
 @:{ value 1 } // Alias of @PHP for small phpcode exemple: @:{ $_SESSION['foo'] = 'bar'; }
 @. // concatenation @{test}@.@{test2}
