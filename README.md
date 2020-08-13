@@ -4,8 +4,7 @@
 ```PHP
 <?php
 	
-	$userpage = new directive('userpage.cat');	
-	$userpage->get_directive();
+	$userpage = new directive('userpage.cat');
 	$userpage->cache_it();
 	include CACHE . 'userpage.cat.php';
 
