@@ -1,171 +1,222 @@
 # <img src='logo.png' /><br/> PHP 7.4
 
-###### @test
-```PHP
+###### LISTING DIRECTIVE
 
-@include( value 1 )
-@structure( value 1 ){ value 2 }
-@getfile( value 1 )
-@getsegment( value 1 ){ value 2 }
-@phpsegment( value 1 ){ value 2 }
-@setsegment( value 1 )
+```PHP
+@include( 'link file.php' )
+
+@structure( 'link file.seg' ){ 
+  |TITLE~'MYTITLE'
+  |DATA~@getfile( 'file.seg' )
+} 
+<BODY>{{TITLE}}{{DATA}}</BODY>
+
+@getfile( 'link file.seg' )
+@getsegment( 'link file.seg' ){ name segment }
+@phpsegment( 'link file.seg' ){ name segment }
+@setsegment( name segment )
 @endsegment
-@dowhile
-@whiledo( value 1 )
-@dow( value 1 ){ value 2 }
-@PHP{ value 1 }
-@JSR{ value 1 }
-@JS{ value 1 }
-@JSR+{ value 1 }
-@JS+{ value 1 }
-@if( value 1 )
-@elseif( value 1 )
+
+@dowhile // only html
+<body> foobar </body>
+@whiledo( operation )
+
+//only php
+@dow( operation ){ PHP synthax }
+
+
+@PHP{ PHP synthax }
+@JSR{ JavaScript synthax width '$(document).ready' }
+@JS{ JavaScript synthax }
+
+// JSR+ and JS+ will harvest it all and combine it all into one <script></script>
+@JSR+{ JavaScript synthax  } 
+@JS+{ JavaScript synthax  }
+
+@if( PHP synthax  )
+<body> foo </body>
+@elseif( PHP synthax  )
+<body> boo </body>
 @else
+<body> bar </body>
 @endif
-@foreach( value 1 )
+
+
+@foreach( PHP synthax )
+<body> foobar </body>
 @endforeach
-@for( value 1 )
+
+@for( PHP synthax )
+<body> foobar </body>
 @endfor
-@while( value 1 )
+
+@while( PHP synthax )
+<body> foobar </body>
 @endwhile
-@switch( value 1 )
-@case( value 1 )
+
+@switch( PHP synthax )
+@case( PHP synthax )
+<body> foobar1 </body>
 @break
 @continue
 @default
+<body> foobar2 </body>
 @endswitch
-@goto( value 1 )
-@label( value 1 )
-@isTRUE( value 1 )
+
+
+@goto( 'name label' )
+@label( 'name label' )
+
+@isTRUE( PHP synthax )
+<body> foobar </body>
 @endisTRUE
-@isfalse( value 1 )
+
+@isfalse( PHP synthax )
+<body> foobar </body>
 @endisfalse
-@sessionstart
-@timetest
+
+@sessionstart // PHP session start
+
+@timetest // test time execut
+<body> foobar </body>
 @endtimetest
-@headpage
-@bodypage
-@endpage
-@html( value 1 ){ value 2 }
-@head{ value 1 }
-@title( value 1 )
-@meta( value 1 )
-@link( value 1 )
-@filecss( value 1 )
-@script+( value 1 )
-@script( value 1 )
-@style+{ value 1 }
-@style{ value 1 }
-@body( value 1 ){ value 2 }
-@blockquote( value 1 ){ value 2 }
-@figcaption( value 1 ){ value 2 }
-@colgroup( value 1 ){ value 2 }
-@datalist( value 1 ){ value 2 }
-@fieldset( value 1 ){ value 2 }
-@noscript( value 1 ){ value 2 }
-@optgroup( value 1 ){ value 2 }
-@progress( value 1 ){ value 2 }
-@textarea( value 1 ){ value 2 }
-@!DOCTYPE( value 1 )
-@address( value 1 ){ value 2 }
-@article( value 1 ){ value 2 }
-@caption( value 1 ){ value 2 }
-@command( value 1 ){ value 2 }
-@details( value 1 ){ value 2 }
-@section( value 1 ){ value 2 }
-@summary( value 1 ){ value 2 }
-@button( value 1 ){ value 2 }
-@canvas( value 1 ){ value 2 }
-@figure( value 1 ){ value 2 }
-@footer( value 1 ){ value 2 }
-@header( value 1 ){ value 2 }
-@hgroup( value 1 ){ value 2 }
-@iframe( value 1 ){ value 2 }
-@keygen( value 1 ){ value 2 }
-@legend( value 1 ){ value 2 }
-@object( value 1 ){ value 2 }
-@option( value 1 ){ value 2 }
-@output( value 1 ){ value 2 }
-@select( value 1 ){ value 2 }
-@source( value 1 ){ value 2 }
-@strong( value 1 ){ value 2 }
-@center( value 1 ){ value 2 }
-@aside( value 1 ){ value 2 }
-@audio( value 1 ){ value 2 }
-@embed( value 1 ){ value 2 }
-@input( value 1 )
-@label( value 1 ){ value 2 }
-@meter( value 1 ){ value 2 }
-@param( value 1 ){ value 2 }
-@small( value 1 ){ value 2 }
-@table( value 1 ){ value 2 }
-@tbody( value 1 ){ value 2 }
-@tfoot( value 1 ){ value 2 }
-@thead( value 1 ){ value 2 }
-@title( value 1 ){ value 2 }
-@track( value 1 ){ value 2 }
-@video( value 1 ){ value 2 }
-@abbr( value 1 ){ value 2 }
-@area( value 1 ){ value 2 }
-@base( value 1 ){ value 2 }
-@cite( value 1 ){ value 2 }
-@code( value 1 ){ value 2 }
-@form( value 1 ){ value 2 }
-@mark( value 1 ){ value 2 }
-@math( value 1 ){ value 2 }
-@menu( value 1 ){ value 2 }
-@ruby( value 1 ){ value 2 }
-@samp( value 1 ){ value 2 }
-@span( value 1 ){ value 2 }
-@time( value 1 ){ value 2 }
-@bdo( value 1 ){ value 2 }
-@col( value 1 ){ value 2 }
-@del( value 1 ){ value 2 }
-@dfn( value 1 ){ value 2 }
-@div( value 1 ){ value 2 }
-@img( value 1 ){ value 2 }
-@ins( value 1 ){ value 2 }
-@kbd( value 1 ){ value 2 }
-@map( value 1 ){ value 2 }
-@nav( value 1 ){ value 2 }
-@pre( value 1 ){ value 2 }
-@sub( value 1 ){ value 2 }
-@sup( value 1 ){ value 2 }
-@svg( value 1 ){ value 2 }
-@var( value 1 ){ value 2 }
-@wbr( value 1 ){ value 2 }
+
+@headpage // <html></head>
+  <link rel="icon" type="image/svg+xml" href="atomes/foobar.svg">
+@bodypage // </head><body>
+  <body> foobar </body>
+@endpage  // </body></html>
+
+@html( attributes ){ CAT or HTML Syntax }
+
+@head{ CAT or HTML Syntax }
+
+@title( 'String title' )
+@meta( attributes )
+
+@link( attributes ) // exemple @link( rel="stylesheet" type="text/css" href="foo.css" )
+@filecss( 'href css file' ) // similar to <link rel="stylesheet" type="text/css" href="foo.css"> exemple : @filecss('foo/bar.css')
+
+@script+( attributes )
+@script( attributes )
+
+@style+{ CSS Syntax } // similar to JS+ and JSR+ combine it all @style+ into one <style></style>
+@style{ CSS Syntax }
+
+
+@body(  attributes ){ CAT or HTML Syntax }
+@blockquote( attributes ){ CAT or HTML Syntax }
+@figcaption(  attributes ){ CAT or HTML Syntax }
+@colgroup(  attributes ){ CAT or HTML Syntax }
+@datalist( attributes ){ CAT or HTML Syntax }
+@fieldset(  attributes ){ CAT or HTML Syntax }
+@noscript(  attributes ){ CAT or HTML Syntax }
+@optgroup( attributes ){ CAT or HTML Syntax }
+@progress(  attributes ){ CAT or HTML Syntax }
+@textarea(  attributes ){ CAT or HTML Syntax }
+@!DOCTYPE( attributes )
+@address(  attributes ){ CAT or HTML Syntax }
+@article(  attributes ){ CAT or HTML Syntax }
+@caption(  attributes ){ CAT or HTML Syntax }
+@command( attributes ){ CAT or HTML Syntax }
+@details(  attributes ){ CAT or HTML Syntax }
+@section(  attributes ){ CAT or HTML Syntax }
+@summary(  attributes ){ CAT or HTML Syntax }
+@button(  attributes ){ CAT or HTML Syntax }
+@canvas(  attributes ){ CAT or HTML Syntax }
+@figure(  attributes ){ CAT or HTML Syntax }
+@footer(  attributes ){ CAT or HTML Syntax }
+@header(  attributes ){ CAT or HTML Syntax }
+@hgroup(  attributes ){ CAT or HTML Syntax }
+@iframe(  attributes ){ CAT or HTML Syntax }
+@keygen(  attributes ){ CAT or HTML Syntax }
+@legend(  attributes ){ CAT or HTML Syntax }
+@object(  attributes ){ CAT or HTML Syntax }
+@option(  attributes ){ CAT or HTML Syntax }
+@output(  attributes ){ CAT or HTML Syntax }
+@select(  attributes ){ CAT or HTML Syntax }
+@source(  attributes ){ CAT or HTML Syntax }
+@strong(  attributes ){ CAT or HTML Syntax }
+@center(  attributes ){ CAT or HTML Syntax }
+@aside(  attributes ){ CAT or HTML Syntax }
+@audio(  attributes ){ CAT or HTML Syntax }
+@embed(  attributes ){ CAT or HTML Syntax }
+@input(attributes )
+@label(  attributes ){ CAT or HTML Syntax }
+@meter(  attributes ){ CAT or HTML Syntax }
+@param(  attributes ){ CAT or HTML Syntax }
+@small(  attributes ){ CAT or HTML Syntax }
+@table(  attributes ){ CAT or HTML Syntax }
+@tbody(  attributes ){ CAT or HTML Syntax }
+@tfoot(  attributes ){ CAT or HTML Syntax }
+@thead(  attributes ){ CAT or HTML Syntax }
+@title(  attributes ){ CAT or HTML Syntax }
+@track(  attributes ){ CAT or HTML Syntax }
+@video(  attributes ){ CAT or HTML Syntax }
+@abbr(  attributes ){ CAT or HTML Syntax }
+@area(  attributes ){ CAT or HTML Syntax }
+@base(  attributes ){ CAT or HTML Syntax }
+@cite(  attributes ){ CAT or HTML Syntax }
+@code(  attributes ){ CAT or HTML Syntax }
+@form(  attributes ){ CAT or HTML Syntax }
+@mark(  attributes ){ CAT or HTML Syntax }
+@math(  attributes ){ CAT or HTML Syntax }
+@menu(  attributes ){ CAT or HTML Syntax }
+@ruby(  attributes ){ CAT or HTML Syntax }
+@samp(  attributes ){ CAT or HTML Syntax }
+@span(  attributes ){ CAT or HTML Syntax }
+@time(  attributes ){ CAT or HTML Syntax }
+@bdo(  attributes ){ CAT or HTML Syntax }
+@col(  attributes ){ CAT or HTML Syntax }
+@del(  attributes ){ CAT or HTML Syntax }
+@dfn(  attributes ){ CAT or HTML Syntax }
+@div(  attributes ){ CAT or HTML Syntax }
+@img(  attributes ){ CAT or HTML Syntax }
+@ins(  attributes ){ CAT or HTML Syntax }
+@kbd(  attributes ){ CAT or HTML Syntax }
+@map(  attributes ){ CAT or HTML Syntax }
+@nav(  attributes ){ CAT or HTML Syntax }
+@pre(  attributes ){ CAT or HTML Syntax }
+@sub(  attributes ){ CAT or HTML Syntax }
+@sup(  attributes ){ CAT or HTML Syntax }
+@svg(  attributes ){ CAT or HTML Syntax }
+@var(  attributes ){ CAT or HTML Syntax }
+@wbr(  attributes ){ CAT or HTML Syntax }
 @br
-@dd( value 1 ){ value 2 }
-@dl( value 1 ){ value 2 }
-@dt( value 1 ){ value 2 }
-@em( value 1 ){ value 2 }
-@h1( value 1 ){ value 2 }
-@h2( value 1 ){ value 2 }
-@h3( value 1 ){ value 2 }
-@h4( value 1 ){ value 2 }
-@h5( value 1 ){ value 2 }
-@h6( value 1 ){ value 2 }
-@hr( value 1 )
-@li( value 1 ){ value 2 }
-@ol( value 1 ){ value 2 }
-@rp( value 1 ){ value 2 }
-@rt( value 1 ){ value 2 }
-@td( value 1 ){ value 2 }
-@th( value 1 ){ value 2 }
-@tr( value 1 ){ value 2 }
-@ul( value 1 ){ value 2 }
-@a( value 1 ){ value 2 }
-@b( value 1 ){ value 2 }
-@i( value 1 ){ value 2 }
-@p( value 1 ){ value 2 }
-@q( value 1 ){ value 2 }
-@:{ value 1 }
-@.( value 1 ){ value 2 }
-@?< value 1 >
-@!< value 1 >
-@*< value 1 >
-@>{ value 1 }
-@{ value 1 }
+@dd(  attributes ){ CAT or HTML Syntax }
+@dl(  attributes ){ CAT or HTML Syntax }
+@dt(  attributes ){ CAT or HTML Syntax }
+@em(  attributes ){ CAT or HTML Syntax }
+@h1(  attributes ){ CAT or HTML Syntax }
+@h2(  attributes ){ CAT or HTML Syntax }
+@h3(  attributes ){ CAT or HTML Syntax }
+@h4(  attributes ){ CAT or HTML Syntax }
+@h5(  attributes ){ CAT or HTML Syntax }
+@h6(  attributes ){ CAT or HTML Syntax }
+@hr( attributes )
+@li(  attributes ){ CAT or HTML Syntax }
+@ol(  attributes ){ CAT or HTML Syntax }
+@rp(  attributes ){ CAT or HTML Syntax }
+@rt(  attributes ){ CAT or HTML Syntax }
+@td(  attributes ){ CAT or HTML Syntax }
+@th(  attributes ){ CAT or HTML Syntax }
+@tr(  attributes ){ CAT or HTML Syntax }
+@ul(  attributes ){ CAT or HTML Syntax }
+@a(  attributes ){ CAT or HTML Syntax }
+@b(  attributes ){ CAT or HTML Syntax }
+@i(  attributes ){ CAT or HTML Syntax }
+@p(  attributes ){ CAT or HTML Syntax }
+@q(  attributes ){ CAT or HTML Syntax }
+
+@:{ value 1 } // Alias of @PHP for small phpcode exemple: @:{ $_SESSION['foo'] = 'bar'; }
+@. // concatenation @{test}@.@{test2}
+
+@?< value 1 > // comment CAT 
+@!< value 1 > // comment HTML
+@*< value 1 > // comment PHP
+
+@>{ value 1 } // for test use @>{$test} equal to echo $test
+@{ Name Var PHP } // for $test use @{test} equal to echo $test
 
 
 
