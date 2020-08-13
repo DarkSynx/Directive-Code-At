@@ -26,6 +26,8 @@ class directive {
 	private $_jsr_plus = false;
 	private $_js_plus = false;
 	
+	private $_optimised = true;
+	
 	PRIVATE $_CAT = CAT; /// <--------- DEFINE CAT
 	PRIVATE $_CACHE = CACHE; /// <----- DEFINE CACHE
 	
@@ -45,9 +47,37 @@ class directive {
 	
 	public function get_directive() { 
 		$sortir = '';
-		foreach($this->gen(TRUE) as $key => $val) {
-			$sortir .= 	$key . PHP_EOL;
+		$fp = fopen( 'gen_directive.txt', 'w');
+		$directive =  $this->gen(TRUE);
+		//var_dump($directive);
+		foreach($directive as $val) {
+			
+			$rplt1 = ''; $rplt2 = '';
+			switch( $val[0] ){
+				case 'bsp':
+					$f = ['','','<?php ',' ?>','','','','','',''];
+					foreach($val[1] as $k => $l) { $f[$k] = $l; }
+				break;
+				case 'bop':
+					$f = ['',0,'', '','<?php ',' ?>','(',')','{','}'];
+					
+					foreach($val[1] as $k => $l) { $f[$k] = $l; }
+					if($f[6] != '' && $f[7] != '') { $rplt1 = $f[6] . ' value 1 ' . $f[7]; }
+					if($f[8] != '' && $f[9] != '') { $rplt2 = $f[8] . ' value 2 ' . $f[9]; }
+					
+				break;
+				case 'bof':
+					$f = ['',0,'', '','(',')','<?php ',' ?>','',''];
+					foreach($val[1] as $k => $l) { $f[$k] = $l; }
+					if($f[4] != '' && $f[5] != '') { $rplt1 = $f[4] . ' value 1 ' . $f[5]; }
+				break;
+			}
+			
+			
+
+			fwrite($fp, $f[0]  . $rplt1 . $rplt2  . PHP_EOL  );
 		}
+		fclose($fp);
 		return $sortir;
 	}
 	
@@ -75,10 +105,10 @@ class directive {
 			// toujours au début get
 			['bop',['@include'		,0,'include_once( [#1]',');','<?php ',' ?>','(',')','', '', '[#1]','']],
 
-			['bop',['@structure'	,0,]],
+			['bop',['@structure'	,0]],
 			['bop',['@getfile'		,0,'', '','<?php ',' ?>','(',')','','','[#1]','',FALSE]],
-			['bop',['@getsegment'	,0,]],
-			['bop',['@phpsegment'	,0,]],
+			['bop',['@getsegment'	,0]],
+			['bop',['@phpsegment'	,0]],
 			
 			['bof',['@setsegment'	,0,'<!--SEGMENT:', '','(',')','','']],
 			['bsp',['@endsegment' 	,'-->','','']],
@@ -166,6 +196,7 @@ class directive {
 			['bop',['@optgroup'		,0,'<optgroup [#1]>','[#2]</optgroup>', '','']],
 			['bop',['@progress'		,0,'<progress [#1]>','[#2]</progress>', '','']],
 			['bop',['@textarea'		,0,'<textarea [#1]>','[#2]</textarea>', '','']],
+			
 			['bop',['@!DOCTYPE'		,0,'<!DOCTYPE  [#1]','>', '','','(',')','', '', '[#1]','',]],
 			
 			['bop',['@address'		,0,'<address [#1]>','[#2]</address>', '','']],
@@ -273,7 +304,7 @@ class directive {
 			['bop',['@q'			,0,'<q [#1]>','[#2]</q>', '','']],
 			
 			['bof',['@:'			,0,'',';','{','}']], // affiche son resulta
-			['bop',['@.'			,0,'','', '','',]], // comment cat invisible
+			['bop',['@.'			,0,'','', '','','','','','']], // comment cat invisible
 			['bop',['@?'			,0,'','', '','','<','>','', '', '[#1]','']], // comment cat invisible
 			['bof',['@!'			,0,'','','<','>','<!-- ',' -->']], // comment html
 			['bof',['@*'			,0,'/* $','*/','<','>']], // comment php
@@ -288,7 +319,8 @@ class directive {
 		// préparation création d'un tableau de revers
 		$tabloc = array();	
 		foreach($tags as $k => $fnc) { $tabloc[$fnc[1][0]] = $k; }
-		if($rerturn_tag) { return $tabloc; }
+		
+		if($rerturn_tag) { return $tags; }
 		
 		// on charge les fichier des fonctions qui load du code
 		$rx = ['@structure' => 0,'@getfile' => 0,'@getsegment' => 0, '@phpsegment' => 0];
@@ -314,7 +346,7 @@ class directive {
 		// on le refabrique
 		$hashdata = hash('adler32',$data);
 		$filehash = @file_get_contents( $this->_CACHE . $this->_filename . '.hash');
-		if($hashdata /*= $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0)*/ ) {
+		if($hashdata = $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
 		
 			$fp = fopen( $this->_CACHE . $this->_filename . '.hash', 'w');
 			fwrite($fp, $hashdata);
@@ -370,42 +402,42 @@ class directive {
 		
 		
 		
-		$optimised = false;
-		if($optimised) {
 		
-		$data = str_replace(
-		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n", "\r\n", "\r\r", "\t\t\t", "\t\t","\r ","\r  ","  "], 
-		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n", "\r","\r","\t","\t","\r","\r"," "], $data);
+		if($this->_optimised) {
 		
-		
-		$x = strlen($data);
-		$tabp = [chr(32),"\t","\0","\r","\n","<"];
-		for($l=0; $l < $x; $l++) {
-			if(substr($data,$l, 2) == '?>') {
-				//echo '[',substr($data,$l,2),']', PHP_EOL;
+				$data = str_replace(
+				["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n", "\r\n", "\r\r", "\t\t\t", "\t\t","\r ","\r  ","  "], 
+				["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n", "\r","\r","\t","\t","\r","\r"," "], $data);
 				
-				for($z=$l+2; $z < $x; $z++) {
-					
-					if(in_array($data[$z],$tabp)) {
+				
+				$x = strlen($data);
+				$tabp = [chr(32),"\t","\0","\r","\n","<"];
+				for($l=0; $l < $x; $l++) {
+					if(substr($data,$l, 2) == '?>') {
+						//echo '[',substr($data,$l,2),']', PHP_EOL;
 						
-							if(substr($data,$z, 5) == '<?php') {
+						for($z=$l+2; $z < $x; $z++) {
+							
+							if(in_array($data[$z],$tabp)) {
+								
+									if(substr($data,$z, 5) == '<?php') {
 
-							$data = substr_replace($data, chr(32), $l, (($z - $l)+5) );
-						
-							
-							$l = $z+5;
-							break;
-							
-							}
-						
-					 
-					} else{ break;}
+									$data = substr_replace($data, chr(32), $l, (($z - $l)+5) );
+								
+									
+									$l = $z+5;
+									break;
+									
+									}
+								
+							 
+							} else{ break;}
+						}
+					}
 				}
-			}
-		}
-		
-		
-		$data = $this->sanitize_output($data);
+				
+				
+				$data = $this->sanitize_output($data);
 		}
 
 
