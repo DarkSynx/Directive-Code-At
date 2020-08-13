@@ -1,7 +1,13 @@
 <?php 
 /*
  USE 7.4
+ 
+ !!! INITIALISING CAT AND CACHE DEFINE !!!
+ 
 */
+
+
+
 class directive {
 	
 	private $_final_page;
@@ -39,217 +45,219 @@ class directive {
 		}
 	}
 	
-	private function gen($rerturn_tag=FALSE,$optimised=TRUE,$timetest=false) {
+	private function gen($rerturn_tag=FALSE,$optimised=TRUE,$timetest=true) {
 		
+		global 	$data;
 		$iner_var = array();
 		$data = $this->_data;
 		
-		$bop = [$this,'bop'];
-		$bof = [$this,'bof'];
-		$bsp = [$this,'bsp'];
-		
-		$nbf = 0;
 		
 		$tags = [
 		
 		
 			// toujours au début get
-			[$bop,['@structure'		,$nbf,&$data,'', '','(',')','','{','}','□','■']],
-			[$bop,['@include'		,$nbf,&$data,'<?php include_once( CAT . □); ','?>', '(',')',true,'', '', '□','','','']],
-			[$bop,['@getfile'		,$nbf,&$data,'', '','(',')',FALSE,'','','□','']],
-			[$bop,['@getsegment'	,$nbf,&$data,'', '','(',')','','{','}','□','■']],
-			[$bop,['@phpsegment'	,$nbf,&$data,'', '','(',')','','{','}','□','■']],
-			[$bof,['@setsegment'	,$nbf,&$data,'<!--SEGMENT:', '','(',')','','']],
-			[$bsp,['@endsegment' 	,$nbf,&$data,'-->','','']],
+			['bop',['@include'		,0,'include_once( CAT . □',');','<?php ',' ?>','(',')','', '', '□','']],
+
+			['bop',['@structure'	,0,]],
+			['bop',['@getfile'		,0,'', '','<?php ',' ?>','(',')','','','□','',FALSE]],
+			['bop',['@getsegment'	,0,]],
+			['bop',['@phpsegment'	,0,]],
+			
+			['bof',['@setsegment'	,0,'<!--SEGMENT:', '','(',')','','']],
+			['bsp',['@endsegment' 	,'-->','','']],
 
 
-			[$bof,['@setvar'		,$nbf,&$data]], // initialisé des variables
-			[$bof,['@unsetvar'		,$nbf,&$data,'unset(',');']], // initialisé des variables
-			[$bop,['@use'			,$nbf,&$data,'',');',':',')']], // utilisé une function 
-			[$bop,['@instancy'		,$nbf,&$data,'□ = new ', '■;','(',')',FALSE,'{','}','□','■']], // instancier l'objet
-			[$bof,['@object'		,$nbf,&$data,'', ';']], // utilisé un objet
-			[$bop,['@setclass'		,$nbf,&$data,'class □ ', '{■}','(',')',FALSE,'{','}','□','■']],	// créé des class		
+			['bof',['@setvar'		,0]], // initialisé des variables
+			['bof',['@unsetvar'		,0,'unset(',');']], // initialisé des variables
+			['bop',['@use'			,0,'',');','<?php ',' ?>',':',')']], // utilisé une function 
+			['bop',['@instancy'		,0,'□ = new ', '■;','<?php ',' ?>','(',')','{','}','□','■',FALSE]], // instancier l'objet
+			['bof',['@object'		,0,'', ';']], // utilisé un objet
+			['bop',['@setclass'		,0,'class □ ', '{■}','<?php ',' ?>','(',')','{','}','□','■',FALSE]],	// créé des class		
 		
-			[$bsp,['@dowhile'		,$nbf,&$data,"do{ echo <<<END\r\n",'<?php ','']],
-			[$bof,['@whiledo'		,$nbf,&$data,"\r\nEND;\r\n}while(", ');','(',')','']],
-			[$bop,['@dow'			,$nbf,&$data,'do{', '■}while(□);','(',')',',','{','}','□','■']],	
+			['bsp',['@dowhile'		,"do{ echo <<<END\r\n",'<?php ','']],
+			['bof',['@whiledo'		,0,"\r\nEND;\r\n}while(", ');','(',')','']],
+			['bop',['@dow'			,0,'do{', '■}while(□);']],	
 
-			[$bof,['@PHP'			,$nbf,&$data,'','','{','}']], // affiche son resulta
-			[$bof,['@JSR'			,$nbf,&$data,'','','{','}','<script>$( document ).ready(function() {','});</script>']], // affiche son resulta
-			[$bof,['@JS'			,$nbf,&$data,'','','{','}','<script>','</script>']], // affiche son resulta
+			['bof',['@PHP'			,0,'','','{','}']], // affiche son resulta
+			['bof',['@JSR'			,0,'','','{','}','<script>$( document ).ready(function(){','});</script>']], // affiche son resulta
+			['bof',['@JS'			,0,'','','{','}','<script>','</script>']], // affiche son resulta
 			
 
-			[$bof,['@if'			,$nbf,&$data,'if(', '):']],
-			[$bof,['@elseif'		,$nbf,&$data,'elseif(', '):']],
-			[$bsp,['@else'			,$nbf,&$data,'else:']],
-			[$bsp,['@endif'			,$nbf,&$data,'endif;']],
-			[$bof,['@foreach'		,$nbf,&$data,'foreach(','):']],
-			[$bsp,['@endforeach'	,$nbf,&$data,'endforeach;']],
-			[$bof,['@for'			,$nbf,&$data,'for(','):']],
-			[$bsp,['@endfor'		,$nbf,&$data,'endfor;']],
-			[$bof,['@while'			,$nbf,&$data,'while(','):']],
-			[$bsp,['@endwhile'		,$nbf,&$data,'endwhile;']],
-			[$bof,['@switch'		,$nbf,&$data,'switch (','):']],
-			[$bof,['@case'			,$nbf,&$data,'case (','):']],
-			[$bsp,['@break'			,$nbf,&$data,'break;']],
-			[$bsp,['@continue'		,$nbf,&$data,'continue;']],
-			[$bsp,['@default'		,$nbf,&$data,'default:']],
-			[$bsp,['@endswitch'		,$nbf,&$data,'endswitch;']],
-			[$bof,['@goto'			,$nbf,&$data,'goto ', ';']],
-			[$bof,['@label'			,$nbf,&$data,'', ':']],
+			['bof',['@if'			,0,'if(', '):']],
+			['bof',['@elseif'		,0,'elseif(', '):']],
+			['bsp',['@else'			,'else:']],
+			['bsp',['@endif'		,'endif;']],
+			['bof',['@foreach'		,0,'foreach(','):']],
+			['bsp',['@endforeach'	,'endforeach;']],
+			['bof',['@for'			,0,'for(','):']],
+			['bsp',['@endfor'		,'endfor;']],
+			['bof',['@while'		,0,'while(','):']],
+			['bsp',['@endwhile'		,'endwhile;']],
+			['bof',['@switch'		,0,'switch (','):']],
+			['bof',['@case'			,0,'case (','):']],
+			['bsp',['@break'		,'break;']],
+			['bsp',['@continue'		,'continue;']],
+			['bsp',['@default'		,'default:']],
+			['bsp',['@endswitch'	,'endswitch;']],
+			['bof',['@goto'			,0,'goto ', ';']],
+			['bof',['@label'		,0,'', ':']],
 
 			// code encapsuler 
-			[$bof,['@istrue'		,$nbf,&$data,'echo ((',")? <<<END\r\n",'(',')','<?php ', '']],
-			[$bsp,['@endistrue'		,$nbf,&$data,"\r\nEND\r\n:'');",'']],
-			[$bof,['@isfalse'		,$nbf,&$data,'echo ((',")? '':<<<END\r\n",'(',')','<?php ', '']],
-			[$bsp,['@endisfalse'	,$nbf,&$data,"\r\nEND\r\n);",'']],
+			['bof',['@isTRUE'		,0,'echo ((',")? <<<END\r\n",'(',')','<?php ', '']],
+			['bsp',['@endisTRUE'	,"\r\nEND\r\n:'');",'']],
+			['bof',['@isfalse'		,0,'echo ((',")? '':<<<END\r\n",'(',')','<?php ', '']],
+			['bsp',['@endisfalse'	,"\r\nEND\r\n);",'']],
 			
 
-			[$bsp,['@sessionstart'	,$nbf,&$data,'session_start();']],
+			['bsp',['@sessionstart'	,'session_start();']],
 
 			////////////////////////////////////
 
-			[$bsp,['@timetest'		,$nbf,&$data,'$microtime_start_test = microtime(true);']],
-			[$bsp,['@endtimetest'	,$nbf,&$data,'$microtime_end_test = microtime(true); echo round(($microtime_end_test - $microtime_start_test),4);']],
+			['bsp',['@timetest'		,'$microtime_start_test = microtime(TRUE);']],
+			['bsp',['@endtimetest'	,'$microtime_end_test = microtime(TRUE); echo round(($microtime_end_test - $microtime_start_test),4);']],
 
 
-			[$bsp,['@headpage'		,$nbf,&$data,'<html><head>','','']],
-			[$bsp,['@bodypage'		,$nbf,&$data,'</head><body>','','']],
-			[$bsp,['@endpage'		,$nbf,&$data,'</body></html>','','']],
+			['bsp',['@headpage'		,'<html><head>','','']],
+			['bsp',['@bodypage'		,'</head><body>','','']],
+			['bsp',['@endpage'		,'</body></html>','','']],
 			
-			[$bop,['@html'			,$nbf,&$data,'<html □>','■</html>', '(',')',true,'{', '}', '□','■','','']],			
-			[$bof,['@head'			,$nbf,&$data,'<head>','</head>', '{', '}', '','']],			
-			[$bof,['@title'			,$nbf,&$data,'<title>','</title>', '(', ')', '','']],
-			[$bof,['@meta'			,$nbf,&$data,'<meta ', '>', '(', ')', '','']],
-			[$bof,['@link'			,$nbf,&$data,'<link ', '>', '(', ')', '','']],
-			[$bof,['@filecss'		,$nbf,&$data,'<link rel="stylesheet" type="text/css" href=', '>', '(', ')', '','']],
-			[$bof,['@script'		,$nbf,&$data,'<script src=', '></script>', '(', ')', '','']],
-			[$bof,['@script+'		,$nbf,&$data,'<script ', '></script>', '(', ')', '','']],
-			[$bof,['@style'			,$nbf,&$data,'<style>', '</style>', '{', '}', '','']],
-			[$bop,['@body'			,$nbf,&$data,'<body □>','■</body>', '(',')',true,'{', '}', '□','■','','']],
+			['bop',['@html'			,0,'<html □>','■</html>', '','']],			
+			['bof',['@head'			,0,'<head>','</head>', '{', '}', '','']],			
+			['bof',['@title'		,0,'<title>','</title>', '(', ')', '','']],
+			['bof',['@meta'			,0,'<meta ', '>', '(', ')', '','']],
+			['bof',['@link'			,0,'<link ', '>', '(', ')', '','']],
+			['bof',['@filecss'		,0,'<link rel="stylesheet" type="text/css" href=', '>', '(', ')', '','']],
+			['bof',['@script'		,0,'<script src=', '></script>', '(', ')', '','']],
+			['bof',['@script+'		,0,'<script ', '></script>', '(', ')', '','']],
+			['bof',['@style'		,0,'<style>', '</style>', '{', '}', '','']],
+			['bop',['@body'			,0,'<body □>','■</body>', '','']],
 	
 
 			
-			[$bop,['@blockquote'	,$nbf,&$data,'<blockquote □>','■</blockquote>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@figcaption'	,$nbf,&$data,'<figcaption □>','■</figcaption>', '(',')',true,'{', '}', '□','■','','']],
+			['bop',['@blockquote'	,0,'<blockquote □>','■</blockquote>', '','']],
+			['bop',['@figcaption'	,0,'<figcaption □>','■</figcaption>', '','']],
 			
-			[$bop,['@colgroup'		,$nbf,&$data,'<colgroup □>','■</colgroup>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@datalist'		,$nbf,&$data,'<datalist □>','■</datalist>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@fieldset'		,$nbf,&$data,'<fieldset □>','■</fieldset>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@noscript'		,$nbf,&$data,'<noscript □>','■</noscript>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@optgroup'		,$nbf,&$data,'<optgroup □>','■</optgroup>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@progress'		,$nbf,&$data,'<progress □>','■</progress>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@textarea'		,$nbf,&$data,'<textarea □>','■</textarea>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@!DOCTYPE'		,$nbf,&$data,'<!DOCTYPE  □','>', '(',')',true,'', '', '□','','','']],
+			['bop',['@colgroup'		,0,'<colgroup □>','■</colgroup>', '','']],
+			['bop',['@datalist'		,0,'<datalist □>','■</datalist>', '','']],
+			['bop',['@fieldset'		,0,'<fieldset □>','■</fieldset>', '','']],
+			['bop',['@noscript'		,0,'<noscript □>','■</noscript>', '','']],
+			['bop',['@optgroup'		,0,'<optgroup □>','■</optgroup>', '','']],
+			['bop',['@progress'		,0,'<progress □>','■</progress>', '','']],
+			['bop',['@textarea'		,0,'<textarea □>','■</textarea>', '','']],
+			['bop',['@!DOCTYPE'		,0,'<!DOCTYPE  □','>', '','','(',')','', '', '□','',]],
 			
-			[$bop,['@address'		,$nbf,&$data,'<address □>','■</address>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@article'		,$nbf,&$data,'<article □>','■</article>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@caption'		,$nbf,&$data,'<caption □>','■</caption>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@command'		,$nbf,&$data,'<command □>','■</command>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@details'		,$nbf,&$data,'<details □>','■</details>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@section'		,$nbf,&$data,'<section □>','■</section>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@summary'		,$nbf,&$data,'<summary □>','■</summary>', '(',')',true,'{', '}', '□','■','','']],
+			['bop',['@address'		,0,'<address □>','■</address>', '','']],
+			['bop',['@article'		,0,'<article □>','■</article>', '','']],
+			['bop',['@caption'		,0,'<caption □>','■</caption>', '','']],
+			['bop',['@command'		,0,'<command □>','■</command>', '','']],
+			['bop',['@details'		,0,'<details □>','■</details>', '','']],
+			['bop',['@section'		,0,'<section □>','■</section>', '','']],
+			['bop',['@summary'		,0,'<summary □>','■</summary>', '','']],
 			
-			[$bop,['@button'		,$nbf,&$data,'<button □>','■</button>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@canvas'		,$nbf,&$data,'<canvas □>','■</canvas>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@figure'		,$nbf,&$data,'<figure □>','■</figure>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@footer'		,$nbf,&$data,'<footer □>','■</footer>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@header'		,$nbf,&$data,'<header □>','■</header>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@hgroup'		,$nbf,&$data,'<hgroup □>','■</hgroup>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@iframe'		,$nbf,&$data,'<iframe □>','■</iframe>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@keygen'		,$nbf,&$data,'<keygen □>','■</keygen>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@legend'		,$nbf,&$data,'<legend □>','■</legend>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@object'		,$nbf,&$data,'<object □>','■</object>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@option'		,$nbf,&$data,'<option □>','■</option>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@output'		,$nbf,&$data,'<output □>','■</output>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@select'		,$nbf,&$data,'<select □>','■</select>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@source'		,$nbf,&$data,'<source □>','■</source>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@strong'		,$nbf,&$data,'<strong □>','■</strong>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@center'		,$nbf,&$data,'<center □>','■</center>', '(',')',true,'{', '}', '□','■','','']],
+			['bop',['@button'		,0,'<button □>','■</button>', '','']],
+			['bop',['@canvas'		,0,'<canvas □>','■</canvas>', '','']],
+			['bop',['@figure'		,0,'<figure □>','■</figure>', '','']],
+			['bop',['@footer'		,0,'<footer □>','■</footer>', '','']],
+			['bop',['@header'		,0,'<header □>','■</header>', '','']],
+			['bop',['@hgroup'		,0,'<hgroup □>','■</hgroup>', '','']],
+			['bop',['@iframe'		,0,'<iframe □>','■</iframe>', '','']],
+			['bop',['@keygen'		,0,'<keygen □>','■</keygen>', '','']],
+			['bop',['@legend'		,0,'<legend □>','■</legend>', '','']],
+			['bop',['@object'		,0,'<object □>','■</object>', '','']],
+			['bop',['@option'		,0,'<option □>','■</option>', '','']],
+			['bop',['@output'		,0,'<output □>','■</output>', '','']],
+			['bop',['@select'		,0,'<select □>','■</select>', '','']],
+			['bop',['@source'		,0,'<source □>','■</source>', '','']],
+			['bop',['@strong'		,0,'<strong □>','■</strong>', '','']],
+			['bop',['@center'		,0,'<center □>','■</center>', '','']],
 			
-			[$bop,['@aside'			,$nbf,&$data,'<aside □>','■</aside>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@audio'			,$nbf,&$data,'<audio □>','■</audio>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@embed'			,$nbf,&$data,'<embed □>','■</embed>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@input'			,$nbf,&$data,'<input □' ,'>', '(',')',true,'', '', '□','','','']],
-			[$bop,['@label'			,$nbf,&$data,'<label □>','■</label>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@meter'			,$nbf,&$data,'<meter □>','■</meter>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@param'			,$nbf,&$data,'<param □>','■</param>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@small'			,$nbf,&$data,'<small □>','■</small>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@table'			,$nbf,&$data,'<table □>','■</table>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@tbody'			,$nbf,&$data,'<tbody □>','■</tbody>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@tfoot'			,$nbf,&$data,'<tfoot □>','■</tfoot>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@thead'			,$nbf,&$data,'<thead □>','■</thead>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@title'			,$nbf,&$data,'<title □>','■</title>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@track'			,$nbf,&$data,'<track □>','■</track>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@video'			,$nbf,&$data,'<video □>','■</video>', '(',')',true,'{', '}', '□','■','','']],
+			['bop',['@aside'		,0,'<aside □>','■</aside>', '','']],
+			['bop',['@audio'		,0,'<audio □>','■</audio>', '','']],
+			['bop',['@embed'		,0,'<embed □>','■</embed>', '','']],
+			['bop',['@input'		,0,'<input □' ,'>', '','','(',')','', '', '□','',]],
+			['bop',['@label'		,0,'<label □>','■</label>', '','']],
+			['bop',['@meter'		,0,'<meter □>','■</meter>', '','']],
+			['bop',['@param'		,0,'<param □>','■</param>', '','']],
+			['bop',['@small'		,0,'<small □>','■</small>', '','']],
+			['bop',['@table'		,0,'<table □>','■</table>', '','']],
+			['bop',['@tbody'		,0,'<tbody □>','■</tbody>', '','']],
+			['bop',['@tfoot'		,0,'<tfoot □>','■</tfoot>', '','']],
+			['bop',['@thead'		,0,'<thead □>','■</thead>', '','']],
+			['bop',['@title'		,0,'<title □>','■</title>', '','']],
+			['bop',['@track'		,0,'<track □>','■</track>', '','']],
+			['bop',['@video'		,0,'<video □>','■</video>', '','']],
 			
-			[$bop,['@abbr'			,$nbf,&$data,'<abbr □>','■</abbr>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@area'			,$nbf,&$data,'<area □>','■</area>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@base'			,$nbf,&$data,'<base □>','■</base>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@cite'			,$nbf,&$data,'<cite □>','■</cite>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@code'			,$nbf,&$data,'<code □>','■</code>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@form'			,$nbf,&$data,'<form □>','■</form>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@mark'			,$nbf,&$data,'<mark □>','■</mark>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@math'			,$nbf,&$data,'<math □>','■</math>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@menu'			,$nbf,&$data,'<menu □>','■</menu>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@ruby'			,$nbf,&$data,'<ruby □>','■</ruby>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@samp'			,$nbf,&$data,'<samp □>','■</samp>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@span'			,$nbf,&$data,'<span □>','■</span>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@time'			,$nbf,&$data,'<time □>','■</time>', '(',')',true,'{', '}', '□','■','','']],
 			
-			[$bop,['@bdo'			,$nbf,&$data,'<bdo □>','■</bdo>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@col'			,$nbf,&$data,'<col □>','■</col>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@del'			,$nbf,&$data,'<del □>','■</del>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@dfn'			,$nbf,&$data,'<dfn □>','■</dfn>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@div'			,$nbf,&$data,'<div □>','■</div>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@img'			,$nbf,&$data,'<img □>','■</img>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@ins'			,$nbf,&$data,'<ins □>','■</ins>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@kbd'			,$nbf,&$data,'<kbd □>','■</kbd>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@map'			,$nbf,&$data,'<map □>','■</map>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@nav'			,$nbf,&$data,'<nav □>','■</nav>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@pre'			,$nbf,&$data,'<pre □>','■</pre>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@sub'			,$nbf,&$data,'<sub □>','■</sub>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@sup'			,$nbf,&$data,'<sup □>','■</sup>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@svg'			,$nbf,&$data,'<svg □>','■</svg>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@var'			,$nbf,&$data,'<var □>','■</var>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@wbr'			,$nbf,&$data,'<wbr □>','■</wbr>', '(',')',true,'{', '}', '□','■','','']],
 			
-			[$bsp,['@br'			,$nbf,&$data,'<br></br>','','']],
+			['bop',['@abbr'			,0,'<abbr □>','■</abbr>', '','']],
+			['bop',['@area'			,0,'<area □>','■</area>', '','']],
+			['bop',['@base'			,0,'<base □>','■</base>', '','']],
+			['bop',['@cite'			,0,'<cite □>','■</cite>', '','']],
+			['bop',['@code'			,0,'<code □>','■</code>', '','']],
+			['bop',['@form'			,0,'<form □>','■</form>', '','']],
+			['bop',['@mark'			,0,'<mark □>','■</mark>', '','']],
+			['bop',['@math'			,0,'<math □>','■</math>', '','']],
+			['bop',['@menu'			,0,'<menu □>','■</menu>', '','']],
+			['bop',['@ruby'			,0,'<ruby □>','■</ruby>', '','']],
+			['bop',['@samp'			,0,'<samp □>','■</samp>', '','']],
+			['bop',['@span'			,0,'<span □>','■</span>', '','']],
+			['bop',['@time'			,0,'<time □>','■</time>', '','']],
 			
-			[$bop,['@dd'			,$nbf,&$data,'<dd □>','■</dd>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@dl'			,$nbf,&$data,'<dl □>','■</dl>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@dt'			,$nbf,&$data,'<dt □>','■</dt>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@em'			,$nbf,&$data,'<em □>','■</em>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@h1'			,$nbf,&$data,'<h1 □>','■</h1>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@h2'			,$nbf,&$data,'<h2 □>','■</h2>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@h3'			,$nbf,&$data,'<h3 □>','■</h3>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@h4'			,$nbf,&$data,'<h4 □>','■</h4>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@h5'			,$nbf,&$data,'<h5 □>','■</h5>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@h6'			,$nbf,&$data,'<h6 □>','■</h6>', '(',')',true,'{', '}', '□','■','','']],
+			['bop',['@bdo'			,0,'<bdo □>','■</bdo>', '','']],
+			['bop',['@col'			,0,'<col □>','■</col>', '','']],
+			['bop',['@del'			,0,'<del □>','■</del>', '','']],
+			['bop',['@dfn'			,0,'<dfn □>','■</dfn>', '','']],
+			['bop',['@div'			,0,'<div □>','■</div>', '','']],
+			['bop',['@img'			,0,'<img □>','■</img>', '','']],
+			['bop',['@ins'			,0,'<ins □>','■</ins>', '','']],
+			['bop',['@kbd'			,0,'<kbd □>','■</kbd>', '','']],
+			['bop',['@map'			,0,'<map □>','■</map>', '','']],
+			['bop',['@nav'			,0,'<nav □>','■</nav>', '','']],
+			['bop',['@pre'			,0,'<pre □>','■</pre>', '','']],
+			['bop',['@sub'			,0,'<sub □>','■</sub>', '','']],
+			['bop',['@sup'			,0,'<sup □>','■</sup>', '','']],
+			['bop',['@svg'			,0,'<svg □>','■</svg>', '','']],
+			['bop',['@var'			,0,'<var □>','■</var>', '','']],
+			['bop',['@wbr'			,0,'<wbr □>','■</wbr>', '','']],
 			
-			[$bop,['@hr'			,$nbf,&$data,'<hr □>','</hr>', '(',')',true,'', '', '□','','','']],
+			['bsp',['@br'			,'<br></br>','','']],
 			
-			[$bop,['@li'			,$nbf,&$data,'<li □>','■</li>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@ol'			,$nbf,&$data,'<ol □>','■</ol>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@rp'			,$nbf,&$data,'<rp □>','■</rp>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@rt'			,$nbf,&$data,'<rt □>','■</rt>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@td'			,$nbf,&$data,'<td □>','■</td>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@th'			,$nbf,&$data,'<th □>','■</th>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@tr'			,$nbf,&$data,'<tr □>','■</tr>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@ul'			,$nbf,&$data,'<ul □>','■</ul>', '(',')',true,'{', '}', '□','■','','']],
+			['bop',['@dd'			,0,'<dd □>','■</dd>', '','']],
+			['bop',['@dl'			,0,'<dl □>','■</dl>', '','']],
+			['bop',['@dt'			,0,'<dt □>','■</dt>', '','']],
+			['bop',['@em'			,0,'<em □>','■</em>', '','']],
+			['bop',['@h1'			,0,'<h1 □>','■</h1>', '','']],
+			['bop',['@h2'			,0,'<h2 □>','■</h2>', '','']],
+			['bop',['@h3'			,0,'<h3 □>','■</h3>', '','']],
+			['bop',['@h4'			,0,'<h4 □>','■</h4>', '','']],
+			['bop',['@h5'			,0,'<h5 □>','■</h5>', '','']],
+			['bop',['@h6'			,0,'<h6 □>','■</h6>', '','']],
 			
-			[$bop,['@a'				,$nbf,&$data,'<a □>','■</a>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@b'				,$nbf,&$data,'<b □>','■</b>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@i'				,$nbf,&$data,'<i □>','■</i>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@p'				,$nbf,&$data,'<p □>','■</p>', '(',')',true,'{', '}', '□','■','','']],
-			[$bop,['@q'				,$nbf,&$data,'<q □>','■</q>', '(',')',true,'{', '}', '□','■','','']],
+			['bop',['@hr'			,0,'<hr □>','</hr>', '','', '(',')','', '', '□','',]],
 			
-			[$bof,['@:'				,$nbf,&$data,'',';','{','}']], // affiche son resulta
-			[$bop,['@.'				,$nbf,&$data,'','', '','',true,'', '', '','','','']], // comment cat invisible
-			[$bop,['@?'				,$nbf,&$data,'','', '<','>',true,'', '', '□','','','']], // comment cat invisible
-			[$bof,['@!'				,$nbf,&$data,'','','<','>','<!-- ',' -->']], // comment html
-			[$bof,['@*'				,$nbf,&$data,'/* $','*/','<','>']], // comment php
-			[$bof,['@'				,$nbf,&$data,'echo $',';','{','}']], // affiche son resulta
+			['bop',['@li'			,0,'<li □>','■</li>', '','']],
+			['bop',['@ol'			,0,'<ol □>','■</ol>', '','']],
+			['bop',['@rp'			,0,'<rp □>','■</rp>', '','']],
+			['bop',['@rt'			,0,'<rt □>','■</rt>', '','']],
+			['bop',['@td'			,0,'<td □>','■</td>', '','']],
+			['bop',['@th'			,0,'<th □>','■</th>', '','']],
+			['bop',['@tr'			,0,'<tr □>','■</tr>', '','']],
+			['bop',['@ul'			,0,'<ul □>','■</ul>', '','']],
+			
+			['bop',['@a'			,0,'<a □>','■</a>', '','']],
+			['bop',['@b'			,0,'<b □>','■</b>', '','']],
+			['bop',['@i'			,0,'<i □>','■</i>', '','']],
+			['bop',['@p'			,0,'<p □>','■</p>', '','']],
+			['bop',['@q'			,0,'<q □>','■</q>', '','']],
+			
+			['bof',['@:'			,0,'',';','{','}']], // affiche son resulta
+			['bop',['@.'			,0,'','', '','',]], // comment cat invisible
+			['bop',['@?'			,0,'','', '','','<','>','', '', '□','']], // comment cat invisible
+			['bof',['@!'			,0,'','','<','>','<!-- ',' -->']], // comment html
+			['bof',['@*'			,0,'/* $','*/','<','>']], // comment php
+			['bof',['@>'			,0,'echo ',';','{','}']], // affiche son resulta
+			['bof',['@'				,0,'echo $',';','{','}']], // affiche son resulta
+			
 			
 		];
 		
@@ -268,19 +276,23 @@ class directive {
 				if($nbf > 0) {
 					$fndx = $tabloc[$fnd];
 					$tags[$fndx][1][1] = $nbf;
-					call_user_func_array($tags[$fndx][0],$tags[$fndx][1]);
+					//$tags[$fndx][1][2] = &$data;
+					call_user_func_array([$this,$tags[$fndx][0]],$tags[$fndx][1]);
+					
 				}
 			}
 			foreach($rx as $fnd => &$nbf) { $nbf = substr_count($data, $fnd); }	
 		}
-	
+		//var_dump($tags);
+		
+		unset($tags[1],$tags[2],$tags[3],$tags[4]);
 	
 		// on hash les données brute et si elle son similaire
 		// alors on recharge le fichier fabriqué sinon 
 		// on le refabrique
-		$hashdata = hash('fnv1a64',$data);
+		$hashdata = hash('adler32',$data);
 		$filehash = @file_get_contents(CACHE . $this->_filename . '.hash');
-		if($hashdata != $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
+		if($hashdata /*= $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0)*/ ) {
 		
 			$fp = fopen( CACHE . $this->_filename . '.hash', 'w');
 			fwrite($fp, $hashdata);
@@ -291,18 +303,30 @@ class directive {
 	
 		// on supprime les functions non présente dans data
 		// et on prépare les variables du talbleau
-		foreach($tags as $k => &$fnc) {
-			if(($fnc[1][1] = substr_count($data, $fnc[1][0])) == 0) {
-				unset($tags[$k]);
-			} 
+		foreach($tags as $k => &$fnc) {				
+				
+				$ctme = substr_count($data, $fnc[1][0]);
+				
+				if($fnc[0] != 'bsp' ) {
+					//echo $fnc[0] . '</br/>';
+					$fnc[1][1] = $ctme;	
+				}
+				
+				if( $ctme == 0 ) {
+					unset( $tags[$k] );
+				}
+			
 		}
+		
+		//var_dump($tags);
 		
 		if($timetest) { $time_start = microtime(true); }
-		
-		// on demarre la fabrication
-		foreach($tags as &$fnc) {
-			call_user_func_array($fnc[0],$fnc[1]);
-		}
+			
+			// on demarre la fabrication
+			foreach($tags as &$fnc) {
+				//$fnc[1][2] = &$data;
+				call_user_func_array([$this,$fnc[0]],$fnc[1]);
+			}
 		
 		if($timetest) {
 			$time_end = microtime(true);
@@ -312,9 +336,10 @@ class directive {
 		$optimised = false;
 		if($optimised) {
 		
-		$data = str_ireplace(
-		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n"], 
-		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n"], $data);
+		$data = str_replace(
+		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n", "\r\n", "\r\r", "\t\t\t", "\t\t","\r ","\r  ","  "], 
+		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n", "\r","\r","\t","\t","\r","\r"," "], $data);
+		
 		
 		$x = strlen($data);
 		$tabp = [chr(32),"\t","\0","\r","\n","<"];
@@ -327,17 +352,13 @@ class directive {
 					if(in_array($data[$z],$tabp)) {
 						
 							if(substr($data,$z, 5) == '<?php') {
-							//echo '[',substr($data,$z,5),']', PHP_EOL;
-							//echo '>>:',substr($data,$l, ($z - $l)+5),':<<', PHP_EOL;
-							
-							//$data = substr_replace($data, '/*<!-- sup -->*/', $l, (($z - $l)+5) );
-							
+
 							$data = substr_replace($data, chr(32), $l, (($z - $l)+5) );
-							//echo '>>:',$data,':<<', PHP_EOL;
+						
 							
 							$l = $z+5;
 							break;
-							//sleep(1000);
+							
 							}
 						
 					 
@@ -345,7 +366,13 @@ class directive {
 				}
 			}
 		}
+		
+		
+		$data = $this->sanitize_output($data);
 		}
+
+
+
 
 		if($timetest) {echo "execusion $time secondes\n";}
 		$this->_final_page = $data;
@@ -353,21 +380,52 @@ class directive {
 		
 	}
 	
-	private function bsp($find,$fdb,&$data,$replace,$debx='<?php ',$endx=' ?>'){
-		$data = str_ireplace($find,"$debx$replace$endx", $data);
+	private function sanitize_output($buffer) {
+
+   $search = array(
+    '/(\n|^)(\x20+|\t)/',
+    '/(\n|^)\/\/(.*?)(\n|$)/',
+    '/\n/',
+    '/\<\!--.*?-->/',
+    '/(\x20+|\t)/', # Delete multispace (Without \n)
+    '/\>\s+\</', # strip whitespaces between tags
+    '/(\"|\')\s+\>/', # strip whitespaces between quotation ("') and end tags
+    '/=\s+(\"|\')/'
+	); # strip whitespaces between = "'
+
+   $replace = array(
+    "",
+    "",
+    " ",
+    "",
+    " ",
+    "><",
+    "$1>",
+    "=$1"
+	);
+
+		$buffer = preg_replace($search, $replace, $buffer);
+
+		return $buffer;
 	}
 	
-	private function bop($find,$fdb,&$data,$deb='', $fin='',$bdeb1='(',$bfin1=')',$exp=',',$bdeb2='{',$bfin2='}',$masque1=false,$masque2=false,$debx='<?php ',$endx=' ?>',$b=0, $mex=''){
+	
+	private function bsp($find,$replace,$debx='<?php ',$endx=' ?>'){
+		//var_dump([$find,$replace,$debx,$endx]);
+		global $data;
+		$data = str_replace($find,"$debx$replace$endx", $data);
+	}
+	
+	private function bop($find,$fdb,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='□',$masque2='■',$exp=TRUE,$b=0, $mex=''){
+			
+			global $data;
 			
 			$dd = strlen($data);
 			$s = strlen($find);
 			while(--$fdb >= 0) {
-				$b = stripos($data,$find,$b);
+				$b = strpos($data,$find,$b);
 				$bs = ($b + $s);
 				if($b !== false ) {
-					
-					
-					
 					
 					
 								$nodeb1 = false;
@@ -384,7 +442,7 @@ class directive {
 								}
 								elseif( 
 								 ($data[$bs] == $bdeb1 || $data[$bs + 1] == $bdeb1 )  && 
-								 (($c = stripos($data,$bfin1,$bs)) !== false )
+								 (($c = strpos($data,$bfin1,$bs)) !== false )
 								
 								) {
 									$c = ($data[$c] == $data[$bs+1]) ? ($bs+2) : $c-=1 ;
@@ -397,101 +455,47 @@ class directive {
 											$l = substr_count( $g , $bfin1);
 											//if($find == '@getsegment') { echo $k , '==' ,$l, ' :: ',$c, PHP_EOL; }
 											if($k == $l) { break; }
-											$c = stripos($data,$bfin1, $c+1) + 1; //execusion 0.0077269077301025 secondes
+											$c = strpos($data,$bfin1, $c+1) + 1; //execusion 0.0077269077301025 secondes
 											//$c++; // execusion 0.0082950592041016 secondes
 										}
 										
 										
 										
 										$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
-										
-										
-										
-										/*
-										if($exp == ',') {
-											$t = explode($exp,$mex);
-											if($t[1] == 'PHP') {
-												$mex = $t[0];
-											}
-										}*/
+
 
 								} else { 
-								
-								//echo '<br/>',$find,':3';
-								$c = $bs;
-								//if($find == '@hr') { echo '>>',substr($data,$b,$c), "<<";  }
-								
+								$c = $bs;								
 								$nodeb1 = true; 
 								
 								}
 								
 								
-								/* original good 
-								// si les acolades existes 
+								
 								if(
-								($bdeb2 != '' || $bdeb2 !== false)
-								&& (
-										//(($data[$c] == $bdeb2) && (($e = stripos($data,$bfin2,$c+1)) !== false )) 
-										(($data[$c] == $bdeb2) && (($e = stripos($data,$bfin2,$c)) !== false )) 
-										|| 
-										(($data[$bs] == $bdeb2) && (($e = stripos($data,$bfin2,$bs)) !== false ))
-										//||
-										//(($data[$c+1] == $bdeb2) && (($e = stripos($data,$bfin2,$c+2)) !== false )) 
-										//|| 
-										//(($data[$bs+1] == $bdeb2) && (($e = stripos($data,$bfin2,$bs+1)) !== false )) 
-									
-								)
-								  ){ 
+								
+								($bdeb2 && (($e = strpos($data,$bfin2,$c)) !== false) ) //bdeb2 != '' || $bdeb2 !== false
+								&& 
+								( ($data[$c] == $bdeb2) || ($data[$c+1] == $bdeb2) )
+								 
+								 ){ 
 								  
-									if($nodeb1) { $c = $bs; }
-									//if( $data[$bs+1] == $bdeb2 ) { $c = $bs+1; }
-									
-									
-									$e--;*/
-									// si les acolades existes 
-									
-								// prototype
-								if(
-								($bdeb2) //bdeb2 != '' || $bdeb2 !== false
-								&& ( //$bdeb2 = {
-									(($data[$c] == $bdeb2) && (($e = stripos($data,$bfin2,$c)) !== false )) 
-									||
-									(($data[$c+1] == $bdeb2) && (($e = stripos($data,$bfin2,$c)) !== false )) 
-									//|| 
-									//(($data[$bs] == $bdeb2) && (($e = stripos($data,$bfin2,$bs)) !== false ))
-								)
-								  ){ 
-								  
-								  if(($data[$c+1] == $bdeb2) && (($e = stripos($data,$bfin2,$c)) !== false )){
-									   $c = $c+1;
-								   }
-									//if($nodeb1) { $c = $bs; }
-									//if( $data[$bs+1] == $bdeb2 ) { $c = $bs+1; }
-									
-									
-									//$e--;
-									
-									
+								  $c = ($data[$c+1] == $bdeb2)  ? $c+1 : $c ;
+
+
 										for($j=0; $j < $dd ;$j++) {
 											$g = substr($data,$c,($e - $c));
 											$o = substr_count( $g , $bdeb2);
 											$p = substr_count( $g , $bfin2);
-											//echo $o , '<==>' ,$p, ' :: ',$c, PHP_EOL;
 											if($o == $p) { break; }
-											$e = stripos($data,$bfin2, $e) + 1; //execusion 0.0077269077301025 secondes
-											//$e = stripos($data,$bfin2, $e+1) + 1;
-											//$e++; // execusion 0.0082950592041016 secondes
+											$e = strpos($data,$bfin2, $e) + 1; 
 										}
 									
-									//if( ($data[$c+1] == $bdeb2) ) {
-									//	$m2 = substr($data,$c+2,($e - $c)-3); 
-									//}
-									//else {
+
 										$m2 = substr($data,$c+1,($e - $c)-2); 
-									//}
-									//echo '###########!';
+
 									if( ($masque2) && ($exp === false) && ($nodeb1 === false) ) { $m2 = "echo <<<END2 $nodeb1 \r\n$m2\r\nEND2;\r\n"; }
-									//if($find == '@getsegment') { echo '>>',$m2,'<<',  PHP_EOL; sleep(1000); }
+
 								} else { $e = $c; }
 
 
@@ -504,11 +508,7 @@ class directive {
 									
 									// si $deb à une exception  précise
 									switch($find) { // si masque 1 est true
-										
-											
-											
-											
-										
+
 										case '@getfile':
 										
 											$debx = "\r\n<!-- start invoc file : $mex -->\r\n" ;
@@ -541,7 +541,7 @@ class directive {
 														$l = $gll[0];
 													}
 													//$l = str_replace(["\r","\n","\t",'\''],'',$l);
-													$debf = str_ireplace('{{'.trim($l,'\'').'}}', $ddt, $debf);
+													$debf = str_replace('{{'.trim($l,'\'').'}}', $ddt, $debf);
 												}
 												$debo = $debf;
 												$fino = ''; unset($debf);
@@ -554,8 +554,8 @@ class directive {
 										
 											$debf = file_get_contents( CAT . trim($mex,'\''));
 											$tds  = strlen("@setsegment($m2)");
-											$ddms = stripos($debf,"@setsegment($m2)",0);
-											$fdms = stripos($debf,'@endsegment',$ddms+1);
+											$ddms = strpos($debf,"@setsegment($m2)",0);
+											$fdms = strpos($debf,'@endsegment',$ddms+1);
 											$debo = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
 											$fino = ''; unset($debf);
 											$mex  = '';
@@ -566,11 +566,8 @@ class directive {
 									
 									
 									$rpl = "$debx$debo$fino$endx";
-									$rpl = ($masque2 ? str_ireplace($masque2,$m2,str_ireplace($masque1,$mex,$rpl)) : str_ireplace($masque1,$mex,$rpl));
-									// error m2 look space with  " ){ " <= good , no good => " ) { "
-									//if($find == '@hr') { echo '<!--',$rpl,'-->',  PHP_EOL;  }
-									
-									
+									$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
+
 								}	
 								else {
 									$rpl = "$debx$deb$mex$fin$endx";
@@ -578,18 +575,9 @@ class directive {
 						
 							$data = substr_replace($data, $rpl, $b, (($e - $b)) );
 							$mex=''; $m2='';
-							//if($find == '@hr') { echo '<!-- ', $e, ':', $b , ' #  ' , ($e - $b),' -->',  PHP_EOL;  }
-							//if($find == '@hr') { echo '<!-- ', substr_replace($data, $b, (($e - $b)) ),' -->',  PHP_EOL;  }
-							
-							// expérimental
-							//$b += strlen($rpl);
+
 							$b = $bs + 1;
-							
-							
-							
-							
-								//if($find == '@body') { echo '>>',$data,'<<',  PHP_EOL;  }
-								//if($find == '@body') { echo '>>',$rpl,'<<',  PHP_EOL; sleep(1000); }
+	
 				
 				} else { return false; }
 
@@ -598,18 +586,19 @@ class directive {
 	}
 
 	
-	private function bof($find,$fdb,&$data,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0){
+	private function bof($find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0){
+			global $data;
 			
 			$d = strlen($data);
 			$s = strlen($find);
 			$i=1;	
 			while(--$fdb >= 0) { 
-				$b = stripos($data,$find,$b);
+				$b = strpos($data,$find,$b);
 				$bs = ($b + $s);
 				if(
 					( $b !== false ) && 
 					( $data[$bs] == $bdeb )  && 
-					( ($c = stripos($data,$bfin,$bs)) !== false ) 
+					( ($c = strpos($data,$bfin,$bs)) !== false ) 
 				) {  
 							
 
@@ -620,7 +609,7 @@ class directive {
 									$l = substr_count( $g , $bfin);
 									//if($find == '@PHP') { echo $find, ' > ' , $k , '==' ,$l, ' :: ',$c, PHP_EOL; }
 									if($k == $l) { break; }
-									$c = stripos($data,$bfin, $c+1) + 1; //execusion 0.0077269077301025 secondes
+									$c = strpos($data,$bfin, $c+1) + 1; //execusion 0.0077269077301025 secondes
 									//$c++; // execusion 0.0082950592041016 secondes
 								}
 								
