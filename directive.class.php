@@ -22,6 +22,9 @@ class directive {
 	private $_data;
 	private $_filename = '';
 	private $_nocache = false;
+	private $_style_plus = false;
+	private $_jsr_plus = false;
+	private $_js_plus = false;
 	
 	PRIVATE $_CAT = CAT; /// <--------- DEFINE CAT
 	PRIVATE $_CACHE = CACHE; /// <----- DEFINE CACHE
@@ -58,7 +61,10 @@ class directive {
 	
 	private function gen($rerturn_tag=FALSE,$optimised=TRUE,$timetest=true) {
 		
-		global 	$data;
+		global 	$data, $style_p, $jsr_p, $js_p;
+		
+		$style_p = $jsr_p = $js_p = '';
+		
 		$iner_var = array();
 		$data = $this->_data;
 		
@@ -93,7 +99,10 @@ class directive {
 			['bof',['@PHP'			,0,'','','{','}']], // affiche son resulta
 			['bof',['@JSR'			,0,'','','{','}','<script>$( document ).ready(function(){','});</script>']], // affiche son resulta
 			['bof',['@JS'			,0,'','','{','}','<script>','</script>']], // affiche son resulta
+	
 			
+			['bof',['@JSR+'			,0,'','','{','}','','']], // Grouping all @JSR+ to the first @JSR+
+			['bof',['@JS+'			,0,'','','{','}','','']], // Grouping all @JS+ to the first @JS+
 
 			['bof',['@if'			,0,'if(', '):']],
 			['bof',['@elseif'		,0,'elseif(', '):']],
@@ -139,8 +148,9 @@ class directive {
 			['bof',['@meta'			,0,'<meta ', '>', '(', ')', '','']],
 			['bof',['@link'			,0,'<link ', '>', '(', ')', '','']],
 			['bof',['@filecss'		,0,'<link rel="stylesheet" type="text/css" href=', '>', '(', ')', '','']],
-			['bof',['@script'		,0,'<script src=', '></script>', '(', ')', '','']],
 			['bof',['@script+'		,0,'<script ', '></script>', '(', ')', '','']],
+			['bof',['@script'		,0,'<script src=', '></script>', '(', ')', '','']],
+			['bof',['@style+'		,0,'', '', '{', '}', '','']], // Grouping all @style+ to the first @style+
 			['bof',['@style'		,0,'<style>', '</style>', '{', '}', '','']],
 			['bop',['@body'			,0,'<body [#1]>','[#2]</body>', '','']],
 	
@@ -340,10 +350,25 @@ class directive {
 				call_user_func_array([$this,$fnc[0]],$fnc[1]);
 			}
 		
+			/* RESTORE STYLE */
+			if($this->_style_plus) {
+				$data = str_replace('[#STYLE-LOAD-MASQUE-GROUPING]', '<style>' . $style_p . '</style>', $data);
+			}
+			if($this->_jsr_plus) { // '<script>$( document ).ready(function(){','});</script>'
+				$data = str_replace('[#JSR-LOAD-MASQUE-GROUPING]', '<script>$( document ).ready(function(){' . $jsr_p . '});</script>', $data);
+			}
+			if($this->_js_plus) {
+				$data = str_replace('[#JS-LOAD-MASQUE-GROUPING]', '<script>' . $js_p . '</script>', $data);
+			}
+				
 		if($timetest) {
 			$time_end = microtime(true);
 			$time = $time_end - $time_start;
 		}
+		
+		
+		
+		
 		
 		$optimised = false;
 		if($optimised) {
@@ -598,13 +623,14 @@ class directive {
 	}
 
 	
-	private function bof($find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0){
-			global $data;
+	private function bof($find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0,$fbmax=0,$rpl=''){
+			global $data, $style_p, $jsr_p, $js_p;
 			
 			$d = strlen($data);
 			$s = strlen($find);
-			$i=1;	
-			while(--$fdb >= 0) { 
+			//$i=1;	
+			$fbmax = $fdb - 1;
+			while(--$fdb > -1) { 
 				$b = strpos($data,$find,$b);
 				$bs = ($b + $s);
 				if(
@@ -629,15 +655,44 @@ class directive {
 								
 								
 								$m = trim( substr($data,($bs + 1),( ($c - $bs) -2)) );
-								$rpl = "$debx$deb$m$fin$endx";
+								//$rpl = "$debx$deb$m$fin$endx";
 							
 								/*if($find == '@PHP') {
 									
 										//echo '<br/> >>>', $m, '<<< <br/>', PHP_EOL;
 									
 								}*/
+							switch($find) {
+								case '@style+':
+									//[#STYLE-LOAD-MASQUE]
+									if($fbmax == $fdb) { $this->_style_plus = true; $deb='[#STYLE-LOAD-MASQUE-GROUPING]'; }
+									$style_p .= $m;
+									$rpl = "$debx$deb$fin$endx";
+								break;
+								case '@JSR+':
+										//[#STYLE-LOAD-MASQUE]
+									if($fbmax == $fdb) { $this->_jsr_plus = true; $deb='[#JSR-LOAD-MASQUE-GROUPING]'; }
+									$jsr_p .= $m;
+									$rpl = "$debx$deb$fin$endx";
+								break;
+								case '@JS+':
+									//[#STYLE-LOAD-MASQUE]
+									if($fbmax == $fdb) { $this->_js_plus = true; $deb='[#JS-LOAD-MASQUE-GROUPING]'; }
+									$js_p .= $m;
+									$rpl = "$debx$deb$fin$endx";
+								break;
+								default:
+								
+								$rpl = "$debx$deb$m$fin$endx";
+								
+							}
 							
-							$data = substr_replace($data, $rpl, $b, (($c - $b)) );
+							
+
+								
+								
+								$data = substr_replace($data, $rpl, $b, (($c - $b)) );
+							
 							
 							// expérimental
 							//$b += strlen($rpl);
