@@ -3,17 +3,42 @@
 ###### LISTING DIRECTIVE
 correct use of syntax
 
+
+NN: represents the functions that have NO obligation to add the { }. 
+CB: represents the functions that have obligation to add the { }. 
+
 | Bad Syntax|
 |:---|
 | @div{  @i(class='icon-font-foobar') } |
 
--> if you use a directive with curly brackets natively, you must use curly brackets
+-> if you use a directive with curly brackets natively, watch CB: , you must use curly brackets 
 
 | Good Syntax|
 |:---|
 | @div{  @i(class='icon-font-foobar'){} } |
 | @div{  @i(class='icon-font-foobar'){foobar} } |
 | @div{  @i{ foobar } } |
+
+Exemple code :
+```PHP
+ @!DOCTYPE(html)
+  @headpage
+    @title(foobarpage) 
+  @bodypage
+   
+    @div(id='foobar'){ 
+      
+        @:{ $USER['foo'] = true; $a='foo'; $b='bar';}
+        
+        @if($USER['foo'])
+            foo @{b}
+         @else
+            @{a} bar 
+         @endif
+         
+    }
+  @endpage 
+```
 
 ```PHP
 @include( 'link file.php' ) 
@@ -24,97 +49,97 @@ CB: @structure( 'link file.seg' ){
 } 
 <BODY>{{TITLE}}{{DATA}}</BODY>
 
-@getfile( 'link file.seg' )
+NN: @getfile( 'link file.seg' )
 CB: @getsegment( 'link file.seg' ){ name segment }
 CB: @phpsegment( 'link file.seg' ){ name segment }
-@setsegment( name segment )
-@endsegment
+NN: @setsegment( name segment )
+NN: @endsegment
 
-@dowhile // only html
-<body> foobar </body>
-@whiledo( operation )
+NN: @dowhile // only html
+    <body> foobar </body>
+NN: @whiledo( operation )
 
 //only php
 CB: @dow( operation ){ PHP synthax }
 
 
-@PHP{ PHP synthax }
-@JSR{ JavaScript synthax width '$(document).ready' }
-@JS{ JavaScript synthax }
+NN: @PHP{ PHP synthax }
+NN: @JSR{ JavaScript synthax width '$(document).ready' }
+NN: @JS{ JavaScript synthax }
 
 // JSR+ and JS+ will harvest it all and combine it all into one <script></script>
-@JSR+{ JavaScript synthax  } 
-@JS+{ JavaScript synthax  }
+NN: @JSR+{ JavaScript synthax  } 
+NN: @JS+{ JavaScript synthax  }
 
-@if( PHP synthax  )
-<body> foo </body>
-@elseif( PHP synthax  )
-<body> boo </body>
-@else
-<body> bar </body>
-@endif
-
-
-@foreach( PHP synthax )
-<body> foobar </body>
-@endforeach
-
-@for( PHP synthax )
-<body> foobar </body>
-@endfor
-
-@while( PHP synthax )
-<body> foobar </body>
-@endwhile
-
-@switch( PHP synthax )
-@case( PHP synthax )
-<body> foobar1 </body>
-@break
-@continue
-@default
-<body> foobar2 </body>
-@endswitch
+NN: @if( PHP synthax  )
+    <body> foo </body>
+NN: @elseif( PHP synthax  )
+    <body> boo </body>
+NN: @else
+    <body> bar </body>
+NN: @endif
 
 
-@goto( 'name label' )
-@label( 'name label' )
+NN: @foreach( PHP synthax )
+    <body> foobar </body>
+NN: @endforeach
 
-@isTRUE( PHP synthax )
-<body> foobar </body>
-@endisTRUE
-
-@isfalse( PHP synthax )
-<body> foobar </body>
-@endisfalse
-
-@sessionstart // PHP session start
-
-@timetest // test time execut
-<body> foobar </body>
-@endtimetest
-
-@headpage // <html></head>
-  <link rel="icon" type="image/svg+xml" href="atomes/foobar.svg">
-@bodypage // </head><body>
+NN: @for( PHP synthax )
   <body> foobar </body>
-@endpage  // </body></html>
+NN: @endfor
+
+NN: @while( PHP synthax )
+  <body> foobar </body>
+NN: @endwhile
+
+NN: @switch( PHP synthax )
+NN: @case( PHP synthax )
+    <body> foobar1 </body>
+NN: @break
+NN: @continue
+NN: @default
+    <body> foobar2 </body>
+NN: @endswitch
+
+
+NN: @goto( 'name label' )
+NN: @label( 'name label' )
+
+NN: @isTRUE( PHP synthax )
+    <body> foobar </body>
+NN: @endisTRUE
+
+NN: @isfalse( PHP synthax )
+    <body> foobar </body>
+NN: @endisfalse
+
+NN: @sessionstart // PHP session start
+
+NN: @timetest // test time execut
+    <body> foobar </body>
+NN: @endtimetest
+
+NN: @headpage // <html></head>
+    <link rel="icon" type="image/svg+xml" href="atomes/foobar.svg">
+NN: @bodypage // </head><body>
+    <body> foobar </body>
+NN: @endpage  // </body></html>
 
 CB: @html( attributes ){ CAT or HTML Syntax }
 
-@head{ CAT or HTML Syntax }
+NN: @head{ CAT or HTML Syntax }
 
-@title( 'String title' )
-@meta( attributes )
+NN: @title( 'String title' )
+NN: @meta( attributes )
 
-@link( attributes ) // exemple @link( rel="stylesheet" type="text/css" href="foo.css" )
-@filecss( 'href css file' ) // similar to <link rel="stylesheet" type="text/css" href="foo.css"> exemple : @filecss('foo/bar.css')
+NN: @link( attributes ) // exemple @link( rel="stylesheet" type="text/css" href="foo.css" )
+NN: @filecss( 'href css file' ) // similar to <link rel="stylesheet" type="text/css" href="foo.css"> exemple : @filecss('foo/bar.css')
 
-@script+( attributes ) 
-@script( 'src script file' ) // @script( 'fobar.js' )
+NN: @script+( attributes ) 
+NN: @script( 'src script file' ) // @script( 'fobar.js' )
 
-@style+{ CSS Syntax } // similar to JS+ and JSR+ combine it all @style+ into one <style></style>
-@style{ CSS Syntax }
+NN: @style+{ CSS Syntax } // similar to JS+ and JSR+ combine it all @style+ into one <style></style>
+NN: @style{ CSS Syntax }
 
 
 CB: @body(  attributes ){ CAT or HTML Syntax }
@@ -127,7 +152,9 @@ CB: @noscript(  attributes ){ CAT or HTML Syntax }
 CB: @optgroup( attributes ){ CAT or HTML Syntax }
 CB: @progress(  attributes ){ CAT or HTML Syntax }
 CB: @textarea(  attributes ){ CAT or HTML Syntax }
-@!DOCTYPE( attributes )
+
+NN: @!DOCTYPE( attributes )
+
 CB: @address(  attributes ){ CAT or HTML Syntax }
 CB: @article(  attributes ){ CAT or HTML Syntax }
 CB: @caption(  attributes ){ CAT or HTML Syntax }
@@ -154,7 +181,9 @@ CB: @center(  attributes ){ CAT or HTML Syntax }
 CB: @aside(  attributes ){ CAT or HTML Syntax }
 CB: @audio(  attributes ){ CAT or HTML Syntax }
 CB: @embed(  attributes ){ CAT or HTML Syntax }
-@input(attributes )
+
+NN: @input(attributes )
+
 CB: @label(  attributes ){ CAT or HTML Syntax }
 CB: @meter(  attributes ){ CAT or HTML Syntax }
 CB: @param(  attributes ){ CAT or HTML Syntax }
@@ -195,7 +224,9 @@ CB: @sup(  attributes ){ CAT or HTML Syntax }
 CB: @svg(  attributes ){ CAT or HTML Syntax }
 CB: @var(  attributes ){ CAT or HTML Syntax }
 CB: @wbr(  attributes ){ CAT or HTML Syntax }
-@br
+
+NN: @br
+
 CB: @dd(  attributes ){ CAT or HTML Syntax }
 CB: @dl(  attributes ){ CAT or HTML Syntax }
 CB: @dt(  attributes ){ CAT or HTML Syntax }
@@ -206,7 +237,9 @@ CB: @h3(  attributes ){ CAT or HTML Syntax }
 CB: @h4(  attributes ){ CAT or HTML Syntax }
 CB: @h5(  attributes ){ CAT or HTML Syntax }
 CB: @h6(  attributes ){ CAT or HTML Syntax }
-@hr( attributes )
+
+NN: @hr( attributes )
+
 CB: @li(  attributes ){ CAT or HTML Syntax }
 CB: @ol(  attributes ){ CAT or HTML Syntax }
 CB: @rp(  attributes ){ CAT or HTML Syntax }
@@ -221,15 +254,15 @@ CB: @i(  attributes ){ CAT or HTML Syntax }
 CB: @p(  attributes ){ CAT or HTML Syntax }
 CB: @q(  attributes ){ CAT or HTML Syntax }
 
-@:{ value 1 } // Alias of @PHP for small phpcode exemple: @:{ $_SESSION['foo'] = 'bar'; }
-@. // concatenation @{test}@.@{test2}
+NN: @:{ value 1 } // Alias of @PHP for small phpcode exemple: @:{ $_SESSION['foo'] = 'bar'; }
+NN: @. // concatenation @{test}@.@{test2}
 
-@?< value 1 > // comment CAT 
-@!< value 1 > // comment HTML
-@*< value 1 > // comment PHP
+NN: @?< value 1 > // comment CAT 
+NN: @!< value 1 > // comment HTML
+NN: @*< value 1 > // comment PHP
 
-@>{ value 1 } // for test use @>{$test} equal to echo $test
-@{ Name Var PHP } // for $test use @{test} equal to echo $test
+NN: @>{ value 1 } // for test use @>{$test} equal to echo $test
+NN: @{ Name Var PHP } // for $test use @{test} equal to echo $test
 
 
 
