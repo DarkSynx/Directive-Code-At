@@ -9,7 +9,9 @@ correct use of syntax
 
 | Good Syntax|
 |:---|
-| @div{  @i(class='icon-font-foobar'){ } } |
+| @div{  @i(class='icon-font-foobar'){} } |
+| @div{  @i(class='icon-font-foobar'){foobar} } |
+| @div{  @i{ foobar } } |
 
 ```PHP
 @include( 'link file.php' ) 
