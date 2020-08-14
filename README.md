@@ -5,9 +5,8 @@
 <?php
 	
 	$userpage = new directive('userpage.cat');
-	$userpage->cache_it();
-	include CACHE . 'userpage.cat.php';
-
+	include $userpage->cache_it();
+	
 ?>
 ```
 ###### correct use of syntax
