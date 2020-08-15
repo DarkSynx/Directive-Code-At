@@ -113,15 +113,6 @@ class directive {
 			
 			['bof',['@setsegment'	,0,'<!--SEGMENT:', '','(',')','','']],
 			['bsp',['@endsegment' 	,'-->','','']],
-
-			/*  
-			['bof',['@setvar'		,0]], // initialisé des variables
-			['bof',['@unsetvar'		,0,'unset(',');']], // initialisé des variables
-			['bop',['@use'			,0,'',');','<?php ',' ?>',':',')']], // utilisé une function 
-			['bop',['@instancy'		,0,'[#1] = new ', '[#2];','<?php ',' ?>','(',')','{','}','[#1]','[#2]',FALSE]], // instancier l'objet
-			['bof',['@object'		,0,'', ';']], // utilisé un objet
-			['bop',['@setclass'		,0,'class [#1] ', '{[#2]}','<?php ',' ?>','(',')','{','}','[#1]','[#2]',FALSE]],	// créé des class	
-			*/	
 		
 			['bsp',['@dowhile'		,"do{ echo <<<END\r\n",'<?php ','']],
 			['bof',['@whiledo'		,0,"\r\nEND;\r\n}while(", ');','(',')','']],
@@ -460,7 +451,7 @@ class directive {
 		$data = str_replace($find,"$debx$replace$endx", $data);
 	}
 	
-	private function bop($find,$fdb,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[#1]',$masque2='[#2]',$exp=TRUE,$b=0, $mex=''){
+	private function bop($find,$fdb,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[#1]',$masque2='[#2]',$exp=TRUE,$b=0, $mex='', $m2=''){
 			
 			global $data;
 			
@@ -519,53 +510,8 @@ class directive {
 									$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
 							}
 					
-						/*
-								$nodeb1 = false;
-								// si les parenthéses existes 
-								if( 	$data[$bs] == $bdeb1 && $data[$bs + 1] == $bfin1 &&  // si y a ()
-										($bdeb2 == '' || $bdeb2 == false) 
-									) {
-									$c = $bs + 2;
-									$nodeb1 = true; 
-									 //echo '<br/>',$find,':1';
-								}
-								elseif ($data[$bs] == chr(32) && $data[$bs + 1] == $bdeb1 && $data[$bs + 2] == $bfin1 && ($bdeb2 == '' || $bdeb2 == false) ) {
-									$c = $bs + 3;
-									$nodeb1 = true; 
-									//echo '<br/>',$find,':2';
-								}
-								elseif( 
-								 ($data[$bs] == $bdeb1 || $data[$bs + 1] == $bdeb1 )  && 
-								 (($c = strpos($data,$bfin1,$bs)) !== false )
-								
-								) {
-									$c = ($data[$c] == $data[$bs+1]) ? ($bs+2) : $c-=1 ;
 
-									
-									
-										for($j=0; $j < $dd ;$j++) {
-											$g = substr($data,$bs,($c - $bs));
-											$k = substr_count( $g , $bdeb1);
-											$l = substr_count( $g , $bfin1);
-											//if($find == '@getsegment') { echo $k , '==' ,$l, ' :: ',$c, PHP_EOL; }
-											if($k == $l) { break; }
-											$c = strpos($data,$bfin1, $c+1) + 1; //execusion 0.0077269077301025 secondes
-											//$c++; // execusion 0.0082950592041016 secondes
-										}
-										
-										
-										
-										$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
-
-
-								} else { 
-								$c = $bs;								
-								$nodeb1 = true; 
-								
-								} */
-								
-								
-								
+													
 								if(
 								
 								($bdeb2 && (($e = strpos($data,$bfin2,$c)) !== false) ) //bdeb2 != '' || $bdeb2 !== false
