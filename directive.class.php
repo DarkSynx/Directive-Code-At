@@ -406,9 +406,10 @@ class directive {
 		
 		if($this->_optimised) {
 		
-				$data = str_replace(
-				["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n", "\r\n", "\r\r", "\t\t\t", "\t\t","\r ","\r  ","  "], 
-				["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n", "\r","\r","\t","\t","\r","\r"," "], $data);
+		$data = str_replace(
+		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n"], 
+		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n"], $data);
+
 				
 				
 				$x = strlen($data);
@@ -438,7 +439,7 @@ class directive {
 				}
 				
 				
-				$data = $this->sanitize_output($data);
+				
 		}
 
 
@@ -450,34 +451,7 @@ class directive {
 		
 	}
 	
-	private function sanitize_output($buffer) {
 
-   $search = array(
-    '/(\n|^)(\x20+|\t)/',
-    '/(\n|^)\/\/(.*?)(\n|$)/',
-    '/\n/',
-    '/\<\!--.*?-->/',
-    '/(\x20+|\t)/', # Delete multispace (Without \n)
-    '/\>\s+\</', # strip whitespaces between tags
-    '/(\"|\')\s+\>/', # strip whitespaces between quotation ("') and end tags
-    '/=\s+(\"|\')/'
-	); # strip whitespaces between = "'
-
-   $replace = array(
-    "",
-    "",
-    " ",
-    "",
-    " ",
-    "><",
-    "$1>",
-    "=$1"
-	);
-
-		$buffer = preg_replace($search, $replace, $buffer);
-
-		return $buffer;
-	}
 	
 	
 	private function bsp($find,$replace,$debx='<?php ',$endx=' ?>'){
@@ -498,9 +472,59 @@ class directive {
 				if($b !== false ) {
 					
 					
+					 // cas 0  @XXXX
+					 // cas 1  @XXXX()
+					 // cas 2  @XXXX ()
+					 
+							
+							$nodeb1 = true;
+							if(($data[$bs] . $data[$bs + 1]) == ($bdeb1 . $bfin1)){ // si = @XXXX()	
+								$c = $bs + 2;
+								$nodeb1 = true;
+							}
+							elseif(($data[$bs] . $data[$bs + 1] . $data[$bs+2]) == (chr(32) . $bdeb1 . $bfin1)){ // si = @XXXX ()
+								$c = $bs + 3;
+								$nodeb1 = true;
+							}
+							elseif( $data[$bs] == $bdeb1 && $data[$bs+1] != $bfin1 ){ // si @XXXX(*
+								
+								$c = strpos($data,$bfin1,$bs);
+								$nodeb1 = false; 
+							}
+							elseif($data[$bs] . $data[$bs + 1] == (chr(32) .$bdeb1) && $data[$bs+2] != $bfin1){ //si @XXXX (* 
+								$bs = $bs + 1;
+								$c = strpos($data,$bfin1,$bs);
+								$nodeb1 = false; 
+							}
+							else{ 
+								$c = $bs;
+								$nodeb1 = true;
+							}
+					
+					
+							
+							if($nodeb1 === false){
+							
+							$c = ($data[$c] == $data[$bs+1]) ? ($bs+2) : $c-=1 ;
+							
+										for($j=0; $j < $dd ;$j++) {
+											$g = substr($data,$bs,($c - $bs));
+											$k = substr_count( $g , $bdeb1);
+											$l = substr_count( $g , $bfin1);
+											if($k == $l) { break; }
+											$c = strpos($data,$bfin1, $c+1) + 1;
+											
+										}
+										
+									$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
+							}
+					
+						/*
 								$nodeb1 = false;
 								// si les parenthéses existes 
-								if( $data[$bs] == $bdeb1 && $data[$bs + 1] == $bfin1 && ($bdeb2 == '' || $bdeb2 == false) ) {
+								if( 	$data[$bs] == $bdeb1 && $data[$bs + 1] == $bfin1 &&  // si y a ()
+										($bdeb2 == '' || $bdeb2 == false) 
+									) {
 									$c = $bs + 2;
 									$nodeb1 = true; 
 									 //echo '<br/>',$find,':1';
@@ -538,7 +562,7 @@ class directive {
 								$c = $bs;								
 								$nodeb1 = true; 
 								
-								}
+								} */
 								
 								
 								
@@ -564,7 +588,7 @@ class directive {
 
 										$m2 = substr($data,$c+1,($e - $c)-2); 
 
-									if( ($masque2) && ($exp === false) && ($nodeb1 === false) ) { $m2 = "echo <<<END2 $nodeb1 \r\n$m2\r\nEND2;\r\n"; }
+									if( ($masque2) && ($exp === false) && ($nodeb1 === false)) { $m2 = "echo <<<END2 \r\n$m2\r\nEND2;\r\n"; }
 
 								} else { $e = $c; }
 
