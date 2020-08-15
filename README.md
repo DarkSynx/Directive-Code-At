@@ -12,22 +12,6 @@ DIRECTIVE Code At
 	
 ?>
 ```
-###### correct use of syntax
-NN: represents the functions that have NO obligation to add the { }. 
-
-CB: represents the functions that have obligation to add the { }. 
-
-| Bad Syntax|
-|:---|
-| @div{  @i(class='icon-font-foobar') } |
-
--> if you use a directive with curly brackets natively, watch CB: , you must use curly brackets 
-
-| Good Syntax|
-|:---|
-| @div{  @i(class='icon-font-foobar'){} } |
-| @div{  @i(class='icon-font-foobar'){foobar} } // @i is CB: (curly brackets) |
-| @div{  @i{ foobar } } |
 
 Exemple code :
 ```PHP
