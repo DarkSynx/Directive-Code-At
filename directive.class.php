@@ -336,9 +336,9 @@ class directive {
 		// on hash les données brute et si elle son similaire
 		// alors on recharge le fichier fabriqué sinon 
 		// on le refabrique
-		$hashdata = hash('adler32',$data);
+		$hashdata = hash('fnv1a64',$data, true);
 		$filehash = @file_get_contents( $this->_CACHE . $this->_filename . '.hash');
-		if($hashdata = $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
+		if($hashdata != $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
 		
 			$fp = fopen( $this->_CACHE . $this->_filename . '.hash', 'w');
 			fwrite($fp, $hashdata);
