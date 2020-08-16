@@ -27,13 +27,18 @@ class directive {
 	private $_js_plus = false;
 	
 	private $_optimised = true;
+	private $_commentHTML = false;
 	
 	PRIVATE $_CAT = CAT; /// <--------- DEFINE CAT
 	PRIVATE $_CACHE = CACHE; /// <----- DEFINE CACHE
 	
 	
 	// on récupére que par get_data mais on peu initialisé par le constructeur ou par set_data
-	public function __construct( $filename=false ) {   
+	public function __construct( $filename=false, $optimised=TRUE, $commentHTML=FALSE ) {   
+		
+		$this->_optimised = $optimised;
+		$this->_commentHTML = $commentHTML;
+		
 		if($filename){
 			$this->set_page($filename);
 			$this->set_data( $this->get_page() );
@@ -338,7 +343,7 @@ class directive {
 		// on le refabrique
 		$hashdata = hash('fnv1a64',$data, true);
 		$filehash = @file_get_contents( $this->_CACHE . $this->_filename . '.hash');
-		if($hashdata != $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
+		if($hashdata /*!= $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) */) {
 		
 			$fp = fopen( $this->_CACHE . $this->_filename . '.hash', 'w');
 			fwrite($fp, $hashdata);
@@ -451,15 +456,24 @@ class directive {
 		$data = str_replace($find,"$debx$replace$endx", $data);
 	}
 	
-	private function bop($find,$fdb,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[#1]',$masque2='[#2]',$exp=TRUE,$b=0, $mex='', $m2=''){
+
+		
+	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[#1]',$masque2='[#2]',$exp=TRUE,$b=0, $mex='', $m2='', $c=0): bool
+	{
 			
 			global $data;
-			
-			$dd = strlen($data);
-			$s = strlen($find);
+	
+			$s 		= 	(int) 		strlen($find);
+	
+				
 			while(--$fdb >= 0) {
+				
+
+				$c		=	0;	
+				$dd 	= 	strlen($data);
+
 				$b = strpos($data,$find,$b);
-				$bs = ($b + $s);
+				$bs = ( ($b ? $b : 0) + $s);
 				if($b !== false ) {
 					
 					
@@ -495,44 +509,32 @@ class directive {
 					
 							
 							if($nodeb1 === false){
-							
-							$c = ($data[$c] == $data[$bs+1]) ? ($bs+2) : $c-=1 ;
-							
-										for($j=0; $j < $dd ;$j++) {
-											$g = substr($data,$bs,($c - $bs));
-											$k = substr_count( $g , $bdeb1);
-											$l = substr_count( $g , $bfin1);
-											if($k == $l) { break; }
-											$c = strpos($data,$bfin1, $c+1) + 1;
-											
-										}
 										
-									$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
+										$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
+										$dp = ($dd - $b);								
+										do {							
+											$g = substr($data,$bs,($c - $bs));							
+											if( substr_count( $g , $bdeb1) == substr_count( $g , $bfin1) ) { break; }							
+											$c = strpos($data,$bfin1, $c) + 1;							
+										} while( $dp--> 0 )	;													
+									$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );	
 							}
 					
 
 													
-								if(
-								
-								($bdeb2 && (($e = strpos($data,$bfin2,$c)) !== false) ) //bdeb2 != '' || $bdeb2 !== false
-								&& 
-								( ($data[$c] == $bdeb2) || ($data[$c+1] == $bdeb2) )
-								 
-								 ){ 
-								  
-								  $c = ($data[$c+1] == $bdeb2)  ? $c+1 : $c ;
+								if( ($bdeb2) && ( ($data[$c] == $bdeb2) || ($data[$c+1] == $bdeb2) ) ){ 
+										$e = strpos($data,$bfin2,$c);
+										$c = ($data[$c+1] == $bdeb2)  ? $c+1 : $c ;
 
-
-										for($j=0; $j < $dd ;$j++) {
+										$dp = ($dd - $c);
+										do {
 											$g = substr($data,$c,($e - $c));
-											$o = substr_count( $g , $bdeb2);
-											$p = substr_count( $g , $bfin2);
-											if($o == $p) { break; }
+											if(substr_count( $g , $bdeb2) == substr_count( $g , $bfin2)) { break; }
 											$e = strpos($data,$bfin2, $e) + 1; 
-										}
+										} while( $dp--> 0 );
 									
 
-										$m2 = substr($data,$c+1,($e - $c)-2); 
+										$m2 = trim(substr($data,$c+1,($e - $c)-2)); 
 
 									if( ($masque2) && ($exp === false) && ($nodeb1 === false)) { $m2 = "echo <<<END2 \r\n$m2\r\nEND2;\r\n"; }
 
@@ -545,23 +547,24 @@ class directive {
 									
 									$debo = $deb;
 									$fino = $fin;
-									
+
 									// si $deb à une exception  précise
 									switch($find) { // si masque 1 est true
 
 										case '@getfile':
 										
-											$debx = "\r\n<!-- start invoc file : $mex -->\r\n" ;
+										
+											$debx = $this->_commentHTML ? "\r\n<!-- start invoc file : $mex -->\r\n" : ''  ;
+											$endx = $this->_commentHTML ? "\r\n<!-- END invoc file : $mex -->\r\n" : '';
 											$debo = file_get_contents( $this->_CAT . trim($mex,'\'') );
-											$endx = "\r\n<!-- END invoc file : $mex -->\r\n";
 											$fino = '';
 											$mex  = '';
 											
 										break;
 										
 										case '@structure':
-												$debx = "\r\n<!-- start import file : $mex -->\r\n";
-												$endx = "\r\n<!-- END import file : $mex -->\r\n";
+												$debx = $this->_commentHTML ? "\r\n<!-- start import file : $mex -->\r\n" : '';
+												$endx = $this->_commentHTML ? "\r\n<!-- END import file : $mex -->\r\n" : '';
 												$debf = file_get_contents( $this->_CAT . trim($mex,'\''));
 												$mxxx = array_filter( explode('|',$m2), function($v){ return trim($v); } );
 
@@ -574,13 +577,9 @@ class directive {
 													}
 													else { 
 														$gll = explode('~',$l);
-														//var_dump($gll);
-														//$gll[1] = trim($gll[1]);
 														$ddt = trim($gll[1],'\'');
-														//var_dump($ddt);
 														$l = $gll[0];
 													}
-													//$l = str_replace(["\r","\n","\t",'\''],'',$l);
 													$debf = str_replace('{{'.trim($l,'\'').'}}', $ddt, $debf);
 												}
 												$debo = $debf;
@@ -588,10 +587,19 @@ class directive {
 												$mex  = '';
 										break;
 										case '@getsegment':
-												$debx = "\r\n<!-- start import:segment $m2 to file : $mex -->\r\n";
-												$endx = "\r\n<!-- END import:segment $m2 to file : $mex -->\r\n";
+												$debx = $this->_commentHTML ? "\r\n<!-- start import:segment $m2 to file : $mex -->\r\n" : '';
+												$endx = $this->_commentHTML ? "\r\n<!-- END import:segment $m2 to file : $mex -->\r\n" : '';
+												$debf = file_get_contents( $this->_CAT . trim($mex,'\''));
+												$tds  = strlen("@setsegment($m2)");
+												$ddms = strpos($debf,"@setsegment($m2)",0);
+												$fdms = strpos($debf,'@endsegment',$ddms+1);
+												$debo = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
+												$fino = ''; unset($debf);
+												$mex  = '';												
+										break;
 										case '@phpsegment':	
-										
+											$debx = '<?php ';
+											$endx = ' ?>';
 											$debf = file_get_contents( $this->_CAT . trim($mex,'\''));
 											$tds  = strlen("@setsegment($m2)");
 											$ddms = strpos($debf,"@setsegment($m2)",0);
@@ -614,7 +622,11 @@ class directive {
 								}
 						
 							$data = substr_replace($data, $rpl, $b, (($e - $b)) );
-							$mex=''; $m2='';
+							
+							$rpl 	= 	'';
+							$mex	=	'';
+							$m2		=	''; 
+
 
 							$b = $bs + 1;
 	
@@ -622,7 +634,7 @@ class directive {
 				} else { return false; }
 
 			}
-	
+		return true;
 	}
 
 	
