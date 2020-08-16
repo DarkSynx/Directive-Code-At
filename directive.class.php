@@ -463,7 +463,7 @@ class directive {
 			
 			global $data;
 	
-			$s 		= 	(int) 		strlen($find);
+			$s 		= 	strlen($find);
 	
 				
 			while(--$fdb >= 0) {
@@ -569,7 +569,7 @@ class directive {
 												$mxxx = array_filter( explode('|',$m2), function($v){ return trim($v); } );
 
 												//var_dump($mxxx);
-												foreach($mxxx as $k => $l) {
+												foreach($mxxx as $l) {
 													$l = trim($l);
 													
 													if(strpos($l, '~') === false) { 
