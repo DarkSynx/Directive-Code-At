@@ -25,7 +25,7 @@ new options...
 @p[#foo]( id='bar' ){ click me }
 // <a href="#foo"><p>click me</p></a>
 
-@loadsegment('..mufile.segment'){mysegment}
+@loadsegment('..myfile.segment'){mysegment}
 @p[mysegment,{{foo}}]( id='bar' ){ click me }
 // load mysegment and replace {{foo}} tag in mysegment by <p>click me</p>
 
