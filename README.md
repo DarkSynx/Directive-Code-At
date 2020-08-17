@@ -15,6 +15,22 @@ DIRECTIVE Code At
 
 Exemple code :
 ```PHP
+new options...
+
+@div[$foo]( id='bar' ){ foobar }
+// if $foo is true 
+<div>foobar</div>
+// else no div
+
+@p[#foo]( id='bar' ){ click me }
+// <a href="#foo"><p>click me</p></a>
+
+@loadsegment('..mufile.segment'){mysegment}
+@p[+mysegment,{{foo}}]( id='bar' ){ click me }
+// load mysegment and replace {{foo}} tag in mysegment by <p>click me</p>
+
+```
+```PHP
  @!DOCTYPE(html)
   @headpage
     @title(foobarpage) 
