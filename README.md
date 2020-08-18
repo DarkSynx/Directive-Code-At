@@ -34,7 +34,7 @@ new options...
 @div[+Flex] // use default row;nowrap;flex-start;stretch;stretch;
 @div[+Flex,column] // use column
 @div[+Flex,column,nowrap,center,center,center] //you want to use spécifique flex
-@div[+Flex=flex-direction: row, flex-wrap: nowrap] //you want to use spécifique flex
+@div[+Flex=flex-direction: row; flex-wrap: nowrap] //you want to use spécifique flex
 @div[+Flex.myclassname] // use spécifique flex class
 // use +Flex not +flex 
 
