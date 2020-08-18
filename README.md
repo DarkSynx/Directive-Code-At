@@ -29,7 +29,7 @@ new options...
 @p[mysegment,{{foo}}]( id='bar' ){ click me }
 // load mysegment and replace {{foo}} tag in mysegment by <p>click me</p>
 
-@div[+Flex,direction,wrap,justify,align-items,align-content]
+@div[+Flex,<direction>,<wrap>,<justify>,<align-items>,<align-content>]
 //default is flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; align-content: stretch;
 @div[+Flex] // use default row;nowrap;flex-start;stretch;stretch;
 @div[+Flex,column] // use column
