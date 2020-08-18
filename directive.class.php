@@ -663,100 +663,91 @@ class directive {
 													
 													$rez = false;
 													
-													
-													
-													//var_dump($rpl);
-													//sleep(10000);
-													
+	
+															
 													switch(true) {
 												
 													case ($g = strpos($m1,',')):
 														if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
-																if($dx == 1) {
-																	$rpl = "$debx$deb$mex$fin$endx";
-																}
+																if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
 																else {
 																	$rpl = "$debx$debo$fino$endx";
 																	$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
 																}
-																
 																$xstyle = ['style=\'[%tagreplace]\'','\'',''];
-															}
-														
-														
+														}
 														$lstx = explode(',',substr($m1,$g+1));
 														$flex = ['flex-direction:' , 'flex-wrap:' , 'justify-content:', 'align-items:' , 'align-content:' ];
-														$gen = '';
+														$new = '';
 														foreach($lstx as $k => $l){
-															$gen .= $flex[$k] . $l . ';';
+															$new .= $flex[$k] . $l . ';';
 														}
 														//var_dump($rpl);
 														//echo PHP_EOL, PHP_EOL;
-														$rpl = str_replace($xstyle[0],"style={$xstyle[1]}{$xstyle[2]}display: flex;{$gen}{$xstyle[1]}", $rpl);
+														$xtp = 'style=';
+														$d=$xstyle[1];
+														$rec=$xstyle[2];
+														$rch=$xstyle[0];
 														var_dump($rpl);
 														//sleep(1000);
 													break;
 													case ($g = strpos($m1,'=')):
 														if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
-																if($dx == 1) {
-																	$rpl = "$debx$deb$mex$fin$endx";
-																}
+																if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
 																else {
 																	$rpl = "$debx$debo$fino$endx";
 																	$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
 																}
-																
 																$xstyle = ['style=\'[%tagreplace]\'','\'',''];
-															}
-														$lstx = substr($m1,$g+1);
-														$rpl = str_replace($xstyle[0],"style={$xstyle[1]}{$xstyle[2]}display: flex;{$lstx}{$xstyle[1]}", $rpl);
+														}
+														$new = substr($m1,$g+1);
+														$xtp = 'style=';
+														$d=$xstyle[1];
+														$rec=$xstyle[2];
+														$rch=$xstyle[0];
 														var_dump($rpl);
 													break;
 													case ($g = strpos($m1,'.')):
-														echo "okokok";
 														if(count($xclass) == 0) { $mex .= ' class=\'[%tagreplace]\' '; 
-														
-																if($dx == 1) {
-																	$rpl = "$debx$deb$mex$fin$endx";
-																}
+																if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
 																else {
-																	$rpl = "$debx$debo$fino$endx";
-																	$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
+																	  $rpl = "$debx$debo$fino$endx";
+																	  $rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
 																}
-																
 																$xclass = ['class=\'[%tagreplace]\'','\'',''];
-															}
-														
-														
+														}
 														$lstx = substr($m1,$g+1);
-														$rpl = str_replace($xclass[0],"class={$xclass[1]}{$xclass[2]} {$lstx}{$xclass[1]}", $rpl);
-													
+														
+														$xtp = 'class=';
+														$d=$xclass[1];
+														$rec=$xclass[2];
+														$rch=$xclass[0];
 														//var_dump($rpl);sleep(1000);
 													break;
 													default:
-													
 														if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
-														
-																if($dx == 1) {
-																	$rpl = "$debx$deb$mex$fin$endx";
-																}
+																if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
 																else {
 																	$rpl = "$debx$debo$fino$endx";
 																	$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
 																}
-																
 																$xstyle = ['style=\'[%tagreplace]\'','\'',''];
-															}
-														
-														$gen = 'display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; align-content: stretch;';
-														$rpl = str_replace($xstyle[0],"style={$xstyle[1]}{$xstyle[2]}{$gen}{$xstyle[1]}", $rpl);
+														}
+														$new = 'display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; align-content: stretch;';
+														$xtp = 'style=';
+														$d=$xstyle[1];
+														$rec=$xstyle[2];
+														$rch=$xstyle[0];
+														//$rpl = str_replace($xstyle[0],"style={$xstyle[1]}{$xstyle[2]}{$lstx}{$xstyle[1]}", $rpl);
 														var_dump($rpl);
 														//sleep(1000);
 													
-												}
-												
+													}
+													$rpl = str_replace($rch,"{$xtp}{$d}{$rec}{$new}{$d}", $rpl);
 											break;
 											}
+											
+											
 										}
 									break;
 									default:
