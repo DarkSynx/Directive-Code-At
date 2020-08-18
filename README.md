@@ -31,12 +31,12 @@ new options...
 
 @div[+Flex,direction,wrap,justify,align-items,align-content]
 //default is flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; align-content: stretch;
-@div[+flex] // use default row;nowrap;flex-start;stretch;stretch;
-@div[+flex,column] // use column
-@div[+flex,column,nowrap,center,center,center] //you want to use spécifique flex
-@div[+flex=flex-direction: row, flex-wrap: nowrap] //you want to use spécifique flex
-@div[+flex.myclassname] // use spécifique flex class
-
+@div[+Flex] // use default row;nowrap;flex-start;stretch;stretch;
+@div[+Flex,column] // use column
+@div[+Flex,column,nowrap,center,center,center] //you want to use spécifique flex
+@div[+Flex=flex-direction: row, flex-wrap: nowrap] //you want to use spécifique flex
+@div[+Flex.myclassname] // use spécifique flex class
+// use +Flex not +flex 
 
 ```
 ```PHP
