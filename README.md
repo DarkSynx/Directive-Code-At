@@ -29,6 +29,14 @@ new options...
 @p[mysegment,{{foo}}]( id='bar' ){ click me }
 // load mysegment and replace {{foo}} tag in mysegment by <p>click me</p>
 
+@div[+Flex,flex-direction,flex-wrap,justify-content,align-items,align-content]
+//default is flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; align-content: stretch;
+exemple : 
+@div[+flex] // use default row;nowrap;flex-start;stretch;stretch;
+@div[+flex,column] // use column
+@div[+flex,column,nowrap,center,center,center] //you want to use spécifique flex
+@div[+flex:myclassname] // use spécifique flex class
+
 ```
 ```PHP
  @!DOCTYPE(html)
