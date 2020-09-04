@@ -24,6 +24,12 @@ new options...
 
 @p[#foo]( id='bar' ){ click me }
 // <a href="#foo"><p>click me</p></a>
+or
+@P[§foo]... update synthaxe
+
+@div[#idname]  add to attribut 
+@div[.classname]
+
 
 @loadsegment('..myfile.segment'){mysegment}
 @p[mysegment,{{foo}}]( id='bar' ){ click me }
