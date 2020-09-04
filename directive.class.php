@@ -2,7 +2,7 @@
 /*
  !!!   WARNING   !!!
  !!! USE PHP 7.4 !!!
- 
+ 09/2020
  !!! INITIALISING CAT AND CACHE DEFINE !!!
  CAT is the starting folder to find your .cat .seg .tpl files.
  CACHE is the folder that allows to store the generated files
@@ -456,11 +456,26 @@ class directive {
 		$data = str_replace($find,"$debx$replace$endx", $data);
 	}
 	
-
-		
+	private	function shearch( $c, $bs, $bdeb1, $dd, $b, $bfin1) : array {
+					global $data;							
+										
+					$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;					
+										
+					$dp = ($dd - $b);													
+					do {												
+						$g = substr($data,$bs,($c - $bs));												
+						if( substr_count( $g , $bdeb1) == substr_count( $g , $bfin1) ) { break; }
+						$c = strpos($data,$bfin1, $c) + 1;	
+					} while( $dp--> 0 )	;
+										
+				$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );						
+									
+				return [$mex,$c];					
+								
+							
+		}
 	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[%1]',$masque2='[%2]',$exp=TRUE,$b=0, $mex='', $m2='', $c=0): bool
-	{
-			
+	{		
 			global $data, $segment;
 	
 			$s 		= 	strlen($find);
@@ -482,16 +497,12 @@ class directive {
 					 // cas 2  @XXXX ()
 					 $node1 = false;
 					 if($data[$bs] == '[') {
-						 $c = strpos($data,']',$bs);
-						 $dp = ($dd - $bs);						
-							do {
-								$g = substr($data,$bs,($c - $bs));
-								if( substr_count( $g , '[') == substr_count( $g , ']') ) { break; }
-								$c = strpos($data,']', $c) + 1;
-							} while( $dp--> 0 )	;
-						$m1 = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
-						$bs = $c;
-						$node1 = true;
+						
+						$c = strpos($data,']',$bs);
+							list($m1,$c) = $this->shearch( $c, $bs, '[', $dd, $b, ']');
+
+							$bs = $c;
+							$node1 = true;
 					 }
 							
 						 $node2 = true;
@@ -517,36 +528,17 @@ class directive {
 								$node2 = true;
 							}	
 					
-					
+
 							
-							if($node2 === false){
-										
-										$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
-										$dp = ($dd - $b);								
-										do {							
-											$g = substr($data,$bs,($c - $bs));							
-											if( substr_count( $g , $bdeb1) == substr_count( $g , $bfin1) ) { break; }							
-											$c = strpos($data,$bfin1, $c) + 1;							
-										} while( $dp--> 0 )	;													
-									$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );	
-							}
+							if($node2 === false){ list($mex,$c) = $this->shearch( $c, $bs, $bdeb1, $dd, $b, $bfin1); }
 					
 
-													
+							
 								if( ($bdeb2) && ( ($data[$c] == $bdeb2) || ($data[$c+1] == $bdeb2) ) ){ 
+										
 										$e = strpos($data,$bfin2,$c);
-										$c = ($data[$c+1] == $bdeb2)  ? $c+1 : $c ;
-
-										$dp = ($dd - $c);
-										do {
-											$g = substr($data,$c,($e - $c));
-											if(substr_count( $g , $bdeb2) == substr_count( $g , $bfin2)) { break; }
-											$e = strpos($data,$bfin2, $e) + 1; 
-										} while( $dp--> 0 );
-									
-
-										$m2 = trim(substr($data,$c+1,($e - $c)-2)); 
-
+										list($m2,$e) = $this->shearch( $e, $c, $bdeb2, $dd, $c, $bfin2);
+										
 									if( ($masque2) && ($exp === false) && ($node2 === false)) { $m2 = "echo <<<END2 \r\n$m2\r\nEND2;\r\n"; }
 
 								} else { $e = $c; }
