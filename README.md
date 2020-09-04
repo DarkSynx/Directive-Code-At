@@ -22,10 +22,8 @@ new options...
 <div>foobar</div>
 // else no div
 
-@p[#foo]( id='bar' ){ click me }
+@p[&foo]( id='bar' ){ click me }
 // <a href="#foo"><p>click me</p></a>
-or
-@P[&foo]... update synthaxe
 
 @div[#idname]  add to attribut 
 @div[.classname]
