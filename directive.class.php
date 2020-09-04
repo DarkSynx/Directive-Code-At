@@ -2,7 +2,9 @@
 /*
  !!!   WARNING   !!!
  !!! USE PHP 7.4 !!!
+
  09/2020
+ 
  !!! INITIALISING CAT AND CACHE DEFINE !!!
  CAT is the starting folder to find your .cat .seg .tpl files.
  CACHE is the folder that allows to store the generated files
@@ -470,10 +472,10 @@ class directive {
 										
 				$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );						
 									
-				return [$mex,$c];					
-								
-							
-		}
+				return [$mex,$c];			
+
+	}
+	
 	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[%1]',$masque2='[%2]',$exp=TRUE,$b=0, $mex='', $m2='', $c=0): bool
 	{		
 			global $data, $segment;
@@ -490,11 +492,7 @@ class directive {
 				$b = strpos($data,$find,$b);
 				$bs = ( ($b ? $b : 0) + $s);
 				if($b !== false ) {
-					
-					
-					 // cas 0  @XXXX
-					 // cas 1  @XXXX()
-					 // cas 2  @XXXX ()
+
 					 $node1 = false;
 					 if($data[$bs] == '[') {
 						
@@ -638,14 +636,21 @@ class directive {
 								
 								if($node1) {
 									switch($m1[0]){
-									case '#':
-										//$m1 = substr($m1);
+									case '&':
+										$m1 = substr($m1,1);
 										$rpl = "<a href='#$m1'>" . $rpl . '</a>';
 									break;
-									case '+':
+									case '#': // Add ID
+										
+									break;
+									case '.': // add class
+									
+									break;
+									case '+': // functions spé
 										$m1 = substr($m1,1);
 										switch(substr($m1,0,4)) {
 											case 'Flex':
+												
 												if($bdeb1) {
 													
 													var_dump($mex);
@@ -658,90 +663,94 @@ class directive {
 	
 															
 													switch(true) {
-												
-													case ($g = strpos($m1,',')):
-														if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
-																if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
-																else {
-																	$rpl = "$debx$debo$fino$endx";
-																	$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
-																}
-																$xstyle = ['style=\'[%tagreplace]\'','\'',''];
-														}
-														$lstx = explode(',',substr($m1,$g+1));
-														$flex = ['flex-direction:' , 'flex-wrap:' , 'justify-content:', 'align-items:' , 'align-content:' ];
-														$new = '';
-														foreach($lstx as $k => $l){
-															$new .= $flex[$k] . $l . ';';
-														}
-														//var_dump($rpl);
-														//echo PHP_EOL, PHP_EOL;
-														$xtp = 'style=';
-														$d=$xstyle[1];
-														$rec=$xstyle[2];
-														$rch=$xstyle[0];
-														var_dump($rpl);
-														//sleep(1000);
-													break;
-													case ($g = strpos($m1,'=')):
-														if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
-																if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
-																else {
-																	$rpl = "$debx$debo$fino$endx";
-																	$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
-																}
-																$xstyle = ['style=\'[%tagreplace]\'','\'',''];
-														}
-														$new = substr($m1,$g+1);
-														$xtp = 'style=';
-														$d=$xstyle[1];
-														$rec=$xstyle[2];
-														$rch=$xstyle[0];
-														var_dump($rpl);
-													break;
-													case ($g = strpos($m1,'.')):
-														if(count($xclass) == 0) { $mex .= ' class=\'[%tagreplace]\' '; 
-																if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
-																else {
-																	  $rpl = "$debx$debo$fino$endx";
-																	  $rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
-																}
-																$xclass = ['class=\'[%tagreplace]\'','\'',''];
-														}
-														$lstx = substr($m1,$g+1);
-														
-														$xtp = 'class=';
-														$d=$xclass[1];
-														$rec=$xclass[2];
-														$rch=$xclass[0];
-														//var_dump($rpl);sleep(1000);
-													break;
-													default:
-														if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
-																if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
-																else {
-																	$rpl = "$debx$debo$fino$endx";
-																	$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
-																}
-																$xstyle = ['style=\'[%tagreplace]\'','\'',''];
-														}
-														$new = 'display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; align-content: stretch;';
-														$xtp = 'style=';
-														$d=$xstyle[1];
-														$rec=$xstyle[2];
-														$rch=$xstyle[0];
-														//$rpl = str_replace($xstyle[0],"style={$xstyle[1]}{$xstyle[2]}{$lstx}{$xstyle[1]}", $rpl);
-														var_dump($rpl);
-														//sleep(1000);
+													
+														case ($g = strpos($m1,',')):
+															if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
+																	if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
+																	else {
+																		$rpl = "$debx$debo$fino$endx";
+																		$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
+																	}
+																	$xstyle = ['style=\'[%tagreplace]\'','\'',''];
+															}
+															$lstx = explode(',',substr($m1,$g+1));
+															$flex = ['flex-direction:' , 'flex-wrap:' , 'justify-content:', 'align-items:' , 'align-content:' ];
+															$new = '';
+															foreach($lstx as $k => $l){
+																$new .= $flex[$k] . $l . ';';
+															}
+															//var_dump($rpl);
+															//echo PHP_EOL, PHP_EOL;
+															$xtp = 'style=';
+															$d=$xstyle[1];
+															$rec=$xstyle[2];
+															$rch=$xstyle[0];
+															var_dump($rpl);
+															//sleep(1000);
+														break;
+														case ($g = strpos($m1,'=')):
+															if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
+																	if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
+																	else {
+																		$rpl = "$debx$debo$fino$endx";
+																		$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
+																	}
+																	$xstyle = ['style=\'[%tagreplace]\'','\'',''];
+															}
+															$new = substr($m1,$g+1);
+															$xtp = 'style=';
+															$d=$xstyle[1];
+															$rec=$xstyle[2];
+															$rch=$xstyle[0];
+															var_dump($rpl);
+														break;
+														case ($g = strpos($m1,'.')):
+															if(count($xclass) == 0) { $mex .= ' class=\'[%tagreplace]\' '; 
+																	if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
+																	else {
+																		  $rpl = "$debx$debo$fino$endx";
+																		  $rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
+																	}
+																	$xclass = ['class=\'[%tagreplace]\'','\'',''];
+															}
+															$lstx = substr($m1,$g+1);
+															
+															$xtp = 'class=';
+															$d=$xclass[1];
+															$rec=$xclass[2];
+															$rch=$xclass[0];
+															//var_dump($rpl);sleep(1000);
+														break;
+														default:
+															if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
+																	if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
+																	else {
+																		$rpl = "$debx$debo$fino$endx";
+																		$rpl = ($masque2 ? str_replace($masque2,$m2,str_replace($masque1,$mex,$rpl)) : str_replace($masque1,$mex,$rpl));
+																	}
+																	$xstyle = ['style=\'[%tagreplace]\'','\'',''];
+															}
+															$new = 'display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; align-content: stretch;';
+															$xtp = 'style=';
+															$d=$xstyle[1];
+															$rec=$xstyle[2];
+															$rch=$xstyle[0];
+															//$rpl = str_replace($xstyle[0],"style={$xstyle[1]}{$xstyle[2]}{$lstx}{$xstyle[1]}", $rpl);
+															var_dump($rpl);
+															//sleep(1000);
 													
 													}
 													$rpl = str_replace($rch,"{$xtp}{$d}{$rec}{$new}{$d}", $rpl);
+											
+
+												}
 											break;
-											}
-											
-											
+											case 'List':
+											 // gen list
+											break;
 										}
 									break;
+									
 									default:
 										if( ($g = strpos($m1,',')) !== false ) {
 											list($seg,$tag) = explode(',',$m1);
