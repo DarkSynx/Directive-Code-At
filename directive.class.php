@@ -341,9 +341,11 @@ class directive {
 		// on hash les données brute et si elle son similaire
 		// alors on recharge le fichier fabriqué sinon 
 		// on le refabrique
+		
+		/*
 		$hashdata = hash('fnv1a64',$data, true);
 		$filehash = @file_get_contents( $this->_CACHE . $this->_filename . '.hash');
-		if($hashdata /*!= $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) */) {
+		if($hashdata != $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
 		
 			$fp = fopen( $this->_CACHE . $this->_filename . '.hash', 'w');
 			fwrite($fp, $hashdata);
@@ -351,7 +353,9 @@ class directive {
 			$this->_nocache = true;
 			
 		} else { $this->_nocache = false; return $tabloc; }
-	
+		*/
+		
+		$this->_nocache = true;
 		// on supprime les functions non présente dans data
 		// et on prépare les variables du talbleau
 		foreach($tags as $k => &$fnc) {				
@@ -389,9 +393,11 @@ class directive {
 				$data = str_replace('[#JS-LOAD-MASQUE-GROUPING]', '<script>' . $js_p . '</script>', $data);
 			}
 				
+				
+				
 		if($timetest) {
 			$time_end = microtime(true);
-			$time = $time_end - $time_start;
+			$time = ($time_end - $time_start);
 		}
 		
 		
@@ -456,17 +462,16 @@ class directive {
 		return true;
 	}
 	
-	private	function shearch( $c, $bs, $bdeb1, $dp, $bfin1) : array {
-					global $data;							
-					$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
+	private	function shearch(  $c, $bs, $dp, $bdeb1, $bfin1): array {
+					global $data;						
 					do {												
 						$g = substr($data,$bs,($c - $bs));												
 						if( substr_count( $g , $bdeb1) == substr_count( $g , $bfin1) ) { break; }
 						$c = strpos($data,$bfin1, $c) + 1;	
 					} while( $dp--> 0 )	;
-				$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );						
-				return [$mex,$c];
-	}
+					$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
+				return [$mex,$c];					
+		}
 	
 	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[%1]',$masque2='[%2]',$exp=TRUE,$b=0, $mex='', $m2='', $c=0): bool 
 	{		
@@ -485,9 +490,8 @@ class directive {
 
 					$node1 = false;
 					if($data[$bs] == '[') {
-							//$c = strpos($data,']',$bs);
-							list($m1,$bs) = $this->shearch( strpos($data,']',$bs) , $bs, '[', $dd - $b, ']');
-							$node1 = true;
+						list($m1,$bs) = $this->shearch( strpos($data,']',$bs), $bs, $dd - $bs, '[', ']'); 
+						$node1 = true;
 					}
 					
 						$node2 = true;
@@ -514,18 +518,22 @@ class directive {
 					
 
 							
-							if($node2 === false){ list($mex,$c) = $this->shearch( $c, $bs, $bdeb1, $dd - $b, $bfin1); }
-					
+								if($node2 === false){ 
+									$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
+									list($mex,$c) = $this->shearch( $c, $bs, $dd - $b, $bdeb1, $bfin1); 	
+								}
 
-							
+
+								$e = $c;
 								if( ($bdeb2) && ( ($data[$c] == $bdeb2) || ($data[$c+1] == $bdeb2) ) ){ 
 										
-										//$e = strpos($data,$bfin2,$c);
-										list($m2,$c) = $this->shearch( strpos($data,$bfin2,$c) , $c, $bdeb2, $dd - $c, $bfin2);
-										
+											$e = strpos($data,$bfin2,$c);
+											$c = ($data[$c+1] == $bdeb2)  ? $c+1 : $c ;
+											list($m2,$e) = $this->shearch( $e, $c, $dd - $c, $bdeb2, $bfin2);
+											
+
+
 									if( ($masque2) && ($exp === false) && ($node2 === false)) { $m2 = "echo <<<END2 \r\n$m2\r\nEND2;\r\n"; }
-									
-									
 
 								} 
 
@@ -740,8 +748,10 @@ class directive {
 										}
 									}
 								}
-								
-							$data = substr_replace($data, $rpl, $b, (($c - $b)) );
+							
+
+							
+							$data = substr_replace($data, $rpl, $b, ($e - $b) );
 							
 							$rpl 	= 	'';
 							$mex	=	'';
@@ -767,9 +777,15 @@ class directive {
 				$b = strpos($data,$find,$b);
 				$bs = ($b + $s);
 				if($b !== false ) {
-					$c = strpos($data,$bfin,$bs);
+					
 
-							list($m,$c) = $this->shearch( $c, $bs, $bdeb, $d - $b, $bfin);
+							
+							$c = strpos($data,$bfin,$bs);
+							$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
+							list($m,$c) = $this->shearch( $c, $bs, $d - $b, $bdeb, $bfin); 
+							//$m = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
+
+
 
 							switch($find) {
 								case '@style+':
