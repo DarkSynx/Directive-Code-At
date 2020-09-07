@@ -2,8 +2,6 @@
 /*
  !!!   WARNING   !!!
  !!! USE PHP 7.4 !!!
-
- 09/2020
  
  !!! INITIALISING CAT AND CACHE DEFINE !!!
  CAT is the starting folder to find your .cat .seg .tpl files.
@@ -359,14 +357,13 @@ class directive {
 		foreach($tags as $k => &$fnc) {				
 				
 				$ctme = substr_count($data, $fnc[1][0]);
-				
-				if($fnc[0] != 'bsp' ) {
-					//echo $fnc[0] . '</br/>';
-					$fnc[1][1] = $ctme;	
-				}
-				
+
 				if( $ctme == 0 ) {
 					unset( $tags[$k] );
+				}
+				else if($fnc[0] != 'bsp' ) {
+						//echo $fnc[0] . '</br/>';
+						$fnc[1][1] = $ctme;	
 				}
 			
 		}
@@ -452,39 +449,32 @@ class directive {
 
 	
 	
-	private function bsp($find,$replace,$debx='<?php ',$endx=' ?>'){
+	private function bsp($find,$replace,$debx='<?php ',$endx=' ?>'): bool {
 		//var_dump([$find,$replace,$debx,$endx]);
 		global $data;
 		$data = str_replace($find,"$debx$replace$endx", $data);
+		return true;
 	}
 	
-	private	function shearch( $c, $bs, $bdeb1, $dd, $b, $bfin1) : array {
+	private	function shearch( $c, $bs, $bdeb1, $dp, $bfin1) : array {
 					global $data;							
-										
-					$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;					
-										
-					$dp = ($dd - $b);													
+					$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
 					do {												
 						$g = substr($data,$bs,($c - $bs));												
 						if( substr_count( $g , $bdeb1) == substr_count( $g , $bfin1) ) { break; }
 						$c = strpos($data,$bfin1, $c) + 1;	
 					} while( $dp--> 0 )	;
-										
 				$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );						
-									
-				return [$mex,$c];			
-
+				return [$mex,$c];
 	}
 	
-	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[%1]',$masque2='[%2]',$exp=TRUE,$b=0, $mex='', $m2='', $c=0): bool
+	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[%1]',$masque2='[%2]',$exp=TRUE,$b=0, $mex='', $m2='', $c=0): bool 
 	{		
 			global $data, $segment;
-	
+			
 			$s 		= 	strlen($find);
-	
-				
+
 			while(--$fdb >= 0) {
-				
 
 				$c		=	0;	
 				$dd 	= 	strlen($data);
@@ -493,18 +483,15 @@ class directive {
 				$bs = ( ($b ? $b : 0) + $s);
 				if($b !== false ) {
 
-					 $node1 = false;
-					 if($data[$bs] == '[') {
-						
-						$c = strpos($data,']',$bs);
-							list($m1,$c) = $this->shearch( $c, $bs, '[', $dd, $b, ']');
-
-							$bs = $c;
+					$node1 = false;
+					if($data[$bs] == '[') {
+							//$c = strpos($data,']',$bs);
+							list($m1,$bs) = $this->shearch( strpos($data,']',$bs) , $bs, '[', $dd - $b, ']');
 							$node1 = true;
-					 }
-							
-						 $node2 = true;
-						 switch(true) {
+					}
+					
+						$node2 = true;
+						switch(true){
 							case ($data[$bs] . $data[$bs + 1]) == ($bdeb1 . $bfin1): 
 								$c = $bs + 2;
 							break;
@@ -513,8 +500,7 @@ class directive {
 							break;
 							case ($data[$bs] == $bdeb1 && $data[$bs+1] != $bfin1):
 								$c = strpos($data,$bfin1,$bs);
-								$node2 = false; 
-								 
+								$node2 = false;
 							break;
 							case ($data[$bs] . $data[$bs + 1] == (chr(32) .$bdeb1) && $data[$bs+2] != $bfin1):
 								 $bs = $bs + 1;
@@ -524,22 +510,24 @@ class directive {
 							default:
 								$c = $bs;
 								$node2 = true;
-							}	
+						}	
 					
 
 							
-							if($node2 === false){ list($mex,$c) = $this->shearch( $c, $bs, $bdeb1, $dd, $b, $bfin1); }
+							if($node2 === false){ list($mex,$c) = $this->shearch( $c, $bs, $bdeb1, $dd - $b, $bfin1); }
 					
 
 							
 								if( ($bdeb2) && ( ($data[$c] == $bdeb2) || ($data[$c+1] == $bdeb2) ) ){ 
 										
-										$e = strpos($data,$bfin2,$c);
-										list($m2,$e) = $this->shearch( $e, $c, $bdeb2, $dd, $c, $bfin2);
+										//$e = strpos($data,$bfin2,$c);
+										list($m2,$c) = $this->shearch( strpos($data,$bfin2,$c) , $c, $bdeb2, $dd - $c, $bfin2);
 										
 									if( ($masque2) && ($exp === false) && ($node2 === false)) { $m2 = "echo <<<END2 \r\n$m2\r\nEND2;\r\n"; }
+									
+									
 
-								} else { $e = $c; }
+								} 
 
 
 
@@ -553,14 +541,11 @@ class directive {
 									switch($find) { // si masque 1 est true
 
 										case '@getfile':
-										
-										
 											$debx = $this->_commentHTML ? "\r\n<!-- start invoc file : $mex -->\r\n" : ''  ;
 											$endx = $this->_commentHTML ? "\r\n<!-- END invoc file : $mex -->\r\n" : '';
 											$debo = file_get_contents( $this->_CAT . trim($mex,'\'') );
 											$fino = '';
 											$mex  = '';
-											
 										break;
 										
 										case '@structure':
@@ -572,7 +557,6 @@ class directive {
 												//var_dump($mxxx);
 												foreach($mxxx as $l) {
 													$l = trim($l);
-													
 													if(strpos($l, '~') === false) { 
 														$ddt = (file_exists( $this->_CAT . trim($l,'\'')) ? file_get_contents( $this->_CAT . trim($l,'\'')) : trim($l,'\'') ); 
 													}
@@ -657,13 +641,10 @@ class directive {
 													preg_match('/style=("|\')([^("|\')]*)("|\')/', $mex,$xstyle);
 													preg_match('/class=("|\')([^("|\')]*)("|\')/', $mex,$xclass);
 													var_dump($xstyle); // 0 = all string and 2 = in string
-													
+
 													$rez = false;
 													
-	
-															
 													switch(true) {
-													
 														case ($g = strpos($m1,',')):
 															if(count($xstyle) == 0){ $mex .= ' style=\'[%tagreplace]\' ';
 																	if($dx == 1) {$rpl = "$debx$deb$mex$fin$endx";}
@@ -738,7 +719,6 @@ class directive {
 															//$rpl = str_replace($xstyle[0],"style={$xstyle[1]}{$xstyle[2]}{$lstx}{$xstyle[1]}", $rpl);
 															var_dump($rpl);
 															//sleep(1000);
-													
 													}
 													$rpl = str_replace($rch,"{$xtp}{$d}{$rec}{$new}{$d}", $rpl);
 											
@@ -761,24 +741,22 @@ class directive {
 									}
 								}
 								
-							$data = substr_replace($data, $rpl, $b, (($e - $b)) );
+							$data = substr_replace($data, $rpl, $b, (($c - $b)) );
 							
 							$rpl 	= 	'';
 							$mex	=	'';
 							$m2		=	''; 
 
-
 							$b = $bs + 1;
-	
-				
+
 				} else { return false; }
 
 			}
 		return true;
 	}
-
 	
-	private function bof($find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0,$fbmax=0,$rpl=''){
+	private function bof($find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0,$fbmax=0,$rpl=''): bool {
+			
 			global $data, $style_p, $jsr_p, $js_p;
 			
 			$d = strlen($data);
@@ -788,35 +766,11 @@ class directive {
 			while(--$fdb > -1) { 
 				$b = strpos($data,$find,$b);
 				$bs = ($b + $s);
-				if(
-					( $b !== false ) && 
-					( $data[$bs] == $bdeb )  && 
-					( ($c = strpos($data,$bfin,$bs)) !== false ) 
-				) {  
-							
+				if($b !== false ) {
+					$c = strpos($data,$bfin,$bs);
 
-							$c--; 
-								for($j=0; $j < $d ;$j++) {
-									$g = substr($data,$bs,($c - $bs));
-									$k = substr_count( $g , $bdeb);
-									$l = substr_count( $g , $bfin);
-									//if($find == '@PHP') { echo $find, ' > ' , $k , '==' ,$l, ' :: ',$c, PHP_EOL; }
-									if($k == $l) { break; }
-									$c = strpos($data,$bfin, $c+1) + 1; //execusion 0.0077269077301025 secondes
-									//$c++; // execusion 0.0082950592041016 secondes
-								}
-								
+							list($m,$c) = $this->shearch( $c, $bs, $bdeb, $d - $b, $bfin);
 
-								
-								
-								$m = trim( substr($data,($bs + 1),( ($c - $bs) -2)) );
-								//$rpl = "$debx$deb$m$fin$endx";
-							
-								/*if($find == '@PHP') {
-									
-										//echo '<br/> >>>', $m, '<<< <br/>', PHP_EOL;
-									
-								}*/
 							switch($find) {
 								case '@style+':
 									//[#STYLE-LOAD-MASQUE]
@@ -825,7 +779,7 @@ class directive {
 									$rpl = "$debx$deb$fin$endx";
 								break;
 								case '@JSR+':
-										//[#STYLE-LOAD-MASQUE]
+									//[#STYLE-LOAD-MASQUE]
 									if($fbmax == $fdb) { $this->_jsr_plus = true; $deb='[#JSR-LOAD-MASQUE-GROUPING]'; }
 									$jsr_p .= $m;
 									$rpl = "$debx$deb$fin$endx";
@@ -841,23 +795,16 @@ class directive {
 								$rpl = "$debx$deb$m$fin$endx";
 								
 							}
-							
-							
 
-								
-								
-								$data = substr_replace($data, $rpl, $b, (($c - $b)) );
-							
-							
-							// expérimental
-							//$b += strlen($rpl);
+							$data = substr_replace($data, $rpl, $b, (($c - $b)) );
+
 							$b = $bs + 1;
 
 				
 				} else { return false; }
 
 			}
-
+		return TRUE;
 	}
 	
 }
