@@ -1,6 +1,8 @@
 <?php 
 /*
- Juste fo test new optimisation 
+ Juste for test new optimisation
+ NOT USE THIS VERSION
+ 
  !!!   WARNING   !!!
  !!! USE PHP 7.4 !!!
  
