@@ -112,10 +112,10 @@ class directive {
 		
 		
 			// toujours au début get
-			['bop',['@include'		,0,'include_once( [%1]',');','<?php ',' ?>','(',')','', '', '[%1]','']],
+			['bop',['@include'		,0,'include_once( %_M1_%',');','<?php ',' ?>','(',')','', '', '%_M1_%','']],
 
 			['bop',['@structure'	,0]],
-			['bop',['@getfile'		,0,'', '','<?php ',' ?>','(',')','','','[%1]','',FALSE]],
+			['bop',['@getfile'		,0,'', '','<?php ',' ?>','(',')','','','%_M1_%','',FALSE]],
 			['bop',['@getsegment'	,0]],
 			['bop',['@phpsegment'	,0]],
 			
@@ -124,7 +124,7 @@ class directive {
 		
 			['bsp',['@dowhile'		,"do{ echo <<<END\r\n",'<?php ','']],
 			['bof',['@whiledo'		,0,"\r\nEND;\r\n}while(", ');','(',')','']],
-			['bop',['@dow'			,0,'do{', '[%2]}while([%1]);']],	
+			['bop',['@dow'			,0,'do{', '%_M2_%}while(%_M1_%);']],	
 
 			['bof',['@PHP'			,0,'','','{','}']], // affiche son resulta
 			['bof',['@JSR'			,0,'','','{','}','<script>$( document ).ready(function(){','});</script>']], // affiche son resulta
@@ -172,7 +172,7 @@ class directive {
 			['bsp',['@bodypage'		,'</head><body>','','']],
 			['bsp',['@endpage'		,'</body></html>','','']],
 			
-			['bop',['@html'			,0,'<html [%1]>','[%2]</html>', '','']],			
+			['bop',['@html'			,0,'<html %_M1_%>','%_M2_%</html>', '','']],			
 			['bof',['@head'			,0,'<head>','</head>', '{', '}', '','']],			
 			['bof',['@title'		,0,'<title>','</title>', '(', ')', '','']],
 			['bof',['@meta'			,0,'<meta ', '>', '(', ')', '','']],
@@ -182,134 +182,134 @@ class directive {
 			['bof',['@script'		,0,'<script src=', '></script>', '(', ')', '','']],
 			['bof',['@style+'		,0,'', '', '{', '}', '','']], // Grouping all @style+ to the first @style+
 			['bof',['@style'		,0,'<style>', '</style>', '{', '}', '','']],
-			['bop',['@body'			,0,'<body [%1]>','[%2]</body>', '','']],
+			['bop',['@body'			,0,'<body %_M1_%>','%_M2_%</body>', '','']],
 	
 
 			
-			['bop',['@blockquote'	,0,'<blockquote [%1]>','[%2]</blockquote>', '','']],
-			['bop',['@figcaption'	,0,'<figcaption [%1]>','[%2]</figcaption>', '','']],
+			['bop',['@blockquote'	,0,'<blockquote %_M1_%>','%_M2_%</blockquote>', '','']],
+			['bop',['@figcaption'	,0,'<figcaption %_M1_%>','%_M2_%</figcaption>', '','']],
 			
-			['bop',['@colgroup'		,0,'<colgroup [%1]>','[%2]</colgroup>', '','']],
-			['bop',['@datalist'		,0,'<datalist [%1]>','[%2]</datalist>', '','']],
-			['bop',['@fieldset'		,0,'<fieldset [%1]>','[%2]</fieldset>', '','']],
-			['bop',['@noscript'		,0,'<noscript [%1]>','[%2]</noscript>', '','']],
-			['bop',['@optgroup'		,0,'<optgroup [%1]>','[%2]</optgroup>', '','']],
-			['bop',['@progress'		,0,'<progress [%1]>','[%2]</progress>', '','']],
-			['bop',['@textarea'		,0,'<textarea [%1]>','[%2]</textarea>', '','']],
+			['bop',['@colgroup'		,0,'<colgroup %_M1_%>','%_M2_%</colgroup>', '','']],
+			['bop',['@datalist'		,0,'<datalist %_M1_%>','%_M2_%</datalist>', '','']],
+			['bop',['@fieldset'		,0,'<fieldset %_M1_%>','%_M2_%</fieldset>', '','']],
+			['bop',['@noscript'		,0,'<noscript %_M1_%>','%_M2_%</noscript>', '','']],
+			['bop',['@optgroup'		,0,'<optgroup %_M1_%>','%_M2_%</optgroup>', '','']],
+			['bop',['@progress'		,0,'<progress %_M1_%>','%_M2_%</progress>', '','']],
+			['bop',['@textarea'		,0,'<textarea %_M1_%>','%_M2_%</textarea>', '','']],
 			
-			['bop',['@!DOCTYPE'		,0,'<!DOCTYPE  [%1]','>', '','','(',')','', '', '[%1]','',]],
+			['bop',['@!DOCTYPE'		,0,'<!DOCTYPE  %_M1_%','>', '','','(',')','', '', '%_M1_%','',]],
 			
-			['bop',['@address'		,0,'<address [%1]>','[%2]</address>', '','']],
-			['bop',['@article'		,0,'<article [%1]>','[%2]</article>', '','']],
-			['bop',['@caption'		,0,'<caption [%1]>','[%2]</caption>', '','']],
-			['bop',['@command'		,0,'<command [%1]>','[%2]</command>', '','']],
-			['bop',['@details'		,0,'<details [%1]>','[%2]</details>', '','']],
-			['bop',['@section'		,0,'<section [%1]>','[%2]</section>', '','']],
-			['bop',['@summary'		,0,'<summary [%1]>','[%2]</summary>', '','']],
+			['bop',['@address'		,0,'<address %_M1_%>','%_M2_%</address>', '','']],
+			['bop',['@article'		,0,'<article %_M1_%>','%_M2_%</article>', '','']],
+			['bop',['@caption'		,0,'<caption %_M1_%>','%_M2_%</caption>', '','']],
+			['bop',['@command'		,0,'<command %_M1_%>','%_M2_%</command>', '','']],
+			['bop',['@details'		,0,'<details %_M1_%>','%_M2_%</details>', '','']],
+			['bop',['@section'		,0,'<section %_M1_%>','%_M2_%</section>', '','']],
+			['bop',['@summary'		,0,'<summary %_M1_%>','%_M2_%</summary>', '','']],
 			
-			['bop',['@button'		,0,'<button [%1]>','[%2]</button>', '','']],
-			['bop',['@canvas'		,0,'<canvas [%1]>','[%2]</canvas>', '','']],
-			['bop',['@figure'		,0,'<figure [%1]>','[%2]</figure>', '','']],
-			['bop',['@footer'		,0,'<footer [%1]>','[%2]</footer>', '','']],
-			['bop',['@header'		,0,'<header [%1]>','[%2]</header>', '','']],
-			['bop',['@hgroup'		,0,'<hgroup [%1]>','[%2]</hgroup>', '','']],
-			['bop',['@iframe'		,0,'<iframe [%1]>','[%2]</iframe>', '','']],
-			['bop',['@keygen'		,0,'<keygen [%1]>','[%2]</keygen>', '','']],
-			['bop',['@legend'		,0,'<legend [%1]>','[%2]</legend>', '','']],
-			['bop',['@object'		,0,'<object [%1]>','[%2]</object>', '','']],
-			['bop',['@option'		,0,'<option [%1]>','[%2]</option>', '','']],
-			['bop',['@output'		,0,'<output [%1]>','[%2]</output>', '','']],
-			['bop',['@select'		,0,'<select [%1]>','[%2]</select>', '','']],
-			['bop',['@source'		,0,'<source [%1]>','[%2]</source>', '','']],
-			['bop',['@strong'		,0,'<strong [%1]>','[%2]</strong>', '','']],
-			['bop',['@center'		,0,'<center [%1]>','[%2]</center>', '','']],
+			['bop',['@button'		,0,'<button %_M1_%>','%_M2_%</button>', '','']],
+			['bop',['@canvas'		,0,'<canvas %_M1_%>','%_M2_%</canvas>', '','']],
+			['bop',['@figure'		,0,'<figure %_M1_%>','%_M2_%</figure>', '','']],
+			['bop',['@footer'		,0,'<footer %_M1_%>','%_M2_%</footer>', '','']],
+			['bop',['@header'		,0,'<header %_M1_%>','%_M2_%</header>', '','']],
+			['bop',['@hgroup'		,0,'<hgroup %_M1_%>','%_M2_%</hgroup>', '','']],
+			['bop',['@iframe'		,0,'<iframe %_M1_%>','%_M2_%</iframe>', '','']],
+			['bop',['@keygen'		,0,'<keygen %_M1_%>','%_M2_%</keygen>', '','']],
+			['bop',['@legend'		,0,'<legend %_M1_%>','%_M2_%</legend>', '','']],
+			['bop',['@object'		,0,'<object %_M1_%>','%_M2_%</object>', '','']],
+			['bop',['@option'		,0,'<option %_M1_%>','%_M2_%</option>', '','']],
+			['bop',['@output'		,0,'<output %_M1_%>','%_M2_%</output>', '','']],
+			['bop',['@select'		,0,'<select %_M1_%>','%_M2_%</select>', '','']],
+			['bop',['@source'		,0,'<source %_M1_%>','%_M2_%</source>', '','']],
+			['bop',['@strong'		,0,'<strong %_M1_%>','%_M2_%</strong>', '','']],
+			['bop',['@center'		,0,'<center %_M1_%>','%_M2_%</center>', '','']],
 			
-			['bop',['@aside'		,0,'<aside [%1]>','[%2]</aside>', '','']],
-			['bop',['@audio'		,0,'<audio [%1]>','[%2]</audio>', '','']],
-			['bop',['@embed'		,0,'<embed [%1]>','[%2]</embed>', '','']],
-			['bop',['@input'		,0,'<input [%1]' ,'>', '','','(',')','', '', '[%1]','',]],
-			['bop',['@label'		,0,'<label [%1]>','[%2]</label>', '','']],
-			['bop',['@meter'		,0,'<meter [%1]>','[%2]</meter>', '','']],
-			['bop',['@param'		,0,'<param [%1]>','[%2]</param>', '','']],
-			['bop',['@small'		,0,'<small [%1]>','[%2]</small>', '','']],
-			['bop',['@table'		,0,'<table [%1]>','[%2]</table>', '','']],
-			['bop',['@tbody'		,0,'<tbody [%1]>','[%2]</tbody>', '','']],
-			['bop',['@tfoot'		,0,'<tfoot [%1]>','[%2]</tfoot>', '','']],
-			['bop',['@thead'		,0,'<thead [%1]>','[%2]</thead>', '','']],
-			['bop',['@title'		,0,'<title [%1]>','[%2]</title>', '','']],
-			['bop',['@track'		,0,'<track [%1]>','[%2]</track>', '','']],
-			['bop',['@video'		,0,'<video [%1]>','[%2]</video>', '','']],
+			['bop',['@aside'		,0,'<aside %_M1_%>','%_M2_%</aside>', '','']],
+			['bop',['@audio'		,0,'<audio %_M1_%>','%_M2_%</audio>', '','']],
+			['bop',['@embed'		,0,'<embed %_M1_%>','%_M2_%</embed>', '','']],
+			['bop',['@input'		,0,'<input %_M1_%' ,'>', '','','(',')','', '', '%_M1_%','',]],
+			['bop',['@label'		,0,'<label %_M1_%>','%_M2_%</label>', '','']],
+			['bop',['@meter'		,0,'<meter %_M1_%>','%_M2_%</meter>', '','']],
+			['bop',['@param'		,0,'<param %_M1_%>','%_M2_%</param>', '','']],
+			['bop',['@small'		,0,'<small %_M1_%>','%_M2_%</small>', '','']],
+			['bop',['@table'		,0,'<table %_M1_%>','%_M2_%</table>', '','']],
+			['bop',['@tbody'		,0,'<tbody %_M1_%>','%_M2_%</tbody>', '','']],
+			['bop',['@tfoot'		,0,'<tfoot %_M1_%>','%_M2_%</tfoot>', '','']],
+			['bop',['@thead'		,0,'<thead %_M1_%>','%_M2_%</thead>', '','']],
+			['bop',['@title'		,0,'<title %_M1_%>','%_M2_%</title>', '','']],
+			['bop',['@track'		,0,'<track %_M1_%>','%_M2_%</track>', '','']],
+			['bop',['@video'		,0,'<video %_M1_%>','%_M2_%</video>', '','']],
 			
 			
 			
-			['bop',['@abbr'			,0,'<abbr [%1]>','[%2]</abbr>', '','']],
-			['bop',['@area'			,0,'<area [%1]>','[%2]</area>', '','']],
-			['bop',['@base'			,0,'<base [%1]>','[%2]</base>', '','']],
-			['bop',['@cite'			,0,'<cite [%1]>','[%2]</cite>', '','']],
-			['bop',['@code'			,0,'<code [%1]>','[%2]</code>', '','']],
-			['bop',['@form'			,0,'<form [%1]>','[%2]</form>', '','']],
-			['bop',['@mark'			,0,'<mark [%1]>','[%2]</mark>', '','']],
-			['bop',['@math'			,0,'<math [%1]>','[%2]</math>', '','']],
-			['bop',['@menu'			,0,'<menu [%1]>','[%2]</menu>', '','']],
-			['bop',['@ruby'			,0,'<ruby [%1]>','[%2]</ruby>', '','']],
-			['bop',['@samp'			,0,'<samp [%1]>','[%2]</samp>', '','']],
-			['bop',['@span'			,0,'<span [%1]>','[%2]</span>', '','']],
-			['bop',['@time'			,0,'<time [%1]>','[%2]</time>', '','']],
+			['bop',['@abbr'			,0,'<abbr %_M1_%>','%_M2_%</abbr>', '','']],
+			['bop',['@area'			,0,'<area %_M1_%>','%_M2_%</area>', '','']],
+			['bop',['@base'			,0,'<base %_M1_%>','%_M2_%</base>', '','']],
+			['bop',['@cite'			,0,'<cite %_M1_%>','%_M2_%</cite>', '','']],
+			['bop',['@code'			,0,'<code %_M1_%>','%_M2_%</code>', '','']],
+			['bop',['@form'			,0,'<form %_M1_%>','%_M2_%</form>', '','']],
+			['bop',['@mark'			,0,'<mark %_M1_%>','%_M2_%</mark>', '','']],
+			['bop',['@math'			,0,'<math %_M1_%>','%_M2_%</math>', '','']],
+			['bop',['@menu'			,0,'<menu %_M1_%>','%_M2_%</menu>', '','']],
+			['bop',['@ruby'			,0,'<ruby %_M1_%>','%_M2_%</ruby>', '','']],
+			['bop',['@samp'			,0,'<samp %_M1_%>','%_M2_%</samp>', '','']],
+			['bop',['@span'			,0,'<span %_M1_%>','%_M2_%</span>', '','']],
+			['bop',['@time'			,0,'<time %_M1_%>','%_M2_%</time>', '','']],
 			
-			['bop',['@bdo'			,0,'<bdo [%1]>','[%2]</bdo>', '','']],
-			['bop',['@col'			,0,'<col [%1]>','[%2]</col>', '','']],
-			['bop',['@del'			,0,'<del [%1]>','[%2]</del>', '','']],
-			['bop',['@dfn'			,0,'<dfn [%1]>','[%2]</dfn>', '','']],
-			['bop',['@div'			,0,'<div [%1]>','[%2]</div>', '','']],
-			['bop',['@img'			,0,'<img [%1]>','[%2]</img>', '','']],
-			['bop',['@ins'			,0,'<ins [%1]>','[%2]</ins>', '','']],
-			['bop',['@kbd'			,0,'<kbd [%1]>','[%2]</kbd>', '','']],
-			['bop',['@map'			,0,'<map [%1]>','[%2]</map>', '','']],
-			['bop',['@nav'			,0,'<nav [%1]>','[%2]</nav>', '','']],
-			['bop',['@pre'			,0,'<pre [%1]>','[%2]</pre>', '','']],
-			['bop',['@sub'			,0,'<sub [%1]>','[%2]</sub>', '','']],
-			['bop',['@sup'			,0,'<sup [%1]>','[%2]</sup>', '','']],
-			['bop',['@svg'			,0,'<svg [%1]>','[%2]</svg>', '','']],
-			['bop',['@var'			,0,'<var [%1]>','[%2]</var>', '','']],
-			['bop',['@wbr'			,0,'<wbr [%1]>','[%2]</wbr>', '','']],
+			['bop',['@bdo'			,0,'<bdo %_M1_%>','%_M2_%</bdo>', '','']],
+			['bop',['@col'			,0,'<col %_M1_%>','%_M2_%</col>', '','']],
+			['bop',['@del'			,0,'<del %_M1_%>','%_M2_%</del>', '','']],
+			['bop',['@dfn'			,0,'<dfn %_M1_%>','%_M2_%</dfn>', '','']],
+			['bop',['@div'			,0,'<div %_M1_%>','%_M2_%</div>', '','']],
+			['bop',['@img'			,0,'<img %_M1_%>','%_M2_%</img>', '','']],
+			['bop',['@ins'			,0,'<ins %_M1_%>','%_M2_%</ins>', '','']],
+			['bop',['@kbd'			,0,'<kbd %_M1_%>','%_M2_%</kbd>', '','']],
+			['bop',['@map'			,0,'<map %_M1_%>','%_M2_%</map>', '','']],
+			['bop',['@nav'			,0,'<nav %_M1_%>','%_M2_%</nav>', '','']],
+			['bop',['@pre'			,0,'<pre %_M1_%>','%_M2_%</pre>', '','']],
+			['bop',['@sub'			,0,'<sub %_M1_%>','%_M2_%</sub>', '','']],
+			['bop',['@sup'			,0,'<sup %_M1_%>','%_M2_%</sup>', '','']],
+			['bop',['@svg'			,0,'<svg %_M1_%>','%_M2_%</svg>', '','']],
+			['bop',['@var'			,0,'<var %_M1_%>','%_M2_%</var>', '','']],
+			['bop',['@wbr'			,0,'<wbr %_M1_%>','%_M2_%</wbr>', '','']],
 			
 			['bsp',['@br'			,'<br></br>','','']],
 			
-			['bop',['@dd'			,0,'<dd [%1]>','[%2]</dd>', '','']],
-			['bop',['@dl'			,0,'<dl [%1]>','[%2]</dl>', '','']],
-			['bop',['@dt'			,0,'<dt [%1]>','[%2]</dt>', '','']],
-			['bop',['@em'			,0,'<em [%1]>','[%2]</em>', '','']],
-			['bop',['@h1'			,0,'<h1 [%1]>','[%2]</h1>', '','']],
-			['bop',['@h2'			,0,'<h2 [%1]>','[%2]</h2>', '','']],
-			['bop',['@h3'			,0,'<h3 [%1]>','[%2]</h3>', '','']],
-			['bop',['@h4'			,0,'<h4 [%1]>','[%2]</h4>', '','']],
-			['bop',['@h5'			,0,'<h5 [%1]>','[%2]</h5>', '','']],
-			['bop',['@h6'			,0,'<h6 [%1]>','[%2]</h6>', '','']],
+			['bop',['@dd'			,0,'<dd %_M1_%>','%_M2_%</dd>', '','']],
+			['bop',['@dl'			,0,'<dl %_M1_%>','%_M2_%</dl>', '','']],
+			['bop',['@dt'			,0,'<dt %_M1_%>','%_M2_%</dt>', '','']],
+			['bop',['@em'			,0,'<em %_M1_%>','%_M2_%</em>', '','']],
+			['bop',['@h1'			,0,'<h1 %_M1_%>','%_M2_%</h1>', '','']],
+			['bop',['@h2'			,0,'<h2 %_M1_%>','%_M2_%</h2>', '','']],
+			['bop',['@h3'			,0,'<h3 %_M1_%>','%_M2_%</h3>', '','']],
+			['bop',['@h4'			,0,'<h4 %_M1_%>','%_M2_%</h4>', '','']],
+			['bop',['@h5'			,0,'<h5 %_M1_%>','%_M2_%</h5>', '','']],
+			['bop',['@h6'			,0,'<h6 %_M1_%>','%_M2_%</h6>', '','']],
 			
-			['bop',['@hr'			,0,'<hr [%1]>','</hr>', '','', '(',')','', '', '[%1]','',]],
+			['bop',['@hr'			,0,'<hr %_M1_%>','</hr>', '','', '(',')','', '', '%_M1_%','',]],
 			
-			['bop',['@li'			,0,'<li [%1]>','[%2]</li>', '','']],
-			['bop',['@ol'			,0,'<ol [%1]>','[%2]</ol>', '','']],
-			['bop',['@rp'			,0,'<rp [%1]>','[%2]</rp>', '','']],
-			['bop',['@rt'			,0,'<rt [%1]>','[%2]</rt>', '','']],
-			['bop',['@td'			,0,'<td [%1]>','[%2]</td>', '','']],
-			['bop',['@th'			,0,'<th [%1]>','[%2]</th>', '','']],
-			['bop',['@tr'			,0,'<tr [%1]>','[%2]</tr>', '','']],
-			['bop',['@ul'			,0,'<ul [%1]>','[%2]</ul>', '','']],
+			['bop',['@li'			,0,'<li %_M1_%>','%_M2_%</li>', '','']],
+			['bop',['@ol'			,0,'<ol %_M1_%>','%_M2_%</ol>', '','']],
+			['bop',['@rp'			,0,'<rp %_M1_%>','%_M2_%</rp>', '','']],
+			['bop',['@rt'			,0,'<rt %_M1_%>','%_M2_%</rt>', '','']],
+			['bop',['@td'			,0,'<td %_M1_%>','%_M2_%</td>', '','']],
+			['bop',['@th'			,0,'<th %_M1_%>','%_M2_%</th>', '','']],
+			['bop',['@tr'			,0,'<tr %_M1_%>','%_M2_%</tr>', '','']],
+			['bop',['@ul'			,0,'<ul %_M1_%>','%_M2_%</ul>', '','']],
 			
-			['bop',['@a'			,0,'<a [%1]>','[%2]</a>', '','']],
-			['bop',['@b'			,0,'<b [%1]>','[%2]</b>', '','']],
-			['bop',['@i'			,0,'<i [%1]>','[%2]</i>', '','']],
-			['bop',['@p'			,0,'<p [%1]>','[%2]</p>', '','']],
-			['bop',['@q'			,0,'<q [%1]>','[%2]</q>', '','']],
+			['bop',['@a'			,0,'<a %_M1_%>','%_M2_%</a>', '','']],
+			['bop',['@b'			,0,'<b %_M1_%>','%_M2_%</b>', '','']],
+			['bop',['@i'			,0,'<i %_M1_%>','%_M2_%</i>', '','']],
+			['bop',['@p'			,0,'<p %_M1_%>','%_M2_%</p>', '','']],
+			['bop',['@q'			,0,'<q %_M1_%>','%_M2_%</q>', '','']],
 			
 			['bof',['@:'			,0,'',';','{','}']], // affiche son resulta
 			['bop',['@.'			,0,'','', '','','','','','']], // comment cat invisible
-			['bop',['@?'			,0,'','', '','','<','>','', '', '[%1]','']], // comment cat invisible
+			['bop',['@?'			,0,'','', '','','<','>','', '', '%_M1_%','']], // comment cat invisible
 			['bof',['@!'			,0,'','','<','>','<!-- ',' -->']], // comment html
-			['bof',['@*'			,0,'/* $','*/','<','>']], // comment php
+			['bof',['@*'			,0,'\/* $','*\/','<','>']], // comment php
 			['bof',['@>'			,0,'echo ',';','{','}']], // affiche son resulta
-			['bof',['@'				,0,'echo $',';','{','}']], // affiche son resulta
+			//['bof',['@'				,0,'echo $',';','{','}']], // affiche son resulta
 			
 			
 		];
@@ -465,33 +465,95 @@ class directive {
 		return true;
 	}
 	
-	private	function shearch(  $c, $bs, $dp, $bdeb1, $bfin1): array {
-					global $data;						
-					do {												
-						$g = substr($data,$bs,($c - $bs));												
-						if( substr_count( $g , $bdeb1) == substr_count( $g , $bfin1) ) { break; }
-						$c = strpos($data,$bfin1, $c) + 1;	
-					} while( $dp--> 0 )	;
-					$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
-				return [$mex,$c];					
+
+	private function bof($find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0,$fbmax=0,$rpl=''): bool {
+			
+			global $data, $style_p, $jsr_p, $js_p;
+			
+			$d = strlen($data);
+			$s = strlen($find);
+			//$i=1;	
+			$fbmax = $fdb - 1;
+			do { 
+				$b = strpos($data,$find,$b);
+				$bs = ($b + $s);
+				if($b !== false ) {
+
+							list($m,$c) = $this->shearch( $bs, $d , $bdeb, $bfin); 
+
+							switch($find) {
+								case '@style+':
+									//[#STYLE-LOAD-MASQUE]
+									if($fbmax == $fdb) { $this->_style_plus = true; $deb='[#STYLE-LOAD-MASQUE-GROUPING]'; }
+									$style_p .= $m;
+									$rpl = "$debx$deb$fin$endx";
+								break;
+								case '@JSR+':
+									//[#STYLE-LOAD-MASQUE]
+									if($fbmax == $fdb) { $this->_jsr_plus = true; $deb='[#JSR-LOAD-MASQUE-GROUPING]'; }
+									$jsr_p .= $m;
+									$rpl = "$debx$deb$fin$endx";
+								break;
+								case '@JS+':
+									//[#STYLE-LOAD-MASQUE]
+									if($fbmax == $fdb) { $this->_js_plus = true; $deb='[#JS-LOAD-MASQUE-GROUPING]'; }
+									$js_p .= $m;
+									$rpl = "$debx$deb$fin$endx";
+								break;
+								default:
+								
+								$rpl = "$debx$deb$m$fin$endx";
+								
+							}
+
+							$data = substr_replace($data, $rpl, $b, (($c - $b)) );
+
+							$b = $bs + 1;
+
+				
+				} else { return false; }
+
+			} while(--$fdb > 0);
+		return TRUE;
+	}
+	
+	
+	private	function shearch(  $bs, $dd, $bdeb1, $bfin1, $mex='', $sens=0): array {
+				global $data;						
+				$bx = $bs;
+				
+				do {
+					if( $data[ $bs + $sens ] == $bdeb1 ){ 
+						$bs += $sens; 
+						$dp = $dd - $bs;
+						$c = strpos($data,$bfin1,$bs);
+							do {												
+								$g = substr($data,$bs,($c - $bs));												
+								if( substr_count( $g , $bdeb1) == substr_count( $g , $bfin1) ) { break; }
+								$c = strpos($data,$bfin1, $c) + 1;	
+							} while( --$dp > 0 )	;
+							$mex = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
+							return [$mex,$c];
+					}
+				} while( ++$sens < 1 );
+
+			return [$mex,$bx];					
 		}
 	
-	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='[%1]',$masque2='[%2]',$exp=TRUE,$b=0, $m2='', $m3='', $c=0): bool 
+	
+	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='%_M1_%',$masque2='%_M2_%',$exp=TRUE,$b=0, $m2='', $m3='', $c=0): bool 
 	{		
 			global $data, $segment;
 			
-			
-				$rpl 	= 	'';
-				$m2	=	'';
-				$m3		=	'';
-				$m1		= 	'';
-			
-			$s 		= 	strlen($find);
-			
-			var_dump($fdb);
-			
-			while(--$fdb >= 0) {
 
+			$s 		= 	strlen($find);
+
+			do {
+				
+				$rpl 	= 	'';
+				$m3		=	'';
+				$m2		=	'';
+				$m1		= 	'';
 				$c		=	0;	
 				$dd 	= 	strlen($data);
 
@@ -500,82 +562,37 @@ class directive {
 				if($b !== false ) {
 					
 					//[]
-					$node1 = false;
-					if($data[$bs] == '[') {
-						list($m1,$bs) = $this->shearch( strpos($data,']',$bs), $bs, $dd - $bs, '[', ']'); 
-						$node1 = true;
-					}
-					echo '-1-' .  PHP_EOL;
-					var_dump($m1);
+					list($m1,$bs) = $this->shearch( $bs, $dd , '[', ']'); 
+					$node1 = ($m1 == '' ? false : true);
 					
-					if($data[$bs] == '(') {
-						list($m2,$bs) = $this->shearch( strpos($data,')',$bs), $bs, $dd - $bs, '(', ')'); 
-					}
-					echo '-2-' .  PHP_EOL;
-					var_dump($m2);
+					//()
+					list($m2,$bs) = $this->shearch( $bs, $dd , $bdeb1, $bfin1); 
 					
-					if($data[$bs] == '{') {
-						list($m3,$e) = $this->shearch( strpos($data,'}',$bs), $bs, $dd - $bs, '{', '}');
-					}
-					echo '-3-' .  PHP_EOL;
-					var_dump($m3);
+					//{}
+					list($m3,$bs) = $this->shearch(  $bs,  $dd , $bdeb2, $bfin2);
 					
-					
-					
-					/*
-						//()
-						$node2 = true;
-						switch(true){
-							case ($data[$bs] . $data[$bs + 1]) == "$bdeb1$bfin1": 
-								$c = $bs + 2; //()
-							break;
-							case ($data[$bs] . $data[$bs + 1] . $data[$bs+2]) == " $bdeb1$bfin1":
-								$c = $bs + 3; //_()
-							break;
-							case ($data[$bs] == $bdeb1 && $data[$bs+1] != $bfin1):
-								$c = strpos($data,$bfin1,$bs); //(?
-									$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
-									list($m2,$c) = $this->shearch( $c, $bs, $dd - $b, $bdeb1, $bfin1); 
-									$node2 = false;	
-							break;
-							case ($data[$bs] . $data[$bs + 1] == " $bdeb1" && $data[$bs+2] != $bfin1):
-								 $bs = $bs + 1; //_( ?
-								 $c = strpos($data,$bfin1,$bs);
-									
-									$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
-									list($m2,$c) = $this->shearch( $c, $bs, $dd - $b, $bdeb1, $bfin1); 
-									$node2 = false;									
-							break; 
-							default:
-								$c = $bs;
-							}	
-					
+					//if( ($masque2) && ($exp === false) && ($m3 == '')) { $m3 = "echo <<<END2 \r\n$m3\r\nEND2;\r\n"; }
 
+	
+							list($rpl,$debx,$debo,$fino,$endx,$m2,$m3,$dx) = ($masque1 ? $this->masque_one($find,$deb,$fin,$debx,$endx,$m2,$m3,$masque1,$masque2,$segment) : ["$debx$deb$m2$fin$endx",$debx,'','',$endx,$m2,$m3,1]) ;
+							$rpl = ($node1 ? $this->node_one($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) : $rpl);
+								
 
+							$data = substr_replace($data, $rpl, $b, ($bs - $b) );
+							
+							$b = $bs + 1;
 
-								//{}
-								$e = $c;
-								if( ($bdeb2) && ( ($data[$c] == $bdeb2) || ($data[$c+1] == $bdeb2) ) ){ 
-										
-											$e = strpos($data,$bfin2,$c);
-											$c = ($data[$c+1] == $bdeb2)  ? $c+1 : $c ;
-											list($m3,$e) = $this->shearch( $e, $c, $dd - $c, $bdeb2, $bfin2);
+				} else { return false; }
 
-									if( ($masque2) && ($exp === false) && ($node2 === false)) { $m3 = "echo <<<END2 \r\n$m3\r\nEND2;\r\n"; }
+			} while( --$fdb > 0);
+		return true;
+	}
 
-								} 
-						*/
+	private function masque_one($find,$debo,$fino,$debx,$endx,$m2,$m3,$masque1,$masque2,$segment){
 
-
-								// si masque 1 existe
-								if($masque1) {
-									
-									$debo = $deb;
-									$fino = $fin;
 
 									// si $deb à une exception  précise
 									switch($find) { // si masque 1 est true
-
 										case '@getfile':
 											$debx = $this->_commentHTML ? "\r\n<!-- start invoc file : $m2 -->\r\n" : ''  ;
 											$endx = $this->_commentHTML ? "\r\n<!-- END invoc file : $m2 -->\r\n" : '';
@@ -583,7 +600,6 @@ class directive {
 											$fino = '';
 											$m2  = '';
 										break;
-										
 										case '@structure':
 												$debx = $this->_commentHTML ? "\r\n<!-- start import file : $m2 -->\r\n" : '';
 												$endx = $this->_commentHTML ? "\r\n<!-- END import file : $m2 -->\r\n" : '';
@@ -604,7 +620,7 @@ class directive {
 													$debf = str_replace('{{'.trim($l,'\'').'}}', $ddt, $debf);
 												}
 												$debo = $debf;
-												$fino = ''; unset($debf);
+												$fino = ''; 
 												$m2  = '';
 										break;
 										case '@getsegment':
@@ -615,7 +631,7 @@ class directive {
 												$ddms = strpos($debf,"@setsegment($m3)",0);
 												$fdms = strpos($debf,'@endsegment',$ddms+1);
 												$debo = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
-												$fino = ''; unset($debf);
+												$fino = ''; 
 												$m2  = '';												
 										break;
 										case '@phpsegment':	
@@ -626,7 +642,7 @@ class directive {
 												$ddms = strpos($debf,"@setsegment($m3)",0);
 												$fdms = strpos($debf,'@endsegment',$ddms+1);
 												$debo = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
-												$fino = ''; unset($debf);
+												$fino = ''; 
 												$m2  = '';
 										break;
 										case '@loadsegment':	
@@ -638,23 +654,20 @@ class directive {
 												$fdms = strpos($debf,'@endsegment',$ddms+1);
 												$segment[$m3] = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
 												$debo = '';
-												$fino = ''; unset($debf);
+												$fino = ''; 
 												$m2  = '';	
 										break;
 									}
 									
-									
-									
 									$rpl = "$debx$debo$fino$endx";
-									$rpl = ($masque2 ? str_replace($masque2,$m3,str_replace($masque1,$m2,$rpl)) : str_replace($masque1,$m2,$rpl));
-									$dx = 0;
-								}	
-								else {
-									$rpl = "$debx$deb$m2$fin$endx";
-									$dx = 1;
-								}
-								
-								if($node1) {
+									$rpl = ($masque2 ? str_replace($masque2,$m3, str_replace($masque1,$m2,$rpl) ) : str_replace($masque1,$m2,$rpl));
+									
+									return [$rpl,$debx,$debo,$fino,$endx,$m2,$m3,0];
+	
+	}
+	
+	private function node_one($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) {
+									
 									switch($m1[0]){
 									case '&':
 										$m1 = substr($m1,1);
@@ -774,83 +787,12 @@ class directive {
 										} else {
 											$rpl = "<?php if($m1): ?>" . $rpl . '<?php endif; ?>';
 										}
-									}
-								}
-							
-
-							
-							$data = substr_replace($data, $rpl, $b, ($e - $b) );
-							
-							$rpl 	= 	'';
-							$m2		=	'';
-							$m3		=	'';
-							$m1		= 	'';
-
-							$b = $bs + 1;
-
-				} else { return false; }
-
-			}
-		return true;
+									}		
+		
+		return $rpl;
 	}
-	
-	private function bof($find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0,$fbmax=0,$rpl=''): bool {
-			
-			global $data, $style_p, $jsr_p, $js_p;
-			
-			$d = strlen($data);
-			$s = strlen($find);
-			//$i=1;	
-			$fbmax = $fdb - 1;
-			while(--$fdb > -1) { 
-				$b = strpos($data,$find,$b);
-				$bs = ($b + $s);
-				if($b !== false ) {
-					
-
-							
-							$c = strpos($data,$bfin,$bs);
-							$c = ($data[$bs+1] == $bdeb1) ? $bs+1 : $c ;
-							list($m,$c) = $this->shearch( $c, $bs, $d - $b, $bdeb, $bfin); 
-							//$m = trim( substr($data,($bs + 1),( $c - $bs) - 2) );
 
 
-
-							switch($find) {
-								case '@style+':
-									//[#STYLE-LOAD-MASQUE]
-									if($fbmax == $fdb) { $this->_style_plus = true; $deb='[#STYLE-LOAD-MASQUE-GROUPING]'; }
-									$style_p .= $m;
-									$rpl = "$debx$deb$fin$endx";
-								break;
-								case '@JSR+':
-									//[#STYLE-LOAD-MASQUE]
-									if($fbmax == $fdb) { $this->_jsr_plus = true; $deb='[#JSR-LOAD-MASQUE-GROUPING]'; }
-									$jsr_p .= $m;
-									$rpl = "$debx$deb$fin$endx";
-								break;
-								case '@JS+':
-									//[#STYLE-LOAD-MASQUE]
-									if($fbmax == $fdb) { $this->_js_plus = true; $deb='[#JS-LOAD-MASQUE-GROUPING]'; }
-									$js_p .= $m;
-									$rpl = "$debx$deb$fin$endx";
-								break;
-								default:
-								
-								$rpl = "$debx$deb$m$fin$endx";
-								
-							}
-
-							$data = substr_replace($data, $rpl, $b, (($c - $b)) );
-
-							$b = $bs + 1;
-
-				
-				} else { return false; }
-
-			}
-		return TRUE;
-	}
 	
 }
 
