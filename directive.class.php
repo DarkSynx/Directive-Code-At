@@ -1,6 +1,7 @@
 <?php 
 /*
- V1.2
+ Juste for test new optimisation
+ NOT USE THIS VERSION
  
  !!!   WARNING   !!!
  !!! USE PHP 7.4 !!!
@@ -107,10 +108,9 @@ class directive {
 		$data = $this->_data;
 		
 		
-		$tags = [
+	$tags = [
 		
-		
-			// toujours au début get
+		// toujours au début get
 			['bop',['@include'		,0,'include_once( %_M1_%',');','<?php ',' ?>','(',')','', '', '%_M1_%','']],
 
 			['bop',['@structure'	,0]],
@@ -133,13 +133,13 @@ class directive {
 			['bof',['@JSR+'			,0,'','','{','}','','']], // Grouping all @JSR+ to the first @JSR+
 			['bof',['@JS+'			,0,'','','{','}','','']], // Grouping all @JS+ to the first @JS+
 
-			
+			['bof',['@if'			,0,'if(', '):']],
 			['bof',['@elseif'		,0,'elseif(', '):']],
 			['bsp',['@else'			,'else:']],
 			['bsp',['@endif'		,'endif;']],
 			['bof',['@foreach'		,0,'foreach(','):']],
 			['bsp',['@endforeach'	,'endforeach;']],
-			
+			['bof',['@for'			,0,'for(','):']],
 			['bsp',['@endfor'		,'endfor;']],
 			['bof',['@while'		,0,'while(','):']],
 			['bsp',['@endwhile'		,'endwhile;']],
@@ -150,7 +150,7 @@ class directive {
 			['bsp',['@default'		,'default:']],
 			['bsp',['@endswitch'	,'endswitch;']],
 			['bof',['@goto'			,0,'goto ', ';']],
-			['bof',['@label+'		,0,'', ':']],
+			['bof',['@label'		,0,'', ':']],
 
 			// code encapsuler 
 			['bof',['@isTRUE'		,0,'echo ((',")? <<<END\r\n",'(',')','<?php ', '']],
@@ -167,11 +167,27 @@ class directive {
 			['bsp',['@endtimetest'	,'$microtime_end_test = microtime(TRUE); echo round(($microtime_end_test - $microtime_start_test),4);']],
 
 
-			//10
+			['bsp',['@headpage'		,'<html><head>','','']],
+			['bsp',['@bodypage'		,'</head><body>','','']],
+			['bsp',['@endpage'		,'</body></html>','','']],
+			
+			['bop',['@html'			,0,'<html %_M1_%>','%_M2_%</html>', '','']],			
+			['bof',['@head'			,0,'<head>','</head>', '{', '}', '','']],			
+			['bof',['@title'		,0,'<title>','</title>', '(', ')', '','']],
+			['bof',['@meta'			,0,'<meta ', '>', '(', ')', '','']],
+			['bof',['@link'			,0,'<link ', '>', '(', ')', '','']],
+			['bof',['@filecss'		,0,'<link rel="stylesheet" type="text/css" href=', '>', '(', ')', '','']],
+			['bof',['@script+'		,0,'<script ', '></script>', '(', ')', '','']],
+			['bof',['@script'		,0,'<script src=', '></script>', '(', ')', '','']],
+			['bof',['@style+'		,0,'', '', '{', '}', '','']], // Grouping all @style+ to the first @style+
+			['bof',['@style'		,0,'<style>', '</style>', '{', '}', '','']],
+			['bop',['@body'			,0,'<body %_M1_%>','%_M2_%</body>', '','']],
+	
+
+			
 			['bop',['@blockquote'	,0,'<blockquote %_M1_%>','%_M2_%</blockquote>', '','']],
 			['bop',['@figcaption'	,0,'<figcaption %_M1_%>','%_M2_%</figcaption>', '','']],
 			
-			//8
 			['bop',['@colgroup'		,0,'<colgroup %_M1_%>','%_M2_%</colgroup>', '','']],
 			['bop',['@datalist'		,0,'<datalist %_M1_%>','%_M2_%</datalist>', '','']],
 			['bop',['@fieldset'		,0,'<fieldset %_M1_%>','%_M2_%</fieldset>', '','']],
@@ -180,11 +196,8 @@ class directive {
 			['bop',['@progress'		,0,'<progress %_M1_%>','%_M2_%</progress>', '','']],
 			['bop',['@textarea'		,0,'<textarea %_M1_%>','%_M2_%</textarea>', '','']],
 			
-			['bsp',['@headpage'		,'<html><head>','','']],
-			['bsp',['@bodypage'		,'</head><body>','','']],
 			['bop',['@!DOCTYPE'		,0,'<!DOCTYPE  %_M1_%','>', '','','(',')','', '', '%_M1_%','',]],
 			
-			//7
 			['bop',['@address'		,0,'<address %_M1_%>','%_M2_%</address>', '','']],
 			['bop',['@article'		,0,'<article %_M1_%>','%_M2_%</article>', '','']],
 			['bop',['@caption'		,0,'<caption %_M1_%>','%_M2_%</caption>', '','']],
@@ -193,18 +206,11 @@ class directive {
 			['bop',['@section'		,0,'<section %_M1_%>','%_M2_%</section>', '','']],
 			['bop',['@summary'		,0,'<summary %_M1_%>','%_M2_%</summary>', '','']],
 			
-			['bsp',['@endpage'		,'</body></html>','','']],
-			['bof',['@filecss'		,0,'<link rel="stylesheet" type="text/css" href=', '>', '(', ')', '','']],
-			['bof',['@script+'		,0,'<script ', '></script>', '(', ')', '','']],
-			
-			//6
 			['bop',['@button'		,0,'<button %_M1_%>','%_M2_%</button>', '','']],
 			['bop',['@canvas'		,0,'<canvas %_M1_%>','%_M2_%</canvas>', '','']],
 			['bop',['@figure'		,0,'<figure %_M1_%>','%_M2_%</figure>', '','']],
 			['bop',['@footer'		,0,'<footer %_M1_%>','%_M2_%</footer>', '','']],
 			['bop',['@header'		,0,'<header %_M1_%>','%_M2_%</header>', '','']],
-			
-			
 			
 			['bop',['@hgroup'		,0,'<hgroup %_M1_%>','%_M2_%</hgroup>', '','']],
 			['bop',['@iframe'		,0,'<iframe %_M1_%>','%_M2_%</iframe>', '','']],
@@ -218,10 +224,6 @@ class directive {
 			['bop',['@strong'		,0,'<strong %_M1_%>','%_M2_%</strong>', '','']],
 			['bop',['@center'		,0,'<center %_M1_%>','%_M2_%</center>', '','']],
 			
-			
-			['bof',['@style+'		,0,'', '', '{', '}', '','']], // Grouping all @style+ to the first @style+
-			
-			//5
 			['bop',['@aside'		,0,'<aside %_M1_%>','%_M2_%</aside>', '','']],
 			['bop',['@audio'		,0,'<audio %_M1_%>','%_M2_%</audio>', '','']],
 			['bop',['@embed'		,0,'<embed %_M1_%>','%_M2_%</embed>', '','']],
@@ -238,15 +240,7 @@ class directive {
 			['bop',['@track'		,0,'<track %_M1_%>','%_M2_%</track>', '','']],
 			['bop',['@video'		,0,'<video %_M1_%>','%_M2_%</video>', '','']],
 			
-			['bof',['@title'		,0,'<title>','</title>', '(', ')', '','']],
-			['bof',['@script'		,0,'<script src=', '></script>', '(', ')', '','']],
-			['bof',['@style'		,0,'<style>', '</style>', '{', '}', '','']],
 			
-			//4
-			['bof',['@meta'			,0,'<meta ', '>', '(', ')', '','']],
-			['bop',['@body'			,0,'<body %_M1_%>','%_M2_%</body>', '','']],
-			['bof',['@head'			,0,'<head>','</head>', '{', '}', '','']],
-			['bof',['@link'			,0,'<link ', '>', '(', ')', '','']],
 			
 			['bop',['@abbr'			,0,'<abbr %_M1_%>','%_M2_%</abbr>', '','']],
 			['bop',['@area'			,0,'<area %_M1_%>','%_M2_%</area>', '','']],
@@ -261,11 +255,6 @@ class directive {
 			['bop',['@samp'			,0,'<samp %_M1_%>','%_M2_%</samp>', '','']],
 			['bop',['@span'			,0,'<span %_M1_%>','%_M2_%</span>', '','']],
 			['bop',['@time'			,0,'<time %_M1_%>','%_M2_%</time>', '','']],
-			
-			['bop',['@html'			,0,'<html %_M1_%>','%_M2_%</html>', '','']],
-			
-			//3
-			['bof',['@for'			,0,'for(','):']],
 			
 			['bop',['@bdo'			,0,'<bdo %_M1_%>','%_M2_%</bdo>', '','']],
 			['bop',['@col'			,0,'<col %_M1_%>','%_M2_%</col>', '','']],
@@ -283,9 +272,6 @@ class directive {
 			['bop',['@svg'			,0,'<svg %_M1_%>','%_M2_%</svg>', '','']],
 			['bop',['@var'			,0,'<var %_M1_%>','%_M2_%</var>', '','']],
 			['bop',['@wbr'			,0,'<wbr %_M1_%>','%_M2_%</wbr>', '','']],
-			
-			//2
-			['bof',['@if'			,0,'if(', '):']],
 			
 			['bsp',['@br'			,'<br></br>','','']],
 			
@@ -311,7 +297,6 @@ class directive {
 			['bop',['@tr'			,0,'<tr %_M1_%>','%_M2_%</tr>', '','']],
 			['bop',['@ul'			,0,'<ul %_M1_%>','%_M2_%</ul>', '','']],
 			
-			//1
 			['bop',['@a'			,0,'<a %_M1_%>','%_M2_%</a>', '','']],
 			['bop',['@b'			,0,'<b %_M1_%>','%_M2_%</b>', '','']],
 			['bop',['@i'			,0,'<i %_M1_%>','%_M2_%</i>', '','']],
@@ -326,11 +311,25 @@ class directive {
 			['bof',['@>'			,0,'echo ',';','{','}']], // affiche son resulta
 			['bof',['@='			,0,'echo $',';','{','}']], // affiche son resulta
 			
-			
 		];
 		
 		
+		$rengeur = [];
 		
+		
+		foreach($tags as $r => $g){ $rengeur[ strlen($g[1][0]) ][] = $g; }
+		foreach($rengeur as $r => &$g){ sort($g); }
+
+		$tags = [];
+		for($a=count($rengeur)+1; $a > 1; --$a){
+			//echo $a . PHP_EOL;
+			//var_dump($rengeur[$a]);
+			foreach($rengeur[$a] as $val){
+				$tags[] = $val;
+			}
+		}
+		
+
 		// préparation création d'un tableau de revers
 		$tabloc = array();	
 		foreach($tags as $k => $fnc) { $tabloc[$fnc[1][0]] = $k; }
