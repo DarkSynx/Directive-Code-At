@@ -37,7 +37,7 @@ class directive {
 	
 	
 	// on récupére que par get_data mais on peu initialisé par le constructeur ou par set_data
-	public function __construct( $filename=false, $optimised=TRUE, $commentHTML=FALSE ) {   
+	public function __construct( $filename=false, $optimised=false, $commentHTML=FALSE ) {   
 		
 		$this->_optimised = $optimised;
 		$this->_commentHTML = $commentHTML;
@@ -96,6 +96,60 @@ class directive {
 			fclose($fp);
 		}
 		return $this->_CACHE . $this->_filename . '.php';
+	}
+	
+	private function hashvalidate(&$data){
+		
+		$hashdata = hash('fnv1a64',$data, true);
+		$filehash = @file_get_contents( $this->_CACHE . $this->_filename . '.hash');
+		if($hashdata != $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
+		
+			$fp = fopen( $this->_CACHE . $this->_filename . '.hash', 'w');
+			fwrite($fp, $hashdata);
+			fclose($fp);
+			return true;
+			
+		} 
+		return false;
+		
+	}
+	
+	private function optimised(&$data) {
+		
+		$data = str_replace(
+		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n"], 
+		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n"], $data);
+
+				
+				
+				$x = strlen($data);
+				$tabp = [chr(32),"\t","\0","\r","\n","<"];
+				for($l=0; $l < $x; $l++) {
+					if(substr($data,$l, 2) == '?>') {
+						//echo '[',substr($data,$l,2),']', PHP_EOL;
+						
+						for($z=$l+2; $z < $x; $z++) {
+							
+							if(in_array($data[$z],$tabp)) {
+								
+									if(substr($data,$z, 5) == '<?php') {
+
+									$data = substr_replace($data, chr(32), $l, (($z - $l)+5) );
+								
+									
+									$l = $z+5;
+									break;
+									
+									}
+								
+							 
+							} else{ break;}
+						}
+					}
+				}
+				
+		return $data;		
+		
 	}
 	
 	private function gen($rerturn_tag=FALSE,$optimised=TRUE,$timetest=true) {
@@ -303,14 +357,25 @@ class directive {
 			['bop',['@p'			,0,'<p %_M1_%>','%_M2_%</p>', '','']],
 			['bop',['@q'			,0,'<q %_M1_%>','%_M2_%</q>', '','']],
 			
-			['bof',['@:'			,0,'',';','{','}']], // affiche son resulta
-			['bop',['@.'			,0,'','', '','','','','','']], // comment cat invisible
+			['bof',['@:'			,0,'','','{','}']], // affiche son resulta
+			['bop',['@.'			,0,'','', '','','','','','']], // concatenation
+			
 			['bop',['@?'			,0,'','', '','','<','>','', '', '%_M1_%','']], // comment cat invisible
 			['bof',['@!'			,0,'','','<','>','<!-- ',' -->']], // comment html
 			['bof',['@*'			,0,'\/* $','*\/','<','>']], // comment php
-			['bof',['@>'			,0,'echo ',';','{','}']], // affiche son resulta
-			['bof',['@='			,0,'echo $',';','{','}']], // affiche son resulta
 			
+			//['bof',['@->'
+			//['bof',['@°'
+			//['bof',['@&'
+			//['bof',['@#'
+			//['bof',['@^'
+			//['bof',['@-'
+			//['bof',['@/'
+			
+			['bof',['@+'			,0,'echo ',';','{','}']], // affiche son resulta
+			['bof',['@'				,0,'echo $',';','{','}']], // affiche son resulta
+			
+			/*$find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<%php ',$endx=' %>',$b=0,$fbmax=0,$rpl=''*/
 		];
 		
 		
@@ -321,7 +386,7 @@ class directive {
 		foreach($rengeur as $r => &$g){ sort($g); }
 
 		$tags = [];
-		for($a=count($rengeur)+1; $a > 1; --$a){
+		for($a=count($rengeur); $a >= 1; --$a){
 			//echo $a . PHP_EOL;
 			//var_dump($rengeur[$a]);
 			foreach($rengeur[$a] as $val){
@@ -416,61 +481,7 @@ class directive {
 		
 	}
 	
-	private function hashvalidate(&$data){
-		
-		$hashdata = hash('fnv1a64',$data, true);
-		$filehash = @file_get_contents( $this->_CACHE . $this->_filename . '.hash');
-		if($hashdata != $filehash or (strlen(file_get_contents(CACHE . $this->_filename . '.php')) == 0) ) {
-		
-			$fp = fopen( $this->_CACHE . $this->_filename . '.hash', 'w');
-			fwrite($fp, $hashdata);
-			fclose($fp);
-			return true;
-			
-		} 
-		return false;
-		
-	}
-	
-	private function optimised(&$data) {
-		
-		$data = str_replace(
-		["\t\r\nt\r\n",		"\t\r\n", 	"\r\n\r\n\r\n",		"\r\n\r\n",		"\r\n ?>",		' >', "\r\n\t\r\n", "\r\n\t\t\r\n"], 
-		["\r\n",			"\r\n",		"\r\n",				"\r\n", 		"\r\n?>",		'>',  "\r\n", "\r\n"], $data);
 
-				
-				
-				$x = strlen($data);
-				$tabp = [chr(32),"\t","\0","\r","\n","<"];
-				for($l=0; $l < $x; $l++) {
-					if(substr($data,$l, 2) == '?>') {
-						//echo '[',substr($data,$l,2),']', PHP_EOL;
-						
-						for($z=$l+2; $z < $x; $z++) {
-							
-							if(in_array($data[$z],$tabp)) {
-								
-									if(substr($data,$z, 5) == '<?php') {
-
-									$data = substr_replace($data, chr(32), $l, (($z - $l)+5) );
-								
-									
-									$l = $z+5;
-									break;
-									
-									}
-								
-							 
-							} else{ break;}
-						}
-					}
-				}
-				
-		return $data;		
-		
-	}
-
-	
 	
 	private function bsp($find,$replace,$debx='<?php ',$endx=' ?>'): bool {
 		//var_dump([$find,$replace,$debx,$endx]);
@@ -484,17 +495,21 @@ class directive {
 			
 			global $data, $style_p, $jsr_p, $js_p;
 			
+			
+			
 			$d = strlen($data);
 			$s = strlen($find);
 			//$i=1;	
 			$fbmax = $fdb - 1;
-			 while(--$fdb > -1){ 
+			 do{ 
 				$b = strpos($data,$find,$b);
 				$bs = ($b + $s);
 				if($b !== false ) {
-
+							
+							if($find == '@' && $data[$bs] != '{') { goto end; }
+							
 							list($m,$c) = $this->shearch( $bs, $d , $bdeb, $bfin); 
-
+							
 							switch($find) {
 								case '@style+':
 									//[#STYLE-LOAD-MASQUE]
@@ -519,15 +534,17 @@ class directive {
 								$rpl = "$debx$deb$m$fin$endx";
 								
 							}
-
-							$data = substr_replace($data, $rpl, $b, (($c - $b)) );
-
+							
+							//var_dump( $rpl );
+							//var_dump( substr($data,$b, ($c - $b)) );
+							$data = substr_replace($data, $rpl, $b, ($c - $b) );
+end:
 							$b = $bs + 1;
 
 				
 				} else { return false; }
 
-			}
+			}while(--$fdb > 0);
 		return TRUE;
 	}
 	
@@ -562,7 +579,7 @@ class directive {
 
 			$s 		= 	strlen($find);
 
-			while(--$fdb >= 0) {
+			do{
 				
 				$rpl 	= 	'';
 				$m3		=	'';
@@ -598,7 +615,7 @@ class directive {
 
 				} else { return false; }
 
-			}
+			} while(--$fdb > 0);
 		return true;
 	}
 
