@@ -44,9 +44,9 @@ new options...
 // use +Flex not +flex 
 
 @plan{
-	my script JS / AJX 
+	JAX function JS...
 }
-@div[+plan:timeout|interval,Mydivautorefresh,300](id='mydiv'){
+@div[+Plan:timeout;Mydivautorefresh;300](id='mydiv'){
  	TEST : @p{}
 }
 
