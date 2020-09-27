@@ -67,6 +67,15 @@ new options...
 ```PHP
 @include( 'link file.php' ) 
 
+CB: @ribs( 'link file.seg' ){ 
+  node TITLE: 
+  	'MYTITLE'
+  end;
+  node DATA:
+  	@getfile( 'file.seg' )
+  end;
+} 
+ou can use @ribs or @structure
 CB: @structure( 'link file.seg' ){ 
   |TITLE~'MYTITLE'
   |DATA~@getfile( 'file.seg' )
@@ -74,7 +83,11 @@ CB: @structure( 'link file.seg' ){
 <BODY>{{TITLE}}{{DATA}}</BODY>
 
 NN: @getfile( 'link file.seg' )
+
 CB: @getsegment( 'link file.seg' ){ name segment }
+@# is @getsegment but can use options tu replace {{VAR0}},{{VAR1}},...
+CB: @#[name segment](options){'link file.seg' or . }
+
 CB: @phpsegment( 'link file.seg' ){ name segment }
 NN: @setsegment( name segment )
 NN: @endsegment
