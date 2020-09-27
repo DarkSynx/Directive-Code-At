@@ -43,6 +43,14 @@ new options...
 @div[+Flex.myclassname] // use spécifique flex class
 // use +Flex not +flex 
 
+@plan{
+	my script JS / AJX 
+}
+@div[+plan:timeout|interval,Mydivautorefresh,300](id='mydiv'){
+ 	TEST : @p{}
+}
+
+
 ```
 ```PHP
  @!DOCTYPE(html)
