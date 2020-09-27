@@ -5,6 +5,7 @@
  
  !!!   WARNING   !!!
  !!! USE PHP 7.4 !!!
+ 27/09/2020
  
  !!! INITIALISING CAT AND CACHE DEFINE !!!
  CAT is the starting folder to find your .cat .seg .tpl files.
@@ -28,16 +29,17 @@ class directive {
 	private $_style_plus = false;
 	private $_jsr_plus = false;
 	private $_js_plus = false;
+	private $_settimescript = false;
 	
 	private $_optimised = true;
-	private $_commentHTML = false;
+	private $_commentHTML = true;
 	
 	PRIVATE $_CAT = CAT; /// <--------- DEFINE CAT
 	PRIVATE $_CACHE = CACHE; /// <----- DEFINE CACHE
 	
 	
 	// on récupére que par get_data mais on peu initialisé par le constructeur ou par set_data
-	public function __construct( $filename=false, $optimised=false, $commentHTML=FALSE ) {   
+	public function __construct( $filename=false, $optimised=false, $commentHTML=true ) {   
 		
 		$this->_optimised = $optimised;
 		$this->_commentHTML = $commentHTML;
@@ -154,9 +156,12 @@ class directive {
 	
 	private function gen($rerturn_tag=FALSE,$optimised=TRUE,$timetest=true) {
 		
-		global 	$data, $style_p, $jsr_p, $js_p;
+		global 	$data, $style_p, $jsr_p, $js_p, $settimescript;
 		
-		$style_p = $jsr_p = $js_p = '';
+		$settimescript = '';
+		$style_p = '';
+		$jsr_p = '';
+		$js_p = '';
 		
 		$iner_var = array();
 		$data = $this->_data;
@@ -167,13 +172,15 @@ class directive {
 		// toujours au début get
 			['bop',['@include'		,0,'include_once( %_M1_%',');','<?php ',' ?>','(',')','', '', '%_M1_%','']],
 
+			['bop',['@ribs'	,0]],
 			['bop',['@structure'	,0]],
 			['bop',['@getfile'		,0,'', '','<?php ',' ?>','(',')','','','%_M1_%','',FALSE]],
 			['bop',['@getsegment'	,0]],
 			['bop',['@phpsegment'	,0]],
 			
-			['bof',['@setsegment'	,0,'<!--SEGMENT:', '','(',')','','']],
-			['bsp',['@endsegment' 	,'-->','','']],
+			['bof',['@setsegment'	,0,'<!-- @setsegment(', ')','(',')','','']],
+			
+			['bsp',['@endsegment' 	,'@endsegment -->','','']],
 		
 			['bsp',['@dowhile'		,"do{ echo <<<END\r\n",'<?php ','']],
 			['bof',['@whiledo'		,0,"\r\nEND;\r\n}while(", ');','(',')','']],
@@ -186,6 +193,7 @@ class directive {
 			
 			['bof',['@JSR+'			,0,'','','{','}','','']], // Grouping all @JSR+ to the first @JSR+
 			['bof',['@JS+'			,0,'','','{','}','','']], // Grouping all @JS+ to the first @JS+
+			['bof',['@plan'			,0,'','','{','}','','']], //
 
 			['bof',['@if'			,0,'if(', '):']],
 			['bof',['@elseif'		,0,'elseif(', '):']],
@@ -236,8 +244,7 @@ class directive {
 			['bof',['@style+'		,0,'', '', '{', '}', '','']], // Grouping all @style+ to the first @style+
 			['bof',['@style'		,0,'<style>', '</style>', '{', '}', '','']],
 			['bop',['@body'			,0,'<body %_M1_%>','%_M2_%</body>', '','']],
-	
-
+			['bop',['@page'			,0,'<!DOCTYPE html><html><head>%_M1_%</head><body>','%_M2_%</body></html>', '','']],
 			
 			['bop',['@blockquote'	,0,'<blockquote %_M1_%>','%_M2_%</blockquote>', '','']],
 			['bop',['@figcaption'	,0,'<figcaption %_M1_%>','%_M2_%</figcaption>', '','']],
@@ -367,7 +374,7 @@ class directive {
 			//['bof',['@->'
 			//['bof',['@°'
 			//['bof',['@&'
-			//['bof',['@#'
+			['bop',['@#'			,0]], //load spécifique segment
 			//['bof',['@^'
 			//['bof',['@-'
 			//['bof',['@/'
@@ -382,7 +389,7 @@ class directive {
 		$rengeur = [];
 		
 		
-		foreach($tags as $r => $g){ $rengeur[ strlen($g[1][0]) ][] = $g; }
+		foreach($tags as $r => $g){ $rengeur[ strlen( $g[1][0] ) ][] = $g; }
 		foreach($rengeur as $r => &$g){ sort($g); }
 
 		$tags = [];
@@ -394,6 +401,7 @@ class directive {
 			}
 		}
 		
+		//sleep(1000);
 
 		// préparation création d'un tableau de revers
 		$tabloc = array();	
@@ -402,7 +410,7 @@ class directive {
 		if($rerturn_tag) { return $tags; }
 		
 		// on charge les fichier des fonctions qui load du code
-		$rx = ['@structure' => 0,'@getfile' => 0,'@getsegment' => 0, '@phpsegment' => 0];
+		$rx = ['@ribs' => 0, '@structure' => 0,'@getfile' => 0,'@getsegment' => 0, '@phpsegment' => 0];
 		foreach($rx as $fnd => &$nbf) { $nbf = substr_count($data, $fnd); }
 		while( array_sum($rx) > 0 ){ 	
 			foreach($rx as $fnd => $nbf) {
@@ -418,7 +426,7 @@ class directive {
 		}
 		//var_dump($tags);
 		
-		unset($tags[1],$tags[2],$tags[3],$tags[4]);
+		//unset($tags[1],$tags[2],$tags[3],$tags[4]);
 	
 		// on hash les données brute et si elle son similaire
 		// alors on recharge le fichier fabriqué sinon 
@@ -462,8 +470,9 @@ class directive {
 			if($this->_js_plus) {
 				$data = str_replace('[#JS-LOAD-MASQUE-GROUPING]', '<script>' . $js_p . '</script>', $data);
 			}
-				
-				
+			if($this->_settimescript) {	
+				$data = str_ireplace('</body>','<script>$( document ).ready(function(){' . $settimescript . '});</script></body>',$data);
+			}
 				
 		if($timetest) {
 			$time_end = microtime(true);
@@ -471,11 +480,16 @@ class directive {
 		}
 		
 
+		
+		
+
 		if($this->_optimised) { 
 			$this->optimised($data); 
 		}
 
 
+		
+		
 		if($timetest) {echo "execusion $time secondes\n";}
 		$this->_final_page = $data;
 		
@@ -493,20 +507,25 @@ class directive {
 
 	private function bof($find,$fdb,$deb='', $fin='',$bdeb='(',$bfin=')',$debx='<?php ',$endx=' ?>',$b=0,$fbmax=0,$rpl=''): bool {
 			
-			global $data, $style_p, $jsr_p, $js_p;
+			global $data, $style_p, $jsr_p, $js_p, $settimescript;
 			
-			
+			//if($find == '@setsegment') { echo '1-----------' . PHP_EOL; }
 			
 			$d = strlen($data);
 			$s = strlen($find);
 			//$i=1;	
 			$fbmax = $fdb - 1;
 			 do{ 
+				$n=0;
 				$b = strpos($data,$find,$b);
 				$bs = ($b + $s);
 				if($b !== false ) {
 							
-							if($find == '@' && $data[$bs] != '{') { goto end; }
+							//if($find == '@setsegment') { echo '-----------' . PHP_EOL; }
+							//if($find == '@' && $data[$bs] != '{') {   } // sorry :) for goto , it is temporary
+							if($find != '@' || ($find == '@' && $data[$bs] == '{')) {
+							
+							
 							
 							list($m,$c) = $this->shearch( $bs, $d , $bdeb, $bfin); 
 							
@@ -515,31 +534,47 @@ class directive {
 									//[#STYLE-LOAD-MASQUE]
 									if($fbmax == $fdb) { $this->_style_plus = true; $deb='[#STYLE-LOAD-MASQUE-GROUPING]'; }
 									$style_p .= $m;
-									$rpl = "$debx$deb$fin$endx";
+									//$rpl = "$debx$deb$fin$endx";
 								break;
 								case '@JSR+':
 									//[#STYLE-LOAD-MASQUE]
 									if($fbmax == $fdb) { $this->_jsr_plus = true; $deb='[#JSR-LOAD-MASQUE-GROUPING]'; }
 									$jsr_p .= $m;
-									$rpl = "$debx$deb$fin$endx";
+									//$rpl = "$debx$deb$fin$endx";
 								break;
 								case '@JS+':
 									//[#STYLE-LOAD-MASQUE]
 									if($fbmax == $fdb) { $this->_js_plus = true; $deb='[#JS-LOAD-MASQUE-GROUPING]'; }
 									$js_p .= $m;
-									$rpl = "$debx$deb$fin$endx";
+									//$rpl = "$debx$deb$fin$endx";
 								break;
-								default:
+								case '@plan':
+									$this->_settimescript = true;
+										$settimescript .= $m;
+										$debx = '';	
+										$deb = '';	
+										$m = '';
+										$fin = '';	
+										$endx = '';	
+										$n = -1 - $bs;
+
+									
+								break;
+								//default:
 								
-								$rpl = "$debx$deb$m$fin$endx";
+								//$rpl = "$debx$deb$m$fin$endx";
 								
 							}
+							$rpl = "$debx$deb$m$fin$endx";
+							//if($find == '@setsegment') { var_dump($rpl); }
 							
 							//var_dump( $rpl );
 							//var_dump( substr($data,$b, ($c - $b)) );
 							$data = substr_replace($data, $rpl, $b, ($c - $b) );
-end:
-							$b = $bs + 1;
+							
+							}
+							
+							$b = $bs + 1 + $n;
 
 				
 				} else { return false; }
@@ -576,11 +611,12 @@ end:
 	{		
 			global $data, $segment;
 			
-
+			//if($find == '@p') { echo '*' . PHP_EOL; }
+			
 			$s 		= 	strlen($find);
 
 			do{
-				
+				$n 		= 	0;
 				$rpl 	= 	'';
 				$m3		=	'';
 				$m2		=	'';
@@ -605,13 +641,13 @@ end:
 					//if( ($masque2) && ($exp === false) && ($m3 == '')) { $m3 = "echo <<<END2 \r\n$m3\r\nEND2;\r\n"; }
 
 	
-							list($rpl,$debx,$debo,$fino,$endx,$m2,$m3,$dx) = ($masque1 ? $this->masque_one($find,$deb,$fin,$debx,$endx,$m2,$m3,$masque1,$masque2,$segment) : ["$debx$deb$m2$fin$endx",$debx,'','',$endx,$m2,$m3,1]) ;
+							list($rpl,$debx,$debo,$fino,$endx,$m1,$m2,$m3,$dx) = ($masque1 ? $this->masque_one($find,$deb,$fin,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment) : ["$debx$deb$m2$fin$endx",$debx,'','',$endx,$m2,$m3,1]) ;
 							$rpl = ($node1 ? $this->node_one($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) : $rpl);
 								
 
 							$data = substr_replace($data, $rpl, $b, ($bb - $b) );
 							
-							$b = $bs + 1;
+							$b = $bs + 1 + $n;
 
 				} else { return false; }
 
@@ -619,9 +655,9 @@ end:
 		return true;
 	}
 
-	private function masque_one($find,$debo,$fino,$debx,$endx,$m2,$m3,$masque1,$masque2,$segment){
+	private function masque_one($find,$debo,$fino,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment){
 
-
+									global $data;
 									// si $deb à une exception  précise
 									switch($find) { // si masque 1 est true
 										case '@getfile':
@@ -630,6 +666,18 @@ end:
 											$debo = file_get_contents( $this->_CAT . trim($m2,'\'') );
 											$fino = '';
 											$m2  = '';
+										break;
+										case '@ribs':
+												$debx = $this->_commentHTML ? "\r\n<!-- start import file : $m2 -->\r\n" : '';
+												$endx = $this->_commentHTML ? "\r\n<!-- END import file : $m2 -->\r\n" : '';
+												$debf = file_get_contents( $this->_CAT . trim($m2,'\''));
+												preg_match_all('/node[(\s|\t)](.*)[(\:)]([^.$;]*)end;/', $m3,$pp);										
+												foreach($pp[1] as $k => $l){
+													$debf = str_replace('{{'.trim($l).'}}', $pp[2][$k], $debf);
+												}
+												$debo = $debf;
+												$fino = ''; 
+												$m2  = '';
 										break;
 										case '@structure':
 												$debx = $this->_commentHTML ? "\r\n<!-- start import file : $m2 -->\r\n" : '';
@@ -654,7 +702,39 @@ end:
 												$fino = ''; 
 												$m2  = '';
 										break;
-										case '@getsegment':
+										case '@#': // getsegment conf
+												$debx = $this->_commentHTML ? "\r\n<!-- start import:segment $m1 to file : $m3 -->\r\n" : '';
+												$endx = $this->_commentHTML ? "\r\n<!-- END import:segment $m1 to file : $m3 -->\r\n" : '';
+												if($m3 == '.' || $m3 == '') {
+													$debf = $data;
+												} else {
+													$debf = file_get_contents( $this->_CAT . trim($m3,'\''));
+												}
+												$tds  = strlen("@setsegment($m1)");
+												$ddms = strpos($debf,"@setsegment($m1)",0);
+												$fdms = strpos($debf,'@endsegment',$ddms+1);
+												$debo = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
+												if($m2 != '') {
+													if(($g = strpos($m2,',')) !== false ) {
+														echo '---> ok';
+														$m2 = explode(',',$m2);
+														$m0 = [];
+														$cu = count($m2);
+														for($k=0; $k < $cu; $k++) {
+															$m0[] = '{{VAR' . $k . '}}';
+														}
+														$debo = str_replace($m0,$m2,$debo);
+													} else {
+														$debo = str_replace('{{VAR0}}',$m2,$debo);
+													}
+													
+												}
+												$fino = ''; 
+												$m3  = '';	
+												$m1 = '';
+												$debf =	'';	
+										break;
+										case '@getsegment': //@getsegment[$m1]($m2){$m3}
 												$debx = $this->_commentHTML ? "\r\n<!-- start import:segment $m3 to file : $m2 -->\r\n" : '';
 												$endx = $this->_commentHTML ? "\r\n<!-- END import:segment $m3 to file : $m2 -->\r\n" : '';
 												$debf = file_get_contents( $this->_CAT . trim($m2,'\''));
@@ -663,7 +743,8 @@ end:
 												$fdms = strpos($debf,'@endsegment',$ddms+1);
 												$debo = substr($debf,($ddms + $tds),($fdms - ($ddms + $tds)));
 												$fino = ''; 
-												$m2  = '';												
+												$m2  = '';	
+												$debf =	'';	
 										break;
 										case '@phpsegment':	
 												$debx = '<?php ';
@@ -693,34 +774,60 @@ end:
 									$rpl = "$debx$debo$fino$endx";
 									$rpl = ($masque2 ? str_replace($masque2,$m3, str_replace($masque1,$m2,$rpl) ) : str_replace($masque1,$m2,$rpl));
 									
-									return [$rpl,$debx,$debo,$fino,$endx,$m2,$m3,0];
+									return [$rpl,$debx,$debo,$fino,$endx,$m1,$m2,$m3,0];
 	
 	}
 	
 	private function node_one($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) {
-									
+									global $settimescript;
+									if($m1 != '') {
 									switch($m1[0]){
 									case '&':
 										$m1 = substr($m1,1);
 										$rpl = "<a href='#$m1'>" . $rpl . '</a>';
 									break;
-									case '#': // Add ID
+									/*case '#': //
 										
 									break;
-									case '.': // add class
+									case '.': // 
 									
-									break;
+									break;*/
 									case '+': // functions spé
 										$m1 = substr($m1,1);
 										switch(substr($m1,0,4)) {
+											case '':
+											
+											break;
+											case 'Plan':
+												$this->_settimescript = true; // active timescript
+												switch(true) {
+													case ($g = strpos($m1,':')):
+														list($type,$scriptname,$settimelist) = explode(';',substr($m1,$g+1));
+														//type = Timeout générer un  setTimeout
+														//type = Interval générer un  setInterval
+														//setInterval(function(){ alert("Hello"); }, 3000);
+														//setTimeout(function(){ alert("Hello"); }, 3000);
+														if(strpos($settimelist,',') !== false) { $expp = explode(',',$settimelist); }
+														switch($type){
+															case 'timeout':
+																$settimescript .= "setTimeout(function(){ {$scriptname}(); }, {$expp[0]});";
+															break;
+															case 'interval':
+																$settimescript .= "setInterval(function(){ {$scriptname}(); }, {$expp[0]});";
+															break;
+														}
+													break;
+													
+												}
+											break;
 											case 'Flex':
 												
 												if($bdeb1) {
 													
-													var_dump($m2);
+													//var_dump($m2);
 													preg_match('/style=("|\')([^("|\')]*)("|\')/', $m2,$xstyle);
 													preg_match('/class=("|\')([^("|\')]*)("|\')/', $m2,$xclass);
-													var_dump($xstyle); // 0 = all string and 2 = in string
+													//var_dump($xstyle); // 0 = all string and 2 = in string
 
 													$rez = false;
 													
@@ -746,7 +853,7 @@ end:
 															$d=$xstyle[1];
 															$rec=$xstyle[2];
 															$rch=$xstyle[0];
-															var_dump($rpl);
+															//var_dump($rpl);
 															//sleep(1000);
 														break;
 														case ($g = strpos($m1,'=')):
@@ -763,7 +870,7 @@ end:
 															$d=$xstyle[1];
 															$rec=$xstyle[2];
 															$rch=$xstyle[0];
-															var_dump($rpl);
+															//var_dump($rpl);
 														break;
 														case ($g = strpos($m1,'.')):
 															if(count($xclass) == 0) { $m2 .= ' class=\'[%tagreplace]\' '; 
@@ -818,7 +925,8 @@ end:
 										} else {
 											$rpl = "<?php if($m1): ?>" . $rpl . '<?php endif; ?>';
 										}
-									}		
+									}
+									}									
 		
 		return $rpl;
 	}
