@@ -5,7 +5,6 @@
  
  !!!   WARNING   !!!
  !!! USE PHP 7.4 !!!
- 27/09/2020
  
  !!! INITIALISING CAT AND CACHE DEFINE !!!
  CAT is the starting folder to find your .cat .seg .tpl files.
@@ -641,10 +640,13 @@ class directive {
 					//if( ($masque2) && ($exp === false) && ($m3 == '')) { $m3 = "echo <<<END2 \r\n$m3\r\nEND2;\r\n"; }
 
 	
-							list($rpl,$debx,$debo,$fino,$endx,$m1,$m2,$m3,$dx) = ($masque1 ? $this->masque_one($find,$deb,$fin,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment) : ["$debx$deb$m2$fin$endx",$debx,'','',$endx,$m2,$m3,1]) ;
-							$rpl = ($node1 ? $this->node_one($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) : $rpl);
+							list($rpl,$debx,$debo,$fino,$endx,$m1,$m2,$m3,$dx) = (
+							$masque1 ? $this->masque($find,$deb,$fin,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment) 
+							: ["$debx$deb$m2$fin$endx",$debx,'','',$endx,$m2,$m3,1]
+							);
+							
+							$rpl = ($node1 ? $this->node($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) : $rpl);
 								
-
 							$data = substr_replace($data, $rpl, $b, ($bb - $b) );
 							
 							$b = $bs + 1 + $n;
@@ -655,7 +657,7 @@ class directive {
 		return true;
 	}
 
-	private function masque_one($find,$debo,$fino,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment){
+	private function masque($find,$debo,$fino,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment){
 
 									global $data;
 									// si $deb à une exception  précise
@@ -778,20 +780,126 @@ class directive {
 	
 	}
 	
-	private function node_one($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) {
-									global $settimescript;
+
+	private function node($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) {
+									global $settimescript, $return_fnc;
+									
+									$return_fnc = ''; // utilisé pour travailler sur le retour de chaque fonction 
+									
 									if($m1 != '') {
+									
+									//var_dump($m1);
+									//$tjs = json_decode('{' . $m1 . '}', true);
+									var_dump($m2);
+									
+									$tab1 = explode(';',$m1);
+									foreach($tab1 as $k => $v){
+										if(strpos($v,':') !== false) {
+											//$tab1[$k]=array();
+											$elmx = array();
+											list($fnc,$elm) = explode(':',$v);
+											$fnc = str_replace(["\r","\n","\t",chr(32)],'',$fnc);
+											//$tab1[$k] = ['function' => $fnc, 'elements' => explode(',',$elm)];
+											$elmx[0] = explode(',',$elm);
+											$elmx[1] = [$rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin];
+											call_user_func_array([$this,'node_' . $fnc],$elmx);
+										}
+										//else { unset($tab1[$k]); }
+									}
+					}									
+				
+		return $return_fnc;
+	}
+	
+
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+	//\\//\\//\\ NODE  FUNCTION //\\//\\//\\
+	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+	
+	private function node_flex(...$elements) : void { 
+		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];	
+		global $return_fnc;
+		
+		
+		
+		//var_dump($m2);
+		preg_match('/style=("|\')([^("|\')]*)("|\')/', $m2,$xstyle);
+		//preg_match('/class=("|\')([^("|\')]*)("|\')/', $m2,$xclass);
+		//var_dump($xstyle); // 0 = all string and 2 = in string
+		//var_dump($xstyle);
+		if(count($xstyle) == 0){ 
+				$m2 .= ' style=\'[%tagreplace]\' ';
+				if($dx == 1) {$rpl = "$debx$deb$m2$fin$endx";} // dx valide pas supprimer
+				else {
+					$rpl = "$debx$debo$fino$endx";
+					$rpl = ($masque2 ? 
+								str_replace($masque2,$m3, str_replace($masque1,$m2,$rpl)) : 
+								str_replace($masque1,$m2,$rpl)
+							);
+				}
+				$xstyle = ['style=\'[%tagreplace]\'','\'',''];
+		}
+		
+		$new = implode(';',$elements[0]);
+		$new = str_replace('=',':',$new);
+		$xtp = 'style=';
+		$d=$xstyle[1];
+		$rec=$xstyle[2];
+		if($rec[strlen($rec)-1] != ';' && strlen($rec) > 0){ $rec .= ';'; }
+		if($new[strlen($new)-1] != ';' && strlen($new) > 0){ $new .= ';'; }
+		$rch=$xstyle[0];
+		
+		$rpl = str_replace($rch,"{$xtp}{$d}{$rec}{$new}{$d}", $rpl);
+
+		
+	}
+	
+	private function node_istrue(...$elements) : void { 
+		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];
+		global $return_fnc;
+		$return_fnc = "<?php if($m1): ?>" . $rpl . '<?php endif; ?>';																				
+	}
+	
+	private function node_plan(...$elements) : void { 
+		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];
+		global $settimescript, $return_fnc;
+
+			$this->_settimescript = true; // active timescript									
+					list($type,$scriptname,$settimelist) = explode(',',substr($m1,$g+1));																				
+					if(strpos($settimelist,',') !== false) { $expp = explode(',',$settimelist); }												
+					switch($type){												
+						case 'timeout':												
+							$settimescript .= "setTimeout(function(){ {$scriptname}(); }, {$expp[0]});";												
+						break;												
+						case 'interval':												
+							$settimescript .= "setInterval(function(){ {$scriptname}(); }, {$expp[0]});";												
+						break;												
+					}												
+								
+
+			
+	}
+	
+
+	
+}
+
+
+
+
+	//save 														
+										/*
 									switch($m1[0]){
 									case '&':
 										$m1 = substr($m1,1);
 										$rpl = "<a href='#$m1'>" . $rpl . '</a>';
 									break;
-									/*case '#': //
+									case '#': //
 										
 									break;
 									case '.': // 
 									
-									break;*/
+									break;
 									case '+': // functions spé
 										$m1 = substr($m1,1);
 										switch(substr($m1,0,4)) {
@@ -925,14 +1033,5 @@ class directive {
 										} else {
 											$rpl = "<?php if($m1): ?>" . $rpl . '<?php endif; ?>';
 										}
-									}
-									}									
-		
-		return $rpl;
-	}
-
-
-	
-}
-
+									}*/
 ?>
