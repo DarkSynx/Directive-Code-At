@@ -18,7 +18,7 @@ Exemple code :
 ```PHP
 new options...
 
-@div[$foo]( id='bar' ){ foobar }
+@div[istrue:$foo]( id='bar' ){ foobar }
 // if $foo is true 
 <div>foobar</div>
 // else no div
@@ -34,19 +34,13 @@ new options...
 @p[mysegment,{{foo}}]( id='bar' ){ click me }
 // load mysegment and replace {{foo}} tag in mysegment by <p>click me</p>
 
-@div[+Flex,<direction>,<wrap>,<justify>,<align-items>,<align-content>]
-//default is flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; align-content: stretch;
-@div[+Flex] // use default row;nowrap;flex-start;stretch;stretch;
-@div[+Flex,column] // use column
-@div[+Flex,column,nowrap,center,center,center] //you want to use spécifique flex
-@div[+Flex=flex-direction: row; flex-wrap: nowrap] //you want to use spécifique flex
-@div[+Flex.myclassname] // use spécifique flex class
+@div[Flex: flex-direction=row, flex-wrap=nowrap] //you want to use spécifique flex
 // use +Flex not +flex 
 
 @plan{
 	JAX function JS...
 }
-@div[+Plan:timeout;Mydivautorefresh;300](id='mydiv'){
+@div[Plan:timeout,Mydivautorefresh,300](id='mydiv'){
  	TEST : @p{}
 }
 
