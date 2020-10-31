@@ -5,6 +5,7 @@
  
  !!!   WARNING   !!!
  !!! USE PHP 7.4 !!!
+ 31/10/2020
  
  !!! INITIALISING CAT AND CACHE DEFINE !!!
  CAT is the starting folder to find your .cat .seg .tpl files.
@@ -865,8 +866,12 @@ class directive {
 		global $return_fnc, $setback;
 		//$setback .= $rpl;
 		
-		$part = var_export([$m1,$m2,$m3],true);
-		$return_fnc = "<?php\r\n\$back = " . $part . ";\r\n" . $setback[$elements[0][0]] . ' ?>';
+		preg_match_all('/(\w*)=["|\']([^("|\')]*)["|\']/', $m2,$m2x,PREG_SET_ORDER);
+		//unset($m2x[0]);
+		$part = var_export([$m1,$m2x,$m3],true);
+		$return_fnc = "<?php\r\n\$back['" . $elements[0][0] . '\'] = ' . $part . ";\r\n" . $setback[$elements[0][0]] . 
+		( isset($elements[0][1]) && $elements[0][1] == 'true' ? '' : "\r\nunset(\$back['" . $elements[0][0] . '\']);' ) . 
+		' ?>';
 		/// a finalisé
 		
 	}
