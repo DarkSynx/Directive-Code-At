@@ -1,4 +1,8 @@
-DIRECTIVE Code At
+DIRECTIVE Code At 
+« a pour objectif de réunir html , php , javascript 
+et css sous un même language. Et cela permettant une 
+gestion plus simple et rapide sans utiliser de FrameWork »
+
 =================
 LE HTML FACILE SANS BALISE 
 
