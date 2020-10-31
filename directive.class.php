@@ -29,6 +29,7 @@ class directive {
 	private $_jsr_plus = false;
 	private $_js_plus = false;
 	private $_settimescript = false;
+	private $_setback = false;
 	
 	private $_optimised = true;
 	private $_commentHTML = true;
@@ -38,7 +39,7 @@ class directive {
 	
 	
 	// on récupére que par get_data mais on peu initialisé par le constructeur ou par set_data
-	public function __construct( $filename=false, $optimised=false, $commentHTML=true ) {   
+	public function __construct( $filename=false, $optimised=true, $commentHTML=true ) {   
 		
 		$this->_optimised = $optimised;
 		$this->_commentHTML = $commentHTML;
@@ -155,8 +156,9 @@ class directive {
 	
 	private function gen($rerturn_tag=FALSE,$optimised=TRUE,$timetest=true) {
 		
-		global 	$data, $style_p, $jsr_p, $js_p, $settimescript;
+		global 	$data, $style_p, $jsr_p, $js_p, $settimescript, $setback;
 		
+		$setback = array();
 		$settimescript = '';
 		$style_p = '';
 		$jsr_p = '';
@@ -167,7 +169,7 @@ class directive {
 		
 		
 	$tags = [
-		
+		 /* $find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='%_M1_%',$masque2='%_M2_%',$exp=TRUE,$b=0, $m2='', $m3='', $c=0 */
 		// toujours au début get
 			['bop',['@include'		,0,'include_once( %_M1_%',');','<?php ',' ?>','(',')','', '', '%_M1_%','']],
 
@@ -186,6 +188,9 @@ class directive {
 			['bop',['@dow'			,0,'do{', '%_M2_%}while(%_M1_%);']],	
 
 			['bof',['@PHP'			,0,'','','{','}']], // affiche son resulta
+			['bop',['@BACK'			,0,'','','','']], // affiche son resulta
+			// revoir en BOP
+			
 			['bof',['@JSR'			,0,'','','{','}','<script>$( document ).ready(function(){','});</script>']], // affiche son resulta
 			['bof',['@JS'			,0,'','','{','}','<script>','</script>']], // affiche son resulta
 	
@@ -399,7 +404,7 @@ class directive {
 				$tags[] = $val;
 			}
 		}
-		
+		//var_dump($tags);
 		//sleep(1000);
 
 		// préparation création d'un tableau de revers
@@ -527,6 +532,7 @@ class directive {
 							
 							
 							list($m,$c) = $this->shearch( $bs, $d , $bdeb, $bfin); 
+
 							
 							switch($find) {
 								case '@style+':
@@ -559,6 +565,17 @@ class directive {
 
 									
 								break;
+								/*case '@BACK':
+									$this->_setback = true;
+										$setback[$m] .= $m;
+										$debx = '';	
+										$deb = '';	
+										$m = '';
+										$fin = '';	
+										$endx = '';	
+										$n = -1 - $bs;
+								
+								break;*/
 								//default:
 								
 								//$rpl = "$debx$deb$m$fin$endx";
@@ -608,7 +625,7 @@ class directive {
 	
 	private function bop($find='',$fdb=0,$deb='', $fin='',$debx='<?php ',$endx=' ?>',$bdeb1='(',$bfin1=')',$bdeb2='{',$bfin2='}',$masque1='%_M1_%',$masque2='%_M2_%',$exp=TRUE,$b=0, $m2='', $m3='', $c=0): bool 
 	{		
-			global $data, $segment;
+			global $data, $segment, $setback;
 			
 			//if($find == '@p') { echo '*' . PHP_EOL; }
 			
@@ -622,9 +639,15 @@ class directive {
 				$m1		= 	'';
 				$c		=	0;	
 				$dd 	= 	strlen($data);
+				
 
 				$b = strpos($data,$find,$b);
-				$bs = ( ($b ? $b : 0) + $s);
+				
+				echo '----'. PHP_EOL;
+				echo '$s:' . $s. PHP_EOL;
+				echo '$b:' . $b. PHP_EOL;
+				
+				$bs = ($b + $s);
 				if($b !== false ) {
 					
 					//[]
@@ -639,17 +662,20 @@ class directive {
 					
 					//if( ($masque2) && ($exp === false) && ($m3 == '')) { $m3 = "echo <<<END2 \r\n$m3\r\nEND2;\r\n"; }
 
-	
-							list($rpl,$debx,$debo,$fino,$endx,$m1,$m2,$m3,$dx) = (
-							$masque1 ? $this->masque($find,$deb,$fin,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment) 
-							: ["$debx$deb$m2$fin$endx",$debx,'','',$endx,$m2,$m3,1]
+							//echo 'b:' . $b . PHP_EOL;
+							list($rpl,$debx,$debo,$fino,$endx,$m1,$m2,$m3,$dx,$n) = (
+							$masque1 ? $this->masque($find,$deb,$fin,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment,$bs) 
+							: ["$debx$deb$m2$fin$endx",$debx,'','',$endx,$m1,$m2,$m3,1,0]
 							);
 							
 							$rpl = ($node1 ? $this->node($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) : $rpl);
 								
 							$data = substr_replace($data, $rpl, $b, ($bb - $b) );
 							
-							$b = $bs + 1 + $n;
+							echo 'b:' . $b . ' --> f:' . $find . ' -- n = ' . $bs . ' + '  . $n . PHP_EOL;
+							//var_dump($n);
+							//$b = $bs + 1 + $n;
+							$b = $bs + $n;
 
 				} else { return false; }
 
@@ -657,11 +683,19 @@ class directive {
 		return true;
 	}
 
-	private function masque($find,$debo,$fino,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment){
+	private function masque($find,$debo,$fino,$debx,$endx,$m1,$m2,$m3,$masque1,$masque2,$segment,$bs,$n=0){
 
-									global $data;
+									global $data,$setback;
 									// si $deb à une exception  précise
 									switch($find) { // si masque 1 est true
+										case '@BACK':
+											//echo 'm2:' . $m2 . " -> m3:" . $m3 . PHP_EOL;
+											//$this->_setback = true;
+											$setback[$m2] .= $m3;
+											//$debx = ' ';
+											//$endx = ' ';
+										
+										break;
 										case '@getfile':
 											$debx = $this->_commentHTML ? "\r\n<!-- start invoc file : $m2 -->\r\n" : ''  ;
 											$endx = $this->_commentHTML ? "\r\n<!-- END invoc file : $m2 -->\r\n" : '';
@@ -774,15 +808,21 @@ class directive {
 									}
 									
 									$rpl = "$debx$debo$fino$endx";
+									
 									$rpl = ($masque2 ? str_replace($masque2,$m3, str_replace($masque1,$m2,$rpl) ) : str_replace($masque1,$m2,$rpl));
 									
-									return [$rpl,$debx,$debo,$fino,$endx,$m1,$m2,$m3,0];
+									//var_dump($rpl);
+									//if($rpl == '') { $n = - $bs - 1; } 
+									if($rpl == '') { $n = - $bs ; } 
+									
+									return [$rpl,$debx,$debo,$fino,$endx,$m1,$m2,$m3,0,$n];
 	
 	}
 	
 
 	private function node($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) {
-									global $settimescript, $return_fnc;
+									global $settimescript, $return_fnc, $setback;
+									
 									
 									$return_fnc = ''; // utilisé pour travailler sur le retour de chaque fonction 
 									
@@ -790,7 +830,7 @@ class directive {
 									
 									//var_dump($m1);
 									//$tjs = json_decode('{' . $m1 . '}', true);
-									var_dump($m2);
+									//var_dump($m2);
 									
 									$tab1 = explode(';',$m1);
 									foreach($tab1 as $k => $v){
@@ -815,6 +855,21 @@ class directive {
 	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
 	//\\//\\//\\ NODE  FUNCTION //\\//\\//\\
 	//\\//\\//\\//\\//\\//\\//\\//\\//\\//\\
+	
+	
+	// function node_fback remanier le contenu de la balise coté php
+	// function node_ffront remanier le contenu de la balise coté JS
+	
+	private function node_back(...$elements) : void {
+		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];	
+		global $return_fnc, $setback;
+		//$setback .= $rpl;
+		
+		$part = var_export([$m1,$m2,$m3],true);
+		$return_fnc = "<?php\r\n\$back = " . $part . ";\r\n" . $setback[$elements[0][0]] . ' ?>';
+		/// a finalisé
+		
+	}
 	
 	private function node_flex(...$elements) : void { 
 		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];	
@@ -853,20 +908,38 @@ class directive {
 
 		
 	}
+
+	private function node_link(...$elements) : void { 
+		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];
+		global $return_fnc;
+		$return_fnc = "<a href='#$m1'>" . $rpl . '</a>';																				
+	}
+	
+	
+	
+	private function node_segment(...$elements) : void { 
+		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];
+		global $return_fnc;	
+			
+			list($seg,$tag) = $elements[0];
+			$return_fnc = str_replace($tag,$rpl,$segment[$seg]);
+	}
 	
 	private function node_istrue(...$elements) : void { 
 		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];
 		global $return_fnc;
-		$return_fnc = "<?php if($m1): ?>" . $rpl . '<?php endif; ?>';																				
+		$return_fnc = '<?php if(' . $elements[0][0] . '): ?>' . $rpl . '<?php endif; ?>';																				
 	}
 	
 	private function node_plan(...$elements) : void { 
 		list($rpl,$dx,$m1,$m2,$m3,$masque2,$masque1,$debx,$debo,$fino,$endx,$deb,$fin) = $elements[1];
 		global $settimescript, $return_fnc;
 
+
+			//var_dump($elements);
+			//sleep(1000);
 			$this->_settimescript = true; // active timescript									
-					list($type,$scriptname,$settimelist) = explode(',',substr($m1,$g+1));																				
-					if(strpos($settimelist,',') !== false) { $expp = explode(',',$settimelist); }												
+					list($type,$scriptname,$settimelist) = $elements[0];																													
 					switch($type){												
 						case 'timeout':												
 							$settimescript .= "setTimeout(function(){ {$scriptname}(); }, {$expp[0]});";												
